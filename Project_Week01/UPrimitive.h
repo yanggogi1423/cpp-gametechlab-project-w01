@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "DataType.h" // 우리가 만든 규격집 포함
+#include "datatype.h"
 
 class UPrimitive {
 protected:
