@@ -128,11 +128,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="datatype.h" />
+    <ClInclude Include="Probe.h" />
     <ClInclude Include="UManager.h" />
+    <ClInclude Include="UPrimitive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Probe.cpp" />
     <ClCompile Include="UManager.cpp" />
+    <ClCompile Include="UPrimitive.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

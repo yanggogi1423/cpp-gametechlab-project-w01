@@ -1,12 +1,131 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\jungle\\Desktop\\YG\\Week01\\Project_Week01\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\Probe.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UPrimitive.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\UPrimitive.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\datatype.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\datatype.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\Probe.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\UManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{3E2D8F2E-CA01-4019-9777-C419D2B2E16A}|Project_Week01\\Project_Week01.vcxproj|solutionrelative:Project_Week01\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UPrimitive.h",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UPrimitive.h",
+              "RelativeDocumentMoniker": "Project_Week01\\UPrimitive.h",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UPrimitive.h",
+              "RelativeToolTip": "Project_Week01\\UPrimitive.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-09T12:18:37.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "datatype.h",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\datatype.h",
+              "RelativeDocumentMoniker": "Project_Week01\\datatype.h",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\datatype.h",
+              "RelativeToolTip": "Project_Week01\\datatype.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-09T11:39:18.381Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\main.cpp",
+              "RelativeDocumentMoniker": "Project_Week01\\main.cpp",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\main.cpp",
+              "RelativeToolTip": "Project_Week01\\main.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-03-09T11:39:04.113Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UManager.h",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UManager.h",
+              "RelativeDocumentMoniker": "Project_Week01\\UManager.h",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\UManager.h",
+              "RelativeToolTip": "Project_Week01\\UManager.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-09T11:38:58.745Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Probe.h",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.h",
+              "RelativeDocumentMoniker": "Project_Week01\\Probe.h",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.h",
+              "RelativeToolTip": "Project_Week01\\Probe.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-03-09T12:03:49.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Probe.cpp",
+              "DocumentMoniker": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.cpp",
+              "RelativeDocumentMoniker": "Project_Week01\\Probe.cpp",
+              "ToolTip": "C:\\Users\\jungle\\Desktop\\cpp-gametechlab-project-w01\\Project_Week01\\Probe.cpp",
+              "RelativeToolTip": "Project_Week01\\Probe.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-03-09T12:04:42.981Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
