@@ -1,5 +1,7 @@
 #pragma once
 
+#include "datatype.h"
+
 
 // D3D library link
 #pragma comment(lib, "d3d11")
