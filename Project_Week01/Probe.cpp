@@ -2,8 +2,6 @@
 
 Probe::Probe() : UPrimitive()
 {
-	__super::UPrimitive();
-
 	vertices =
 	{
 		{  0.0f,  1.0f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // Top vertex (red)
