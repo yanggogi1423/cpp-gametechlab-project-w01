@@ -69,7 +69,7 @@ void URenderer::CreateShader() {
 
     Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &SimpleInputLayout);
 
-    Stride = sizeof(FVertexSimple);
+    Stride = sizeof(FVertex);
 
     if (vertexshaderCSO) vertexshaderCSO->Release();
     if (pixelshaderCSO) pixelshaderCSO->Release();
@@ -114,7 +114,7 @@ void URenderer::UpdateConstant(FConstants& pConstants) {
     }
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertexSimple* vertices, UINT bytewidth) {
+ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = bytewidth;
     vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
