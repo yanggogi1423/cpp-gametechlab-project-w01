@@ -101,7 +101,7 @@ void UManager::InitGameObjects()
 	Player = new Probe();
 	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
 	
-	USphere* TestPlanet = new USphere(0.2f, 36);
+	USphere* TestPlanet = new USphere();
 	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
 	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
 

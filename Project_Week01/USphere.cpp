@@ -1,7 +1,13 @@
 #include "USphere.h"
 #include <cmath>
 
-USphere::USphere(float InRadius, int InSegments)
+ID3D11Buffer* USphere::vertexBuffer = nullptr;
+ID3D11Buffer* USphere::indexBuffer = nullptr;
+std::vector<FVertex> USphere::vertices;
+std::vector<unsigned int> USphere::index;
+
+
+ void USphere::initialize(float InRadius, unsigned int InSegments)
 {
     // 1. 메모리 미리 확보 (중심점 1개 + 둘레 점들)
     vertices.reserve(InSegments + 2);
@@ -13,7 +19,7 @@ USphere::USphere(float InRadius, int InSegments)
     // 3. 둘레를 돌며 점 생성
     for (int i = 0; i <= InSegments; ++i)
     {
-        float theta = (2.0f * 3.1415926535f * (float)i) / (float)InSegments;
+        float theta = (2.0f * 3.1415926535f * static_cast<float>(i)) / static_cast<float>(InSegments);
 
         FVertex v;
         v.x = InRadius * cosf(theta);
@@ -25,4 +31,50 @@ USphere::USphere(float InRadius, int InSegments)
 
         vertices.push_back(v);
     }
+
+    index.reserve(InSegments + 2);
+    for (int i = 1; i <= InSegments; ++i)
+    {
+        // 중심점(0) -> 현재 둘레 점(i) -> 다음 둘레 점(i + 1)
+        index.push_back(0);
+        index.push_back(i);
+        index.push_back(i + 1);
+    }
+
+}
+
+USphere::USphere()
+{
+}
+
+const ID3D11Buffer* USphere::getVertexBuffer()
+{
+    return vertexBuffer;
+}
+const  ID3D11Buffer* USphere::getIndexBuffer()
+{
+    return indexBuffer;
+}
+
+void USphere::setVertexBuffer(ID3D11Buffer* pBuffer)
+{
+    if (vertexBuffer != nullptr) return;
+    vertexBuffer = pBuffer;
+}
+void USphere::setIndexBuffer(ID3D11Buffer* pBuffer)
+{
+    if (indexBuffer != nullptr) return;
+    indexBuffer = pBuffer;
+}
+
+
+const std::vector<FVertex>& USphere::GetVertices() const
+{
+    return vertices;
+}
+
+
+const std::vector<unsigned int>& USphere::GetIndex() const
+{
+    return index;   
 }
