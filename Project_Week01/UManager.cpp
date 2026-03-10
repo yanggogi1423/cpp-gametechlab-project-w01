@@ -89,10 +89,13 @@ void UManager::ClearGameObjects()
 	}
 	Player = nullptr;
 
-	if (!PlanetList.empty())
+	for (auto planet : PlanetList)
 	{
-		PlanetList.clear();
+		if (planet) delete planet;
 	}
+
+	PlanetList.clear();
+
 	//	Reserve size
 	PlanetList.reserve(PlanetListReservedSize);
 }
@@ -121,6 +124,8 @@ void UManager::DestroyGame()
 	}
 
 	SaveScore();
+
+
 
 	//	1. Heap 해제
 	
