@@ -19,7 +19,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
-
+// 나중에 랜덤 생성
+static DirectX::XMFLOAT3 myPos = { 0.0f, 0.0f, 0.0f };
+static DirectX::XMMATRIX matScale;
 //manager
 inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
 {
@@ -33,15 +35,17 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 
 inline void updateConstant(URenderer * renderer)
 {
+	using namespace DirectX;
+	myPos.x += 0.1f;
+	myPos.y += 0.1f;
+	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 
+	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
 
+	XMMATRIX constant = matScale * matTranslate;
+	constant = XMMatrixTranspose(constant);
 
-
-	FVector cons(0.5f, 0.5f, 0.5f);
-	FVector temp(0.01f, 0.01f, 0.01f);
-	FConstants probeConstant(cons);
-	probeConstant.scale = 0.1f;
-
+	renderer->UpdateConstant(constant);
 }
 
 
@@ -111,10 +115,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->Prepare();
 		renderer->PrepareShader();
 
-		probeConstant.fVector += temp;
 		updateConstant(renderer);
 		renderer->RenderPrimitive(triangle);
-
+			
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
 	}

@@ -37,7 +37,7 @@ public:
     void ReleaseShader();
 
     void CreateConstantBuffer();
-    void UpdateConstant(FConstants& pConstants);
+    void UpdateConstant(const DirectX::XMMATRIX pXMMATRIX);
     void ReleaseConstantBuffer();
 
     // 버퍼 생성 및 렌더링
