@@ -19,6 +19,9 @@
     <Filter Include="ImGui">
       <UniqueIdentifier>{95c86563-6dda-4b0e-8302-b9fdaeb7eff8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{42636267-b352-4e2f-841e-c902c3063a0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UManager.h">
@@ -60,6 +63,9 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="USphere.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UManager.cpp">
@@ -98,5 +104,11 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="USphere.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="ShaderW0.hlsl" />
   </ItemGroup>
 </Project>
