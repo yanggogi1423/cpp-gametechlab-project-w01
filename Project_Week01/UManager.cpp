@@ -264,3 +264,21 @@ void UManager::Update(float deltaTime)
 
 }
 
+void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride)
+{
+
+	switch (rt)
+	{
+	case PROBE:
+		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride);
+		break;
+	case SPHERE:
+		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride);
+		break;
+	default:
+		break;
+	}
+
+}
+
+

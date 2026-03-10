@@ -133,19 +133,6 @@ private:
 	void DisplayScore(std::string name, unsigned int score);
 	
 
-// mesh info
-private:
-	struct MeshResource {
-		ID3D11Buffer* VB = nullptr;      // Vertex Buffer
-		ID3D11Buffer* IB = nullptr;      // Index Buffer 
-		unsigned int VertexCount = 0;    // 정점 개수
-		unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
-		unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
-
-	};
-	
-	MeshResource ProbeResource;
-	MeshResource SphereResource;
 
 
 public:
@@ -193,5 +180,52 @@ public:
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
+	// mesh info
+private:
+	struct MeshResource {
+		ID3D11Buffer* VB = nullptr;      // Vertex Buffer
+		ID3D11Buffer* IB = nullptr;      // Index Buffer 
+		unsigned int VertexCount = 0;    // 정점 개수
+		unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
+		unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
+
+		void initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride) {
+			VB = vb;
+			IB = ib;
+			VertexCount = vertexCount;
+			IndexCount = indexCount;
+			Stride = stride;
+		}
+
+		ID3D11Buffer* getVB() const
+		{
+			return VB;
+		}
+		ID3D11Buffer* getIB() const
+		{
+			return IB;
+		}
+		const unsigned int getVertexCount()
+		{
+			return VertexCount;
+		}
+		const unsigned int getIndexCount()
+		{
+			return IndexCount;
+		}
+		const unsigned int getStride()
+		{
+			return Stride;
+		}
+
+
+	}; 
+
+	MeshResource ProbeResource;
+	MeshResource SphereResource;
+public:
+
+	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride);
+	
 
 };
