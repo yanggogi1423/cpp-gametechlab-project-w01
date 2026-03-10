@@ -20,6 +20,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+//manager
+inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
+{
+	std::vector<FVertex> probeVertices = probe.GetVertices();
+	UINT triNumVertices = probeVertices.size();
+	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
+
+	outVertexStruct.vertices = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
+
+
+}
+
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	// 윈도우 클래스 이름
@@ -46,26 +59,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	URenderer* renderer = new URenderer();
 	Probe probe;
 	renderer->Create(hWnd);
-
 	renderer->CreateShader();
+	
+	
+	FVertexStruct triangle;
+	createVertexStruct(triangle, probe, renderer);
 
-
-
-	ID3D11Buffer* triangleBuffer;
-	std::vector<FVertex> probeVertices = probe.GetVertices();
-	UINT triNumVertices;
-	triNumVertices = probeVertices.size();
-	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
-
-	// vertex 만듬
-	triangleBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
 	
 	// constant 만들기
 	renderer->CreateConstantBuffer();
 
-	FVector cons(1.0f, 1.0f, 1.0f);
+
+	FVector cons(0.5f, 0.5f, 0.5f);
 	FConstants fCons(cons);
-	
+	fCons.scale = 0.1f;
 	renderer->UpdateConstant(fCons);
 
 
@@ -99,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 
-		renderer->RenderPrimitive(triangleBuffer, triNumVertices);
+		renderer->RenderPrimitive(triangle);
 
 		renderer->SwapBuffer();
 		////////////////////////////////////////////

@@ -127,10 +127,10 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
     return vertexBuffer;
 }
 
-void URenderer::RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices) {
+void URenderer::RenderPrimitive(FVertexStruct& vertexStruct) {
     UINT offset = 0;
-    DeviceContext->IASetVertexBuffers(0, 1, &pBuffer, &Stride, &offset);
-    DeviceContext->Draw(numVertices, 0);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertices, &Stride, &offset);
+    DeviceContext->Draw(vertexStruct.verticesSize, 0);
 }
 
 void URenderer::SwapBuffer() {
@@ -180,6 +180,8 @@ void URenderer::ReleaseRasterizerState() {
     if (RasterizerState) RasterizerState->Release();
     RasterizerState = nullptr;
 }
+
+
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
     if (vertexBuffer) vertexBuffer->Release();
