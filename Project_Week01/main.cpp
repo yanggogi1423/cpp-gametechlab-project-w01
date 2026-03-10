@@ -39,8 +39,6 @@ struct FVertexStruct;
 static DirectX::XMFLOAT3 myPos = { -1.0f, -1.0f, 0.0f };
 static DirectX::XMMATRIX matScale;
 //manager
-
-
 inline void updateConstant(URenderer * renderer )
 {
 
@@ -91,9 +89,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	Probe probe;
 	renderer->Create(hWnd);
 	renderer->CreateShader();
-	
-	
-
 
 	
 	// constant 만들기
@@ -136,8 +131,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		updateConstant(renderer);
-
-
 
 		/* ImGui Render */
 		ImGui_ImplDX11_NewFrame();
