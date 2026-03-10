@@ -42,6 +42,16 @@ float UPrimitive::GetMass() const
     return Mass;
 }
 
+void UPrimitive::SetColliding(bool bInColliding)  
+{
+    bIsColliding = bInColliding;
+}
+
+bool UPrimitive::GetColliding() const
+{
+    return bIsColliding;
+}
+
 const std::vector<FVertex>& UPrimitive::GetVertices() const
 {
     return vertices;

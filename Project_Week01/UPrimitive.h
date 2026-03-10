@@ -9,10 +9,21 @@ protected:
     FVector Velocity;              // 실시간 속도 데이터 (방향 + 크기)
     float Scale;                   // 크기 배율
     float Mass;                    // 질량
+    bool bIsColliding;              // 충돌 상태 여부
 
 public:
-    UPrimitive();
+    UPrimitive()
+        : Location(0.0f, 0.0f, 0.0f)
+        , Velocity(0.0f, 0.0f, 0.0f)
+        , Scale(1.0f)
+        , Mass(1.0f)
+        , bIsColliding(false)
+    {
+
+    }
+
     virtual ~UPrimitive();         // 상속을 고려하여 가상 소멸자로 명시
+    UPrimitive() : bIsColliding(false) {}
 
     // 1. 매니저(물리 엔진)가 사용할 함수
     void SetLocation(const FVector& InLocation);
@@ -23,6 +34,9 @@ public:
 
     void SetMass(float InMass);
     float GetMass() const;
+
+    void SetColliding(bool bInColliding);
+    bool GetColliding() const;
 
     // 2. 렌더러가 사용할 데이터 제공 함수
     const std::vector<FVertex>& GetVertices() const;
