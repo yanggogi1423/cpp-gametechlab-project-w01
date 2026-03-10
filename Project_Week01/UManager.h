@@ -11,6 +11,8 @@
 #include "Probe.h"
 #include "datatype.h"
 #include "USoundManager.h"
+#include "UPrimitive.h"
+#include "USphere.h"
 
 
 //	Constants
@@ -19,7 +21,7 @@ constexpr float BottomBorder = 1.f;
 constexpr float LeftBorder = -1.f;
 constexpr float RightBorder = 1.f;
 
-constexpr size_t PlanetListReservedSize = 10;
+constexpr size_t PlanetListReservedSize = 50;
 constexpr float GravititationalConstant = 9.8f;
 
 #pragma region __GAME_STATE__
@@ -66,6 +68,58 @@ struct FStageInfo
 
 #pragma endregion
 
+namespace GenerateVertices {
+	void GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices);
+	void GenerateSphere(float radius, std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices);
+}
+
+struct ID3D11Buffer;
+
+struct MeshResource {
+	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
+	ID3D11Buffer* IB = nullptr;      // Index Buffer 
+	std::vector<FVertex> Vertices;
+	std::vector<unsigned int> Indexes;
+	unsigned int VertexCount = 0;    // 정점 개수
+	unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
+	unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
+	float Scale = 0;
+
+	void operator=(MeshResource mr)
+	{
+		VB = mr.VB;
+		IB = mr.IB;
+		VertexCount = mr.VertexCount;
+		IndexCount = mr.IndexCount;
+		Stride = mr.Stride;
+		Vertices = mr.Vertices;
+	}
+
+	void initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride , float scale) {
+		VB = vb;
+		IB = ib;
+		VertexCount = vertexCount;
+		IndexCount = indexCount;
+		Stride = stride;
+		Scale = scale;
+	}
+
+	void initVertices(RESOURCE_TYPE rt)
+	{
+		switch (rt)
+		{
+		case PROBE:
+			GenerateVertices::GenerateTriangle(Vertices, Indexes);
+			break;
+
+		case SPHERE:
+			GenerateVertices::GenerateSphere(Scale, Vertices, Indexes);
+			break;
+
+		}
+	}
+
+};
 
 class UManager
 {
@@ -88,7 +142,7 @@ private:
 
 	/* GameObjects */
 	Probe* Player;
-	std::vector<UPrimitive*> PlanetList;	//	이후에 template 수정할 수도 있음
+	std::vector<USphere*> PlanetList;	//	이후에 template 수정할 수도 있음
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
@@ -127,6 +181,8 @@ private:
 	void LoadScore();
 	void SaveScore();
 	void DisplayScore(std::string name, unsigned int score);
+	
+
 
 
 public:
@@ -170,11 +226,21 @@ public:
 
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
-	const std::vector<UPrimitive *> & GetPlanetList() const { return PlanetList; }
+	const std::vector<USphere *> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
+	// mesh info
+private:
 
+	MeshResource ProbeResource;
+	MeshResource SphereResource;
+public:
 
+	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride);
+	MeshResource getSphereResource() const;
+	MeshResource getProbeResource() const;
+	void setProbeResource(const MeshResource& mr);
+	void setSphereResource(const MeshResource& mr);
 
 };

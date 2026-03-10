@@ -2,28 +2,11 @@
 #include "Uprimitive.h"
 
 
-struct ID3D11Buffer;
-
 class Probe : public UPrimitive
 {
 private:
-	static ID3D11Buffer* vertexBuffer;
-	static ID3D11Buffer* indexBuffer;
-
-	static std::vector<FVertex> vertices;
-	static std::vector<unsigned int> index;
 public:
 	Probe();
 	virtual ~Probe();
 
-	static  const  ID3D11Buffer* getVertexBuffer();
-	static  const  ID3D11Buffer* getIndexBuffer();
-
-	static void setVertexBuffer(ID3D11Buffer*);
-	static void setIndexBuffer(ID3D11Buffer*);
-
-	static void initialize();
-
-	virtual const std::vector<FVertex>& GetVertices() const override;
-	virtual const std::vector<unsigned int>& GetIndex() const override;
 };
