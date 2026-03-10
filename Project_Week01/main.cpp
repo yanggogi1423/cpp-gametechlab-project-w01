@@ -29,7 +29,7 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 	UINT triNumVertices = probeVertices.size();
 	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
 
-	outVertexStruct.vertices = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
+	outVertexStruct.vertexBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
 
 }
 

@@ -190,6 +190,21 @@ void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
     if (vertexBuffer) vertexBuffer->Release();
 }
 
+void URenderer::CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count)
+{
+    D3D11_BUFFER_DESC indexBufferDesc = {};
+    indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    indexBufferDesc.ByteWidth = sizeof(UINT) * count;
+    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    indexBufferDesc.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = indices;
+
+    Device->CreateBuffer(&indexBufferDesc, &initData, &indexBuffer);
+
+}
+
 void URenderer::ReleaseConstantBuffer() {
     if (ConstantBuffer) ConstantBuffer->Release();
     ConstantBuffer = nullptr;

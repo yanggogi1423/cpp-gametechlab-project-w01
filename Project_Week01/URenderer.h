@@ -46,6 +46,8 @@ public:
     void RenderPrimitive(FVertexStruct& vertexStruct);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
+    void CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count);
+
 private:
     // 내부 초기화 메서드
     void CreateDeviceAndSwapChain(HWND hWindow);
@@ -56,6 +58,7 @@ private:
 
     void CreateRasterizerState();
     void ReleaseRasterizerState();
+
 
 public:
     // 주요 D3D11 인터페이스
