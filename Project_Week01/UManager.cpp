@@ -95,7 +95,12 @@ void UManager::ProgressStage()
 
 	ClearGameObjects();
 }
+// probe sphere initialize
 
+
+
+
+// TODO 수정해야함
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
@@ -244,7 +249,7 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/TitleScreen.wav");
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
 
-	m_SoundMgr.SetBGMVolume(0.3f); // 적당한 볼륨
+	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
 	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
 }
 
@@ -253,17 +258,6 @@ void UManager::OnMouseClick()
 {
 	// 세부 재생 로직은 SoundManager가 알아서 합니다.
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
-}
-
-// 상태 전환 시 사운드 변경 예시
-void UManager::InGameRunInit()
-{
-	CurRunState = ERunstate::ERS_InGameRun;
-	ClearGameObjects();
-	InitGameObjects();
-
-	// 게임 시작 시 음악을 바꾸고 싶다면
-	// m_SoundMgr.PlayBGM(EBGM::EBGM_InGameRun); 
 }
 
 void UManager::Update(float deltaTime)
@@ -292,3 +286,107 @@ void UManager::Update(float deltaTime)
 
 }
 
+void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
+{
+
+	switch (rt)
+	{
+	case PROBE:
+		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride ,scale);
+		break;
+	case SPHERE:
+		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride,scale);
+		break;
+	default:
+		break;
+	}
+
+}
+
+MeshResource UManager::getProbeResource() const
+{	
+	return ProbeResource;
+}
+MeshResource UManager::getSphereResource() const
+{	
+	return SphereResource;
+}
+
+void UManager::setProbeResource(const MeshResource& mr)
+{
+	this->ProbeResource = mr;
+}
+void UManager::setSphereResource(const MeshResource& mr)
+{
+	this->SphereResource = mr;
+}
+
+void GenerateVertices::GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
+{
+	outVertices = {
+		// Position          // Color (RGBA)
+		{  0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
+		{  0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
+		{ -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
+	};
+
+	outIndices = { 0, 1, 2 };
+}
+
+void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
+{
+	// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
+	const uint32_t sliceCount = 20;
+	const uint32_t stackCount = 20;
+
+	outVertices.clear();
+	outIndices.clear();
+
+	// 1. 정점(Vertex) 생성
+	for (uint32_t i = 0; i <= stackCount; ++i) {
+		float phi = 3.1415926535f * i / stackCount;
+		for (uint32_t j = 0; j <= sliceCount; ++j) {
+			float theta = 2.0f * 3.1415926535f * j / sliceCount;
+
+			FVertex v;
+			v.x = radius * sinf(phi) * cosf(theta);
+			v.y = radius * cosf(phi);
+			v.z = radius * sinf(phi) * sinf(theta);
+
+			// 색상: 좌표 기반 (디버깅 시 구의 입체감을 확인하기 좋음)
+			v.r = (v.x / radius) * 0.5f + 0.5f;
+			v.g = (v.y / radius) * 0.5f + 0.5f;
+			v.b = (v.z / radius) * 0.5f + 0.5f;
+			v.a = 1.0f;
+
+			outVertices.push_back(v);
+		}
+	}
+
+	// 2. 인덱스(Index) 생성
+	for (uint32_t i = 0; i < stackCount; ++i) {
+		for (uint32_t j = 0; j < sliceCount; ++j) {
+			uint32_t first = i * (sliceCount + 1) + j;
+			uint32_t second = first + sliceCount + 1;
+
+			// 삼각형 1
+			outIndices.push_back(second);
+			outIndices.push_back(first + 1);
+			outIndices.push_back(first);
+
+			// 삼각형 2
+			outIndices.push_back(second + 1);
+			outIndices.push_back(first + 1);
+			outIndices.push_back(second);
+		}
+	}
+}
+
+void UManager::Release()
+{
+	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
+	m_SoundMgr.Dispose();
+
+	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
+	ShutDownGame();
+}

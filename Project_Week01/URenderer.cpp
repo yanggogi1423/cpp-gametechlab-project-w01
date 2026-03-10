@@ -214,3 +214,12 @@ void URenderer::ReleaseConstantBuffer() {
     if (ConstantBuffer) ConstantBuffer->Release();
     ConstantBuffer = nullptr;
 }
+
+void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
+    if (!vertexBuffer || !DeviceContext) return;
+
+    UINT offset = 0;
+    // 버퍼를 장치에 연결하고 그립니다.
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+    DeviceContext->Draw(vertexCount, 0);
+}

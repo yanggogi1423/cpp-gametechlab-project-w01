@@ -20,7 +20,7 @@ public:
     {
     }
 
-    virtual ~UPrimitive()          // 상속을 고려하여 가상 소멸자로 명시
+    virtual ~UPrimitive()   
     {
     }
 
@@ -37,10 +37,6 @@ public:
     void SetColliding(bool bInColliding);
     bool GetColliding() const;
 
-    // 2. 렌더러가 사용할 데이터 제공 함수
-    virtual const std::vector<FVertex>& GetVertices() const = 0;
-    virtual const std::vector<unsigned int>& GetIndex() const = 0;
-    FConstants GetConstants() const;
 
 
 };

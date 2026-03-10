@@ -36,7 +36,7 @@ public:
     //ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
     void indexRenderPrimitive(UINT numIndices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
-
+    void RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount);
     void CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count);
 
 private:

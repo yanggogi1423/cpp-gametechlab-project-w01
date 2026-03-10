@@ -161,22 +161,21 @@ void USoundManager::StopSFX()
     }
 }
 
-// USoundManager.cpp 하단부를 이 코드로 교체하세요.
-
 void USoundManager::LoadBGM(EBGM type, const std::string& path)
 {
-    // 이미 로드된 경우 중복 로드 방지
     if (BgmClips.find(type) != BgmClips.end()) return;
 
     SoundClip clip;
-    // BGM은 여러 개 겹쳐 틀 일이 없으므로 poolSize는 1이면 충분합니다.
     CreateSoundClip(path, 1, clip);
 
-    // 생성된 클립을 창고(BgmClips)에 저장
-    if (!clip.Buffers.empty())
+    // [진단] 로드 성공 여부 확인
+    if (clip.Buffers.empty())
     {
-        BgmClips[type] = clip;
+        std::string err = "BGM 로드 실패: " + path + "\n폴더 위치를 확인하세요.";
+        MessageBoxA(NULL, err.c_str(), "Sound Error", MB_OK);
+        return;
     }
+    BgmClips[type] = clip;
 }
 
 void USoundManager::LoadSFX(ESFX type, const std::string& path, int poolSize)
