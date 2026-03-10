@@ -2,29 +2,40 @@
 #include <vector>
 #include "datatype.h"
 
-class UPrimitive {
+class UPrimitive 
+{
 protected:
-	std::vector<FVertex> vertices; // 정적 모양 데이터 (VB용)
-	FVector Location;//실시간 위치 데이터 (FVector 기반)
-	float Scale; // 크기 배율
-	float Mass; //질량
+    std::vector<FVertex> vertices; // 정적 모양 데이터 (VB용)
+    FVector Location;
+    FVector Velocity;
+    float Scale;
+    float Mass;
+    bool bIsColliding;
 
 public:
-	UPrimitive();
-	~UPrimitive();// 상속을 위한 가상 소멸자
+    UPrimitive()
+        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
+    {
+    }
 
-	// 1. 매니저(물리 엔진)가 사용할 함수
-	void SetLocation(const FVector& InLocation);
+    virtual ~UPrimitive()          // 상속을 고려하여 가상 소멸자로 명시
+    {
+    }
 
-	FVector GetLocation() const;
+    // 1. 매니저(물리 엔진)가 사용할 함수
+    void SetLocation(const FVector& InLocation);
+    FVector GetLocation() const;
 
-	void SetMass(float InMass);
+    void SetVelocity(const FVector& InVelocity); 
+    FVector GetVelocity() const;                 
 
-	float GetMass() const;
+    void SetMass(float InMass);
+    float GetMass() const;
 
-	// 2. 렌더러가 사용할 데이터 제공 함수
-	const std::vector<FVertex>& GetVertices() const;
+    void SetColliding(bool bInColliding);
+    bool GetColliding() const;
 
-	// 상수 버퍼(CB)에 넘겨줄 최종 패키지 생성
-	FConstants GetConstants() const;
+    // 2. 렌더러가 사용할 데이터 제공 함수
+    const std::vector<FVertex>& GetVertices() const;
+    FConstants GetConstants() const;
 };
