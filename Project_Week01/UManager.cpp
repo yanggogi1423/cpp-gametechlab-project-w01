@@ -281,4 +281,23 @@ void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib
 
 }
 
+MeshResource UManager::getProbeResource() const
+{	
+	return ProbeResource;
+}
+MeshResource UManager::getSphereResource() const
+{	
+	return SphereResource;
+}
+
+void UManager::setProbeResource(const MeshResource& mr)
+{
+	this->ProbeResource = mr;
+}
+void UManager::setSphereResource(const MeshResource& mr)
+{
+	this->SphereResource = mr;
+}
+
+
 

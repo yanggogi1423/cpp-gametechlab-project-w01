@@ -68,8 +68,58 @@ struct FStageInfo
 
 #pragma endregion
 
+namespace GenerateVertices {
+	void GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices);
+	void GenerateSphere(float radius, std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices);
+}
 
 struct ID3D11Buffer;
+
+struct MeshResource {
+	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
+	ID3D11Buffer* IB = nullptr;      // Index Buffer 
+	std::vector<FVertex> Vertices;
+	std::vector<unsigned int> Indexes;
+	unsigned int VertexCount = 0;    // 정점 개수
+	unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
+	unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
+	float Scale = 0;
+
+	void operator=(MeshResource mr)
+	{
+		VB = mr.VB;
+		IB = mr.IB;
+		VertexCount = mr.VertexCount;
+		IndexCount = mr.IndexCount;
+		Stride = mr.Stride;
+		Vertices = mr.Vertices;
+	}
+
+	void initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride , float scale) {
+		VB = vb;
+		IB = ib;
+		VertexCount = vertexCount;
+		IndexCount = indexCount;
+		Stride = stride;
+		Scale = scale;
+	}
+
+	void initVertices(RESOURCE_TYPE rt)
+	{
+		switch (rt)
+		{
+		case PROBE:
+			GenerateVertices::GenerateTriangle(Vertices, Indexes);
+			break;
+
+		case SPHERE:
+			GenerateVertices::GenerateSphere(Scale, Vertices, Indexes);
+			break;
+
+		}
+	}
+
+};
 
 class UManager
 {
@@ -182,50 +232,15 @@ public:
 
 	// mesh info
 private:
-	struct MeshResource {
-		ID3D11Buffer* VB = nullptr;      // Vertex Buffer
-		ID3D11Buffer* IB = nullptr;      // Index Buffer 
-		unsigned int VertexCount = 0;    // 정점 개수
-		unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
-		unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
-
-		void initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride) {
-			VB = vb;
-			IB = ib;
-			VertexCount = vertexCount;
-			IndexCount = indexCount;
-			Stride = stride;
-		}
-
-		ID3D11Buffer* getVB() const
-		{
-			return VB;
-		}
-		ID3D11Buffer* getIB() const
-		{
-			return IB;
-		}
-		const unsigned int getVertexCount()
-		{
-			return VertexCount;
-		}
-		const unsigned int getIndexCount()
-		{
-			return IndexCount;
-		}
-		const unsigned int getStride()
-		{
-			return Stride;
-		}
-
-
-	}; 
 
 	MeshResource ProbeResource;
 	MeshResource SphereResource;
 public:
 
 	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride);
-	
+	MeshResource getSphereResource() const;
+	MeshResource getProbeResource() const;
+	void setProbeResource(const MeshResource& mr);
+	void setSphereResource(const MeshResource& mr);
 
 };
