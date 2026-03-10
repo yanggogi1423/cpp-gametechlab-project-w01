@@ -73,7 +73,7 @@ private:
 
 	/* GameObjects */
 	Probe* Player;
-	std::vector<UPrimitive> PlanetList;	//	이후에 template 수정할 수도 있음
+	std::vector<UPrimitive*> PlanetList;	//	이후에 template 수정할 수도 있음
 
 
 	
