@@ -25,8 +25,7 @@ PS_INPUT mainVS(VS_INPUT input)
     
 // 행렬 곱셈을 통해 좌표 변환 (반드시 mul 함수 사용)
     output.position = mul(input.position, worldViewProj);
-    
-    
+   
     // Pass the color to the pixel shader
     output.color = input.color;
     
