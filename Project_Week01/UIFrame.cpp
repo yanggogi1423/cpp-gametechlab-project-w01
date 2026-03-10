@@ -1,6 +1,6 @@
 #include "UIFrame.h"
 
-UIFrame::UIFrame(const std::string& title, ImVec2 position, ImVec2 size) : title(title), position(position), size(size)
+UIFrame::UIFrame(const std::string& title, ImVec2 position, ImVec2 size, bool noTitleBar, ImVec4 backgroundColor) : title(title), position(position), size(size), noTitleBar(noTitleBar), backgroundColor(backgroundColor)
 {
 }
 
@@ -27,11 +27,38 @@ void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* f
 	texts.push_back(textInfo);
 }
 
+void UIFrame::SetBorderLineTransparency(float transparency)
+{
+	borderLineTransparency = transparency;
+}
+
+void UIFrame::SetPosition(const ImVec2& newPosition)
+{
+	position = newPosition;
+}
+
+ImVec2 UIFrame::GetPosition() const
+{
+	return position;
+}
+
 void UIFrame::Render()
 {
 	ImGui::SetNextWindowPos(position, ImGuiCond_Once);
 	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-	ImGui::Begin(title.c_str());
+
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, backgroundColor);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, borderLineTransparency);
+
+	auto defaultFlags = ImGuiWindowFlags_None |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove;
+
+	auto flags = noTitleBar ? defaultFlags | ImGuiWindowFlags_NoTitleBar : defaultFlags;
+
+	ImGui::Begin(title.c_str(),	nullptr,flags);
+
+	//ImGui::Begin(title.c_str());
 
 	for (const auto& button : buttons)
 	{
@@ -52,4 +79,6 @@ void UIFrame::Render()
 	}
 
 	ImGui::End();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
 }
