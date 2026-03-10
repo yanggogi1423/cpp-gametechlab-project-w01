@@ -20,7 +20,7 @@ void UIManager::Render()
 
 	ImGui::NewFrame();
 
-	for (auto frame : UIFrameList)
+	for (auto frame : UIFrameList) 
 	{
 		frame.Render();
 	}

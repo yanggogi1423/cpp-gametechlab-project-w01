@@ -32,6 +32,7 @@ enum class ERunstate
 	ERS_Boot,
 	ERS_Main,
 	ERS_StageSelect,
+	ERS_Loading,
 	ERS_InGameReady,
 	ERS_InGameRun,
 	ERS_Ending,	//	플레이어의 사망 || 게임 클리어
@@ -137,6 +138,7 @@ private:
 	ERunstate CurRunState;
 	EStage CurStage;			//	현재 선택한 스테이지
 	EStage CurAvailableStage;	//	선택 가능한 스테이지
+	float LoadingTimer = 0.0f;
 
 	//	Time
 	float RemainTimer;
@@ -200,7 +202,13 @@ public:
 	void Initialize(HWND hwnd);
 	void Release();
 	void OnMouseClick();
-	
+	void OnPlayClicked();      // Title -> StageSelect
+	void OnStageSelected(EStage selected); // Stage 선택 (잠금 체크 포함)
+	void OnHomeClicked();      // -> Title
+	void OnSimulationStart();  // Ready -> Run
+	void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
+	void OnNextStageClicked();
+
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
 	static std::string RandomNameGenerator()
 	{

@@ -246,7 +246,7 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 void UManager::Initialize(HWND hwnd) // 사운드 초기화
 {
 	m_SoundMgr.Initialize(hwnd);
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
@@ -258,6 +258,42 @@ void UManager::OnMouseClick()
 {
 	// 세부 재생 로직은 SoundManager가 알아서 합니다.
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
+}
+
+// 스테이지 선택 시 호출될 함수
+void UManager::OnStageSelected(EStage selected)
+{
+	if ((int)selected > (int)CurAvailableStage) return;
+	
+	CurStage = selected;
+	LoadingTimer = 2.0f; // 로딩 시간 설정
+	CurRunState = ERunstate::ERS_Loading;
+}
+
+// 결과 화면 시 호출될 함수
+void UManager::OnStageResult(bool bSuccess) {
+	CurRunState = ERunstate::ERS_Ending;
+
+	if (bSuccess) {
+		// [해금 로직] 현재 스테이지를 깼고, 다음 스테이지가 아직 잠겨있다면 해금
+		if (CurStage == CurAvailableStage) {
+			if (CurAvailableStage == EStage::ES_Stage1) CurAvailableStage = EStage::ES_Stage2;
+			else if (CurAvailableStage == EStage::ES_Stage2) CurAvailableStage = EStage::ES_Stage3;
+		}
+	}
+	// EndingInit(bSuccess, score, name); 호출 등으로 이어짐
+}
+
+void UManager::Update(float deltaTime) {
+	switch (CurRunState) {
+	case ERunstate::ERS_Loading:
+		LoadingTimer -= deltaTime;
+		if (LoadingTimer <= 0.0f) {
+			InGameReadyInit(); // 로딩 끝나면 배치 상태로
+		}
+		break;
+		// ... 기존 물리 계산 로직
+	}
 }
 
 void UManager::Update(float deltaTime)
