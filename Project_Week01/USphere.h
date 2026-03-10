@@ -18,8 +18,8 @@ public:
 	virtual ~USphere() {}
 
 
-	static  const  ID3D11Buffer*getVertexBuffer();
-	static  const  ID3D11Buffer*getIndexBuffer();
+	static const ID3D11Buffer*getVertexBuffer();
+	static const ID3D11Buffer*getIndexBuffer();
 
 	static void setVertexBuffer(ID3D11Buffer*);
 	static void setIndexBuffer(ID3D11Buffer*);

@@ -11,8 +11,6 @@ Probe::Probe() : UPrimitive()
 Probe::~Probe()
 {}
 
-
-
 void Probe::initialize()
 {
 	vertices =
