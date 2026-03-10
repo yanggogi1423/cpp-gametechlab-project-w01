@@ -125,6 +125,7 @@ public:
 
 	void Update(float deltaTime);
 
+
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
 	bool Startable() const { return bBootDone; }

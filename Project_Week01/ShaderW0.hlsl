@@ -2,9 +2,7 @@
 
 cbuffer constants : register(b0)
 {
-    float3 Offset;
-    float scale;
-
+    matrix worldViewProj; // 위치, 회전, 크기가 모두 포함된 4x4 행렬
 }
 
 // ShaderW0.hlsl
@@ -25,9 +23,9 @@ PS_INPUT mainVS(VS_INPUT input)
     PS_INPUT output;
     
     
-    float4 scaledOffset = float4(input.position.xyz * scale, 0);
+// 행렬 곱셈을 통해 좌표 변환 (반드시 mul 함수 사용)
+    output.position = mul(input.position, worldViewProj);
     
-    output.position = float4(Offset, input.position.w) + scaledOffset;
     
     // Pass the color to the pixel shader
     output.color = input.color;

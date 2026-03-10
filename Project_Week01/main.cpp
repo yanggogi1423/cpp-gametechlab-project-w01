@@ -29,7 +29,6 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 
 	outVertexStruct.vertices = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
 
-
 }
 
 
@@ -71,9 +70,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	FVector cons(0.5f, 0.5f, 0.5f);
-	FConstants fCons(cons);
-	fCons.scale = 0.1f;
-	renderer->UpdateConstant(fCons);
+	FVector temp(0.01f, 0.01f, 0.01f);
+	FConstants probeConstant(cons);
+	probeConstant.scale = 0.1f;
 
 
 	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
@@ -105,7 +104,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->Prepare();
 		renderer->PrepareShader();
 
-
+		probeConstant.fVector += temp;
+		renderer->UpdateConstant(probeConstant);
 		renderer->RenderPrimitive(triangle);
 
 		renderer->SwapBuffer();

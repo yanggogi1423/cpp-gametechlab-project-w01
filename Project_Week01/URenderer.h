@@ -1,7 +1,7 @@
 #pragma once
 
 #include "datatype.h"
-
+#include <DirectXMath.h> 
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -14,6 +14,7 @@ struct FVertexStruct {
     UINT byteWidth;
     UINT verticesSize;
 };
+
 
 class URenderer {
     
@@ -71,7 +72,7 @@ public:
     ID3D11InputLayout* SimpleInputLayout = nullptr;
 
     // 렌더링 상태 데이터
-    FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+    FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     unsigned int Stride = 0;
 
