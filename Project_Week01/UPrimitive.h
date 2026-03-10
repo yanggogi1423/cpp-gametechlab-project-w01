@@ -2,28 +2,25 @@
 #include <vector>
 #include "datatype.h"
 
-class UPrimitive {
+class UPrimitive 
+{
 protected:
     std::vector<FVertex> vertices; // 정적 모양 데이터 (VB용)
-    FVector Location;              // 실시간 위치 데이터
-    FVector Velocity;              // 실시간 속도 데이터 (방향 + 크기)
-    float Scale;                   // 크기 배율
-    float Mass;                    // 질량
-    bool bIsColliding;              // 충돌 상태 여부
+    FVector Location;
+    FVector Velocity;
+    float Scale;
+    float Mass;
+    bool bIsColliding;
 
 public:
     UPrimitive()
-        : Location(0.0f, 0.0f, 0.0f)
-        , Velocity(0.0f, 0.0f, 0.0f)
-        , Scale(1.0f)
-        , Mass(1.0f)
-        , bIsColliding(false)
+        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
     {
-
     }
 
-    virtual ~UPrimitive();         // 상속을 고려하여 가상 소멸자로 명시
-    UPrimitive() : bIsColliding(false) {}
+    virtual ~UPrimitive()          // 상속을 고려하여 가상 소멸자로 명시
+    {
+    }
 
     // 1. 매니저(물리 엔진)가 사용할 함수
     void SetLocation(const FVector& InLocation);

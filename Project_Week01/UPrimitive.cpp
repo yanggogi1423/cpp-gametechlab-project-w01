@@ -1,17 +1,5 @@
 #include "UPrimitive.h"
 
-UPrimitive::UPrimitive()
-{
-    Location = FVector(0.0f, 0.0f, 0.0f);
-    Velocity = FVector(0.0f, 0.0f, 0.0f);
-    Scale = 1.0f;
-    Mass = 1.0f;
-}
-
-UPrimitive::~UPrimitive()
-{
-}
-
 void UPrimitive::SetLocation(const FVector& InLocation)
 {
     Location = InLocation;
