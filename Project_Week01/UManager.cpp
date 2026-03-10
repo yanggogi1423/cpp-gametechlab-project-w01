@@ -264,16 +264,16 @@ void UManager::Update(float deltaTime)
 
 }
 
-void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride)
+void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
 {
 
 	switch (rt)
 	{
 	case PROBE:
-		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride);
+		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride ,scale);
 		break;
 	case SPHERE:
-		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride);
+		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride , scale);
 		break;
 	default:
 		break;

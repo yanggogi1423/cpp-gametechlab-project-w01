@@ -246,7 +246,7 @@ private:
 	MeshResource SphereResource;
 public:
 
-	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride);
+	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale);
 	MeshResource getSphereResource() const;
 	MeshResource getProbeResource() const;
 	void setProbeResource(const MeshResource& mr);
