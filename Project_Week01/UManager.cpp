@@ -1,4 +1,9 @@
 #include "UManager.h"
+#include "UPrimitive.h"
+#include "Probe.h"
+#include "USphere.h"
+#include "datatype.h"
+#include "USoundManager.h"
 
 //	Private Functions
 
@@ -121,7 +126,7 @@ void UManager::ClearGameObjects()
 	}
 	Player = nullptr;
 
-	for (auto& planet : PlanetList)
+	for (auto planet : PlanetList)
 	{
 		if (planet) delete planet;
 	}
@@ -238,6 +243,23 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 
 
 //	Public Functions
+void UManager::Initialize(HWND hwnd) // 사운드 초기화
+{
+	m_SoundMgr.Initialize(hwnd);
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
+
+	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
+	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+}
+
+// 마우스 클릭 시 호출될 함수
+void UManager::OnMouseClick()
+{
+	// 세부 재생 로직은 SoundManager가 알아서 합니다.
+	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
+}
+
 void UManager::Update(float deltaTime)
 {
 	switch (CurRunState)
@@ -358,4 +380,13 @@ void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVer
 			outIndices.push_back(second);
 		}
 	}
+}
+
+void UManager::Release()
+{
+	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
+	m_SoundMgr.Dispose();
+
+	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
+	ShutDownGame();
 }

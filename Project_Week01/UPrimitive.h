@@ -16,7 +16,7 @@ protected:
 
 public:
     UPrimitive()
-        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false) 
+        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Radius(1.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
     {
     }
 
@@ -33,7 +33,7 @@ public:
 
     void SetMass(float InMass);
     float GetMass() const;
-
+     
     void SetColliding(bool bInColliding);
     bool GetColliding() const;
 
