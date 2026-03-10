@@ -5,9 +5,11 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <random>
 
 #include "Probe.h"
 #include "datatype.h"
+#include "USoundManager.h"
 
 
 //	Constants
@@ -20,13 +22,16 @@ constexpr size_t PlanetListReservedSize = 10;
 
 #pragma region __GAME_STATE__
 
-//	None 상태를 갖지 않음
+//	None 상태를 갖지 않음 (MECE)
 enum class ERunstate
 {
+	ERS_Boot,
 	ERS_Main,
+	ERS_StageSelect,
 	ERS_InGameReady,
 	ERS_InGameRun,
-	ERS_Ending	//	플레이어의 사망 || 게임 클리어
+	ERS_Ending,	//	플레이어의 사망 || 게임 클리어
+	ERS_Destroy	//	Destroy process가 끝나면 실행됨
 };
 
 #pragma endregion
@@ -38,17 +43,18 @@ enum class EStage
 	ES_None,
 	ES_Stage1,
 	ES_Stage2,
-	ES_Stage3
+	ES_Stage3,
 };
 
 //	스테이지에 대한 정보 저장
 struct FStageInfo
 {
-	unsigned int Index;
-	float MaxTime;
+	EStage StageName;
+	float MaxTime;	//	Seconds
+
 	//	1. 행성의 종류(idx 구분)와 개수에 대한 정보
 	//	2. 장애물 위치 및 종류(idx), 개수 정보 -> 위치, 개수를 pair (혹은 개수만)
-	//	3. 탈출구 위치
+	//	3. 탈출구 객체 위치
 };
 
 #pragma endregion
@@ -59,14 +65,15 @@ class UManager
 private:
 	//	Game State
 	ERunstate CurRunState;
-	EStage CurStage;
+	EStage CurStage;			//	현재 선택한 스테이지
+	EStage CurAvailableStage;	//	선택 가능한 스테이지
 
 	//	Time
 	float RemainTimer;
 
-	//	Boot and Destroy - 반복 호출을 막기 위한 flag
-	bool bBootDone;
-	bool bIsAlreadyDestroy;
+	//	Boot and Destroy - 반복 호출을 막기 위한 flag -> Flag 말고 Enum으로 변경
+	//bool bBootDone;
+	//bool bIsAlreadyDestroy;
 
 private:
 	const std::string FileName;
@@ -76,8 +83,11 @@ private:
 	Probe* Player;
 	std::vector<UPrimitive*> PlanetList;	//	이후에 template 수정할 수도 있음
 
-
+	/* Game Data */
+	std::vector<FStageInfo> StageInfoList;
 	
+	/* Other Managers */
+	USoundManager* SoundManager;
 
 	/* Game Management */
 private:
@@ -89,7 +99,7 @@ private:
 	void MainInit();		//	Opening(시작 화면)으로 분기
 	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
-	void EndingInit(bool bIsClear);		//	Clear 혹은 사망 판정 시 호출 및 분기
+	void EndingInit(std::string name, unsigned int score, bool bIsClear);
 
 	//	Stage Progress
 	void ProgressStage();
@@ -102,7 +112,7 @@ private:
 
 	/* Non-game Management */
 	void BootGame();	//	Application 실행 시 호출 (게임 데이터 준비)
-	void DestroyGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
+	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
 	void LoadScore();
@@ -111,11 +121,33 @@ private:
 
 
 public:
+	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
+	static std::string RandomNameGenerator()
+	{
+		const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		const int appendLength = 8;
+
+		std::random_device rd;
+		std::mt19937 mt(rd());
+		std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
+
+		std::string name = "User_";
+
+		for (int i = 0; i < appendLength; i++)
+		{
+			name += charSet[i];
+		}
+
+		return name;
+	}
+
 	/* Cons, Des */
 	UManager()
-		: CurRunState(ERunstate::ERS_Main), CurStage(EStage::ES_None),
+		: CurRunState(ERunstate::ERS_Boot), 
+		CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),
 		FileName("ranking.txt"),
-		bBootDone(false), bIsAlreadyDestroy(false)
+		SoundManager(nullptr)
+		//,bBootDone(false), bIsAlreadyDestroy(false)
 	{
 		BootGame();
 	}
@@ -128,6 +160,8 @@ public:
 
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
-	bool Startable() const { return bBootDone; }
+	const std::vector<UPrimitive>& const GetPlanetList() { return PlanetList; }
+
+	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
 };

@@ -9,19 +9,27 @@
 /* Game Management */
 void UManager::CollisionDetection()
 {
+<<<<<<< Updated upstream
 	if (!Player) return;
 	
 	//	1. Collision between Probe and Border
 	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
 
 	//	2. Collision between Probe and Planets
+=======
+	//	1. Collision between Probe and Border -> 
+	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
+
+	//	2. Collision between Probe and Planets
+	
+>>>>>>> Stashed changes
 
 }
 
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
 void UManager::CollsionResolution()
 {
-	EndingInit(false);
+	//EndingInit(false);
 }
 
 void UManager::MainInit()
@@ -47,7 +55,10 @@ void UManager::InGameRunInit()
 	InitGameObjects();
 }
 
-void UManager::EndingInit(bool bIsClear)
+//	Stage를 클리어하거나, 플레이어가 사망했을 때 호출
+//	bIsClear는 클리어 여부를 담음. (main에서 호출됨) -> default parameter를 고려하여 설계
+//	name은 사용자에게 직접 입력 받습니다.
+void UManager::EndingInit(std::string name = RandomNameGenerator(), unsigned int score, bool bIsClear)
 {
 	CurRunState = ERunstate::ERS_Ending;
 
@@ -61,6 +72,9 @@ void UManager::EndingInit(bool bIsClear)
 	{
 
 	}
+
+	//	Score Display
+	DisplayScore(name, score);
 }
 
 void UManager::ProgressStage()
@@ -72,15 +86,18 @@ void UManager::ProgressStage()
 		return;
 	}
 
-	switch (CurStage)
+	switch (CurAvailableStage)
 	{
 	case EStage::ES_Stage1:
+		CurAvailableStage = EStage::ES_Stage2;
 		break;
 
 	case EStage::ES_Stage2:
+		CurAvailableStage = EStage::ES_Stage3;
 		break;
 
 	case EStage::ES_Stage3:
+		//	Do nothing
 		break;
 	}
 
@@ -125,7 +142,7 @@ void UManager::ClearGameObjects()
 
 void UManager::BootGame()
 {
-	if (bBootDone)
+	if (CurRunState != ERunstate::ERS_Boot)
 	{
 		//	TODO : Make an error log
 		return;
@@ -135,7 +152,9 @@ void UManager::BootGame()
 	LoadScore();
 
 	//	2. 스테이지 정보 생성
-
+	StageInfoList.push_back({ EStage::ES_Stage1,30.f });
+	StageInfoList.push_back({ EStage::ES_Stage2,30.f });
+	StageInfoList.push_back({ EStage::ES_Stage3,30.f });
 
 	//	3. 메인 State로 분기
 	MainInit();
@@ -143,9 +162,10 @@ void UManager::BootGame()
 }
 
 //	외부에서 호출해줘야 함 (혹은 UManager Destructor에서 호출됨)
-void UManager::DestroyGame()
+void UManager::ShutDownGame()
 {
-	if (bIsAlreadyDestroy) {
+	if (CurRunState == ERunstate::ERS_Destroy) 
+	{
 		//	TODO : Make an error log
 		return;
 	}
@@ -156,7 +176,7 @@ void UManager::DestroyGame()
 
 	//	1. Heap 해제
 	
-	bIsAlreadyDestroy = true;
+	CurRunState == ERunstate::ERS_Destroy;
 }
 
 /* Non-game Management */
