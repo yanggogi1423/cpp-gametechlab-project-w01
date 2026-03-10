@@ -21,25 +21,25 @@ void UManager::CollsionResolution()
 
 void UManager::MainInit()
 {
-	CurRunState = ERunstate::ERS_Main;
-
 	ClearGameObjects();
+	
+	CurRunState = ERunstate::ERS_Main;
 }
 
 void UManager::InGameReadyInit()
 {
-	CurRunState = ERunstate::ERS_InGameReady;
-
 	ClearGameObjects();
+
+	CurRunState = ERunstate::ERS_InGameReady;
 }
 
 void UManager::InGameRunInit()
 {
-	CurRunState = ERunstate::ERS_InGameRun;
-
 	ClearGameObjects();
 
 	InitGameObjects();
+
+	CurRunState = ERunstate::ERS_InGameRun;
 }
 
 //	Stage를 클리어하거나, 플레이어가 사망했을 때 호출
@@ -143,7 +143,7 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 	}
 }
 
-void UManager::BootGame()
+void UManager::BootGame(ID3D11Device * device)
 {
 	if (CurRunState != ERunstate::ERS_Boot)
 	{
@@ -151,8 +151,9 @@ void UManager::BootGame()
 		return;
 	}
 	
-	//	1. Local Score 로드
+	//	1. Local Score 및 ResourceManager 로드
 	LoadScore();
+	ResourceManager->Initialize(device);
 
 	//	2. 스테이지 정보 생성
 	StageInfoList.push_back({ EStage::ES_Stage1,30.f });
@@ -178,7 +179,8 @@ void UManager::ShutDownGame()
 
 
 	//	1. Heap 해제
-	
+	ResourceManager->Release();
+
 	CurRunState == ERunstate::ERS_Destroy;
 }
 

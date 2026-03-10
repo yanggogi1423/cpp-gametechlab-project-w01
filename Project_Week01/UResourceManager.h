@@ -30,7 +30,8 @@ public:
 public:
 	UResourceManager() : SRVBackground(nullptr), SRVInGamePanel(nullptr), SRVLeaderBoardPanel(nullptr), SRVButtonSprite(nullptr),
 		FontLogo(nullptr), FontDefault(nullptr),
-		bIsInitialzed(false)
+		bIsInitialzed(false),
+		Device(nullptr)
 	{}
 
 	void Initialize(ID3D11Device* device);

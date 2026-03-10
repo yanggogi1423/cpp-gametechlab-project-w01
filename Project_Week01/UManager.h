@@ -7,19 +7,22 @@
 #include <sstream>
 #include <random>
 
+#include <d3d11.h>
+#include <d3dcompiler.h>
 
 #include "Probe.h"
 #include "datatype.h"
 #include "USoundManager.h"
 #include "UPrimitive.h"
 #include "USphere.h"
+#include "UResourceManager.h"
 
 
 //	Constants
-constexpr float TopBorder = -1.f;
-constexpr float BottomBorder = 1.f;
-constexpr float LeftBorder = -1.f;
-constexpr float RightBorder = 1.f;
+constexpr float GameTopBorder = -1.f;
+constexpr float GameBottomBorder = 1.f;
+constexpr float GameLeftBorder = -1.f;
+constexpr float GameRightBorder = 0.75f;
 
 constexpr size_t PlanetListReservedSize = 50;
 constexpr float GravititationalConstant = 9.8f;
@@ -158,6 +161,7 @@ private:
 	
 	/* Other Managers */
 	USoundManager* SoundManager;
+	UResourceManager* ResourceManager;
 
 	/* Game Management */
 private:
@@ -183,7 +187,7 @@ private:
 
 
 	/* Non-game Management */
-	void BootGame();	//	Application 실행 시 호출 (게임 데이터 준비)
+	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
 	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
@@ -216,14 +220,14 @@ public:
 	}
 
 	/* Cons, Des */
-	UManager()
+	UManager(ID3D11Device * device)
 		: CurRunState(ERunstate::ERS_Boot), 
 		CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),
 		FileName("ranking.txt"),
-		SoundManager(nullptr)
+		SoundManager(nullptr), ResourceManager(nullptr)
 		//,bBootDone(false), bIsAlreadyDestroy(false)
 	{
-		BootGame();
+		BootGame(device);
 	}
 	~UManager()
 	{

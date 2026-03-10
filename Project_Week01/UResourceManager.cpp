@@ -1,5 +1,6 @@
 #include "UResourceManager.h"
 
+//	Manager의 Boot에서 Call
 void UResourceManager::Initialize(ID3D11Device* device)
 {
 	this->Device = device;
@@ -61,6 +62,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 	bIsInitialzed = true;
 }
 
+//	Manager의 Shutdown에서 Call
 void UResourceManager::Release()
 {
 	if (!bIsInitialzed) return;
