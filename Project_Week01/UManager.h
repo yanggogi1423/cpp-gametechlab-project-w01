@@ -167,6 +167,7 @@ public:
 
 	void Update(float deltaTime);
 
+
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
 	const std::vector<UPrimitive *> & GetPlanetList() const { return PlanetList; }

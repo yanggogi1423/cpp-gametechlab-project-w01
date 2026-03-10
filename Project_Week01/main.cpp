@@ -19,7 +19,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
-
+// 나중에 랜덤 생성
+static DirectX::XMFLOAT3 myPos = { -1.0f, -1.0f, 0.0f };
+static DirectX::XMMATRIX matScale;
 //manager
 inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
 {
@@ -27,9 +29,30 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 	UINT triNumVertices = probeVertices.size();
 	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
 
-	outVertexStruct.vertices = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
+	outVertexStruct.vertexBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
+
+}
+
+inline void updateConstant(URenderer * renderer )
+{
+
+	using namespace DirectX;
 
 
+	// TODO manager의 값 받아서 x,  y , z update
+	FVector vel(0.1f, 0.1f, 0.0f);
+
+	myPos.x += vel.x;
+	myPos.y += vel.y;
+	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+	// mypos 바꿔야함
+	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
+	
+	XMMATRIX constant = matScale * matTranslate;
+	constant = XMMatrixTranspose(constant);
+
+	renderer->UpdateConstant(constant);
 }
 
 
@@ -70,10 +93,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateConstantBuffer();
 
 
-	FVector cons(0.5f, 0.5f, 0.5f);
-	FConstants fCons(cons);
-	fCons.scale = 0.1f;
-	renderer->UpdateConstant(fCons);
 
 
 	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
@@ -97,17 +116,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-
-
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
 		renderer->Prepare();
 		renderer->PrepareShader();
 
-
+		updateConstant(renderer);
 		renderer->RenderPrimitive(triangle);
-
+			
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
 	}

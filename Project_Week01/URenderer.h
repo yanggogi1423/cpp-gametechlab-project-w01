@@ -1,7 +1,7 @@
 #pragma once
 
 #include "datatype.h"
-
+#include <DirectXMath.h> 
 
 #include <d3d11.h>
 #include <d3dcompiler.h>
@@ -10,10 +10,12 @@
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
 
 struct FVertexStruct {
-    ID3D11Buffer* vertices = nullptr;
+    ID3D11Buffer* vertexBuffer = nullptr;
+    ID3D11Buffer* indexBuffer = nullptr;
     UINT byteWidth;
     UINT verticesSize;
 };
+
 
 class URenderer {
     
@@ -36,13 +38,15 @@ public:
     void ReleaseShader();
 
     void CreateConstantBuffer();
-    void UpdateConstant(FConstants& pConstants);
+    void UpdateConstant(const DirectX::XMMATRIX pXMMATRIX);
     void ReleaseConstantBuffer();
 
     // 버퍼 생성 및 렌더링
     ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
     void RenderPrimitive(FVertexStruct& vertexStruct);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
+
+    void CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count);
 
 private:
     // 내부 초기화 메서드
@@ -54,6 +58,7 @@ private:
 
     void CreateRasterizerState();
     void ReleaseRasterizerState();
+
 
 public:
     // 주요 D3D11 인터페이스
@@ -71,7 +76,7 @@ public:
     ID3D11InputLayout* SimpleInputLayout = nullptr;
 
     // 렌더링 상태 데이터
-    FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
+    FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     unsigned int Stride = 0;
 
