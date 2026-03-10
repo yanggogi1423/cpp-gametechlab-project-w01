@@ -136,6 +136,11 @@ void URenderer::RenderPrimitive(FVertexStruct& vertexStruct) {
     DeviceContext->Draw(vertexStruct.verticesSize, 0);
 }
 
+void URenderer::indexRenderPrimitive(UINT numIndices)
+{
+    DeviceContext->DrawIndexed(numIndices,0,0);
+}
+
 void URenderer::SwapBuffer() {
     SwapChain->Present(1, 0);
 }
