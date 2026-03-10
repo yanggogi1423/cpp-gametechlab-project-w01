@@ -99,6 +99,8 @@ void URenderer::PrepareShader() {
     DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
     DeviceContext->IASetInputLayout(SimpleInputLayout);
 
+    
+
     if (ConstantBuffer) {
         DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
@@ -130,7 +132,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
 
 void URenderer::RenderPrimitive(FVertexStruct& vertexStruct) {
     UINT offset = 0;
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertices, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertexBuffer, &Stride, &offset);
     DeviceContext->Draw(vertexStruct.verticesSize, 0);
 }
 

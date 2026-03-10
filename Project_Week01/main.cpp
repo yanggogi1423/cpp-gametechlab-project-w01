@@ -33,15 +33,22 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 
 }
 
-inline void updateConstant(URenderer * renderer)
+inline void updateConstant(URenderer * renderer )
 {
+
 	using namespace DirectX;
-	myPos.x += 0.1f;
-	myPos.y += 0.1f;
+
+
+	// TODO manager의 값 받아서 x,  y , z update
+	FVector vel(0.1f, 0.1f, 0.0f);
+
+	myPos.x += vel.x;
+	myPos.y += vel.y;
 	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 
+	// mypos 바꿔야함
 	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
-
+	
 	XMMATRIX constant = matScale * matTranslate;
 	constant = XMMatrixTranspose(constant);
 

@@ -10,7 +10,8 @@
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
 
 struct FVertexStruct {
-    ID3D11Buffer* vertices = nullptr;
+    ID3D11Buffer* vertexBuffer = nullptr;
+    ID3D11Buffer* indexBuffer = nullptr;
     UINT byteWidth;
     UINT verticesSize;
 };
