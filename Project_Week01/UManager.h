@@ -7,6 +7,7 @@
 #include <sstream>
 #include <random>
 
+
 #include "Probe.h"
 #include "datatype.h"
 #include "USoundManager.h"
@@ -53,8 +54,13 @@ struct FStageInfo
 	float MaxTime;	//	Seconds
 
 	//	1. 행성의 종류(idx 구분)와 개수에 대한 정보
+	std::vector<std::pair<int, int>> CreatablePlanetList; //인덱스와 개수 정보
+
 	//	2. 장애물 위치 및 종류(idx), 개수 정보 -> 위치, 개수를 pair (혹은 개수만)
+	std::vector<std::pair<int, FVector>> ObstacleList; //인덱스와 위치 정보
+
 	//	3. 탈출구 객체 위치
+	FVector ExitLocation;
 };
 
 #pragma endregion
