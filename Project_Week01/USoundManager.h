@@ -32,6 +32,8 @@ enum class ESFX
 class USoundManager
 {
 private:
+	IDirectSound8* m_pDS = nullptr; // DirectSound 메인 인터페이스
+	
 	//	Sound Struct (Inner)
 	struct SoundClip
 	{
@@ -66,7 +68,6 @@ public:
 	/* Features */
 	void PlayBGM(EBGM bgm);
 	void StopBGM();
-	void StopBGM(float fadeOutTime);
 
 	void PlaySFX(ESFX sfx);
 	void StopSFX();
@@ -76,7 +77,7 @@ public:
 	void SetBGMVolume();
 	void SetSFXVolume();
 
-	void GetBGMVolume();
-	void GetSFXVolume();
+	float GetBGMVolume();
+	float GetSFXVolume();
 
 };

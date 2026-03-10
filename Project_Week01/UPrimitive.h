@@ -32,7 +32,7 @@ public:
 
     void SetMass(float InMass);
     float GetMass() const;
-
+     
     void SetColliding(bool bInColliding);
     bool GetColliding() const;
 
