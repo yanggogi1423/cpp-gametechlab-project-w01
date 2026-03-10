@@ -11,11 +11,6 @@
 
 #include "UImanager.h"
 
-#include "WICTextureLoader/WICTextureLoader.h"
-
-#pragma region __UI__
-
-#pragma endregion
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -143,6 +138,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	}
 
 	// 소멸하는 코드를 여기에 추가합니다.
+
+	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 
 	renderer->ReleaseShader();
 	renderer->Release();
