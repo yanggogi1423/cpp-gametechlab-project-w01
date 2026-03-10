@@ -25,4 +25,36 @@ USphere::USphere(float InRadius, int InSegments)
 
         vertices.push_back(v);
     }
+
+    index.reserve(InSegments + 2);
+    for (int i = 1; i <= InSegments; ++i)
+    {
+        // 중심점(0) -> 현재 둘레 점(i) -> 다음 둘레 점(i + 1)
+        index.push_back(0);
+        index.push_back(i);
+        index.push_back(i + 1);
+    }
+
 }
+
+const ID3D11Buffer* USphere::getVertexBuffer()
+{
+    return vertexBuffer;
+}
+const  ID3D11Buffer* USphere::getIndexBuffer()
+{
+    return indexBuffer;
+}
+
+void USphere::setVertexBuffer(ID3D11Buffer* pBuffer)
+{
+    if (vertexBuffer != nullptr) return;
+    vertexBuffer = pBuffer;
+}
+void USphere::setIndexBuffer(ID3D11Buffer* pBuffer)
+{
+    if (indexBuffer != nullptr) return;
+    indexBuffer = pBuffer;
+}
+
+

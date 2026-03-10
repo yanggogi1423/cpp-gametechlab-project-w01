@@ -45,6 +45,11 @@ const std::vector<FVertex>& UPrimitive::GetVertices() const
     return vertices;
 }
 
+const std::vector<unsigned int>& UPrimitive::GetIndex() const
+{
+    return index;
+}
+
 FConstants UPrimitive::GetConstants() const
 {
     // 현재 Location을 기반으로 상수 버퍼 데이터 패키징
@@ -52,3 +57,4 @@ FConstants UPrimitive::GetConstants() const
     Data.scale = Scale;
     return Data;
 }
+
