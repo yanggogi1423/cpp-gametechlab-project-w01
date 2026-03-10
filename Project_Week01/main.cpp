@@ -150,10 +150,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount);
 		}
-		ImGui::Begin("title.c_str(), nullptr, flags");
-
-		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
-		ImGui::End();
 
 		// ImGui 실제 렌더링
 		ImGui::Render();
