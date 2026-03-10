@@ -8,9 +8,10 @@ UIManager::~UIManager()
 {
 }
 
-void UIManager::AddFrame(const UIFrame& frame)
+UIFrame& UIManager::CreateFrame(const std::string& title)
 {
-	UIFrameList.push_back(frame);
+	UIFrameList.push_back(std::make_unique<UIFrame>(title));
+	return *UIFrameList.back();
 }
 
 void UIManager::Render()
@@ -20,13 +21,11 @@ void UIManager::Render()
 
 	ImGui::NewFrame();
 
-	for (auto frame : UIFrameList)
+	for (auto& frame : UIFrameList)
 	{
-		frame.Render();
+		frame->Render();
 	}
-
-
-
+	 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
