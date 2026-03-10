@@ -8,6 +8,7 @@ protected:
     std::vector<FVertex> vertices; // 정적 모양 데이터 (VB용)
     FVector Location;
     FVector Velocity;
+    float Radius;
     float Scale;
     float Mass;
     bool bIsColliding;
