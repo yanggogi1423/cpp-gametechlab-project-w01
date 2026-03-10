@@ -14,13 +14,3 @@ Probe::~Probe()
 {
 	
 }
-
-FVector Probe::GetVelocity()
-{
-	return velocity;
-}
-
-void Probe::SetVeclocity(FVector velocity)
-{
-	this->velocity = velocity;
-}
