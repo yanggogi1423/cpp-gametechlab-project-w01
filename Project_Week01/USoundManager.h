@@ -58,7 +58,7 @@ private:
     // 내부 데이터 구조체
     struct SoundClip
     {
-        std::vector<IDirectSoundBuffer8*> Buffers; // 멀티 채널 재생용 버퍼 풀
+        std::vector<IDirectSoundBuffer8*> Buffers; // 멀티 채널 재생용 버퍼들
         DWORD BufferSize = 0;
         float VolumeScale = 1.0f;                  // 0.0 ~ 1.0 범위
         size_t NextIndex = 0;                      // 다음에 사용할 버퍼 인덱스
