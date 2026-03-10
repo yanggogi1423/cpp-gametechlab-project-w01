@@ -99,6 +99,8 @@ void URenderer::PrepareShader() {
     DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
     DeviceContext->IASetInputLayout(SimpleInputLayout);
 
+    
+
     if (ConstantBuffer) {
         DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
     }
@@ -130,7 +132,7 @@ ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
 
 void URenderer::RenderPrimitive(FVertexStruct& vertexStruct) {
     UINT offset = 0;
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertices, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertexBuffer, &Stride, &offset);
     DeviceContext->Draw(vertexStruct.verticesSize, 0);
 }
 
@@ -186,6 +188,21 @@ void URenderer::ReleaseRasterizerState() {
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
     if (vertexBuffer) vertexBuffer->Release();
+}
+
+void URenderer::CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count)
+{
+    D3D11_BUFFER_DESC indexBufferDesc = {};
+    indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+    indexBufferDesc.ByteWidth = sizeof(UINT) * count;
+    indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    indexBufferDesc.CPUAccessFlags = 0;
+
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = indices;
+
+    Device->CreateBuffer(&indexBufferDesc, &initData, &indexBuffer);
+
 }
 
 void URenderer::ReleaseConstantBuffer() {

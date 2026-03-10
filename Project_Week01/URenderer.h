@@ -10,7 +10,8 @@
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
 
 struct FVertexStruct {
-    ID3D11Buffer* vertices = nullptr;
+    ID3D11Buffer* vertexBuffer = nullptr;
+    ID3D11Buffer* indexBuffer = nullptr;
     UINT byteWidth;
     UINT verticesSize;
 };
@@ -45,6 +46,8 @@ public:
     void RenderPrimitive(FVertexStruct& vertexStruct);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
+    void CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count);
+
 private:
     // 내부 초기화 메서드
     void CreateDeviceAndSwapChain(HWND hWindow);
@@ -55,6 +58,7 @@ private:
 
     void CreateRasterizerState();
     void ReleaseRasterizerState();
+
 
 public:
     // 주요 D3D11 인터페이스
