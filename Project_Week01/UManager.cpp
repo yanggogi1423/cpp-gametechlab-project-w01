@@ -1,15 +1,20 @@
 #include "UManager.h"
+#include "UPrimitive.h"
+#include "Probe.h"
+#include "USphere.h"
+#include "datatype.h"
 
 //	Private Functions
 
 /* Game Management */
 void UManager::CollisionDetection()
 {
+	if (!Player) return;
+	
 	//	1. Collision between Probe and Border
 	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
 
 	//	2. Collision between Probe and Planets
-
 
 }
 
@@ -75,6 +80,13 @@ void UManager::ProgressStage()
 void UManager::InitGameObjects()
 {
 	Player = new Probe();
+	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
+	
+	USphere* TestPlanet = new USphere(0.2f, 36);
+	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
+	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
+
+	PlanetList.push_back(TestPlanet);
 
 	//	TODO : 장애물 생성 로직
 }
@@ -195,7 +207,14 @@ void UManager::Update(float deltaTime)
 	case ERunstate::ERS_Main:
 		break;
 	case ERunstate::ERS_InGameReady:
-		
+		for (auto planet : PlanetList)
+		{
+			FVector NewPosition = planet->GetLocation() + (planet->GetVelocity() + deltaTime);
+			planet->SetLocation(NewPosition);
+		}
+
+		CollisionDetection();
+
 		break;
 	case ERunstate::ERS_InGameRun:
 		CollisionDetection();	//	필요하다면 반복

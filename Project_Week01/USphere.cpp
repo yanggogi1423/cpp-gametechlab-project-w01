@@ -21,7 +21,7 @@ USphere::USphere(float InRadius, int InSegments)
         v.z = 0.0f;
 
         // 행성 색상 (여기서 설정하거나 나중에 매니저에서 변경)
-        v.r = 1.0f; v.g = 1.0f; v.b = 1.0f; v.a = 1.0f;
+        v.r = 1.0f; v.g = 0.5f; v.b = 0.0f; v.a = 1.0f;
 
         vertices.push_back(v);
     }
