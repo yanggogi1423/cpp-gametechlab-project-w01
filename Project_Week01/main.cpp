@@ -31,6 +31,19 @@ inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URe
 
 }
 
+inline void updateConstant(URenderer * renderer)
+{
+
+
+
+
+	FVector cons(0.5f, 0.5f, 0.5f);
+	FVector temp(0.01f, 0.01f, 0.01f);
+	FConstants probeConstant(cons);
+	probeConstant.scale = 0.1f;
+
+}
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -69,10 +82,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateConstantBuffer();
 
 
-	FVector cons(0.5f, 0.5f, 0.5f);
-	FVector temp(0.01f, 0.01f, 0.01f);
-	FConstants probeConstant(cons);
-	probeConstant.scale = 0.1f;
 
 
 	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
@@ -96,8 +105,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-
-
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
@@ -105,7 +112,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		probeConstant.fVector += temp;
-		renderer->UpdateConstant(probeConstant);
+		updateConstant(renderer);
 		renderer->RenderPrimitive(triangle);
 
 		renderer->SwapBuffer();
