@@ -9,6 +9,8 @@
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
 
+#include "UImanager.h"
+
 #include "WICTextureLoader/WICTextureLoader.h"
 
 #pragma region __UI__
@@ -20,6 +22,10 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wP
 // 각종 메시지를 처리할 함수
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//버튼 입력 받기 준비
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	switch (message)
 	{
 	case WM_DESTROY:
@@ -131,17 +137,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		updateConstant(renderer);
-
-		/* ImGui Render */
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
-		ImGui::Begin("Jungle Property Window");
-		
-
-
-		ImGui::End();
 			
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
