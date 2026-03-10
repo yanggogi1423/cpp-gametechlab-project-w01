@@ -4,6 +4,19 @@
 
 #include <windows.h>
 
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
+
+#include "WICTextureLoader/WICTextureLoader.h"
+
+#pragma region __UI__
+
+#pragma endregion
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 // 각종 메시지를 처리할 함수
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -87,6 +100,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateConstantBuffer();
 
 
+	/* UI Initialization */
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init((void*)hWnd);
+	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
 
 
 	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
@@ -117,6 +136,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		updateConstant(renderer);
+
+
+
+		/* ImGui Render */
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Jungle Property Window");
+		
+
+
+		ImGui::End();
 			
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
