@@ -1,8 +1,4 @@
 #include "UManager.h"
-#include "UPrimitive.h"
-#include "Probe.h"
-#include "USphere.h"
-#include "datatype.h"
 
 //	Private Functions
 
@@ -94,7 +90,17 @@ void UManager::ProgressStage()
 
 	ClearGameObjects();
 }
+// probe sphere initialize
 
+void UManager::initialize_vertices_index()
+{
+	Probe::initialize();
+	USphere::initialize(); 
+}
+
+
+
+// TODO 수정해야함
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
@@ -120,7 +126,7 @@ void UManager::ClearGameObjects()
 	}
 	Player = nullptr;
 
-	for (auto planet : PlanetList)
+	for (auto& planet : PlanetList)
 	{
 		if (planet) delete planet;
 	}

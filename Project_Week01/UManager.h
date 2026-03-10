@@ -11,6 +11,10 @@
 #include "Probe.h"
 #include "datatype.h"
 #include "USoundManager.h"
+#include "UPrimitive.h"
+#include "Probe.h"
+#include "USphere.h"
+#include "datatype.h"
 
 
 //	Constants
@@ -19,7 +23,7 @@ constexpr float BottomBorder = 1.f;
 constexpr float LeftBorder = -1.f;
 constexpr float RightBorder = 1.f;
 
-constexpr size_t PlanetListReservedSize = 10;
+constexpr size_t PlanetListReservedSize = 50;
 constexpr float GravititationalConstant = 9.8f;
 
 #pragma region __GAME_STATE__
@@ -88,7 +92,7 @@ private:
 
 	/* GameObjects */
 	Probe* Player;
-	std::vector<UPrimitive*> PlanetList;	//	이후에 template 수정할 수도 있음
+	std::vector<USphere*> PlanetList;	//	이후에 template 수정할 수도 있음
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
@@ -170,11 +174,14 @@ public:
 
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
-	const std::vector<UPrimitive *> & GetPlanetList() const { return PlanetList; }
+	const std::vector<USphere *> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
 
+	// initialize planet , probe
+	void initialize_vertices_index();
+	
 
 
 };
