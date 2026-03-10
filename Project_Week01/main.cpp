@@ -11,11 +11,6 @@
 
 #include "UImanager.h"
 
-#include "WICTextureLoader/WICTextureLoader.h"
-
-#pragma region __UI__
-
-#pragma endregion
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

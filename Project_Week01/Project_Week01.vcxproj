@@ -144,6 +144,7 @@
     <ClInclude Include="UManager.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="URenderer.h" />
+    <ClInclude Include="UResourceManager.h" />
     <ClInclude Include="USoundManager.h" />
     <ClInclude Include="USphere.h" />
     <ClInclude Include="WICTextureLoader\DirectXHelpers.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="UManager.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="URenderer.cpp" />
+    <ClCompile Include="UResourceManager.cpp" />
     <ClCompile Include="USoundManager.cpp" />
     <ClCompile Include="USphere.cpp" />
     <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp" />
