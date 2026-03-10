@@ -5,9 +5,15 @@
 /* Game Management */
 void UManager::CollisionDetection()
 {
+	//	1. Collision between Probe and Border
+	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
+
+	//	2. Collision between Probe and Planets
+
 
 }
 
+//	어쩌면 Resolution이 필요없을 수도? (게임 오버)
 void UManager::CollsionResolution()
 {
 
@@ -16,23 +22,36 @@ void UManager::CollsionResolution()
 void UManager::MainInit()
 {
 	CurRunState = ERunstate::ERS_Main;
+
+	ClearGameObjects();
 }
 
-void UManager::InGameInit()
+void UManager::InGameReadyInit()
 {
-	CurRunState = ERunstate::ERS_Main;
+	CurRunState = ERunstate::ERS_InGameReady;
+
+	ClearGameObjects();
+}
+
+void UManager::InGameRunInit()
+{
+	CurRunState = ERunstate::ERS_InGameRun;
+
+	ClearGameObjects();
 }
 
 void UManager::EndingInit()
 {
 	CurRunState = ERunstate::ERS_Ending;
+
+	ClearGameObjects();
 }
 
 void UManager::ProgressStage()
 {
-	if (CurRunState != ERunstate::ERS_InGame)
+	if (CurRunState != ERunstate::ERS_InGameReady)
 	{
-		//	TODO : Debug 용 Log 생성
+		//	TODO : Make an error log
 
 		return;
 	}
@@ -49,18 +68,63 @@ void UManager::ProgressStage()
 		break;
 	}
 
+	ClearGameObjects();
 }
 
-//	모든 오브젝트 생성 - Start 버튼 클릭 시
-void InitGameObjects()
+//	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
+void UManager::InitGameObjects()
 {
+	Player = new Probe();
 
+	//	TODO : 장애물 생성 로직
 }
 
-//	모든 오브젝트 삭제 - Ending 상태로 분기 시
-void ClearGameObjects()
+//	모든 오브젝트 삭제
+//	RunState와 Stage 상태 변동시 항상 적용
+void UManager::ClearGameObjects()
 {
+	if (Player)
+	{
+		delete Player;
+	}
+	Player = nullptr;
 
+	if (!PlanetList.empty())
+	{
+		PlanetList.clear();
+	}
+	//	Reserve size
+	PlanetList.reserve(PlanetListReservedSize);
+}
+
+void UManager::BootGame()
+{
+	if (bBootDone)
+	{
+		//	TODO : Make an error log
+		return;
+	}
+
+	LoadScore();
+
+	//	1. 스테이지 정보 생성
+
+	//	2. 
+}
+
+//	외부에서 호출해줘야 함 (혹은 UManager Destructor에서 호출됨)
+void UManager::DestroyGame()
+{
+	if (bIsAlreadyDestroy) {
+		//	TODO : Make an error log
+		return;
+	}
+
+	SaveScore();
+
+	//	1. Heap 해제
+	
+	bIsAlreadyDestroy = true;
 }
 
 /* Non-game Management */
@@ -118,10 +182,24 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 }
 
 
-
 //	Public Functions
 void UManager::Update(float deltaTime)
 {
-
+	switch (CurRunState)
+	{
+	case ERunstate::ERS_Main:
+		break;
+	case ERunstate::ERS_InGameReady:
+		
+		break;
+	case ERunstate::ERS_InGameRun:
+		CollisionDetection();	//	필요하다면 반복
+		break;
+	case ERunstate::ERS_Ending:
+		break;
+	default:
+		break;
+	}
 
 }
+
