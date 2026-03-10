@@ -144,6 +144,7 @@
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="USoundManager.h" />
     <ClInclude Include="USphere.h" />
+    <ClInclude Include="WICTextureLoader\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -161,6 +162,7 @@
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="USoundManager.cpp" />
     <ClCompile Include="USphere.cpp" />
+    <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
