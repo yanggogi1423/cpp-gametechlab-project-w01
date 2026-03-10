@@ -11,6 +11,7 @@
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+
 static UManager* g_Manager = nullptr;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -24,6 +25,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_Manager) g_Manager->OnMouseClick();
 		break;
 
+		 
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -63,14 +65,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		nullptr, nullptr, hInstance, nullptr);
 
 	// 1. 매니저 및 렌더러 생성
-	UManager* manager = new UManager();
-	g_Manager = manager;
-	manager->Initialize(hWnd); // 사운드 여기서 시작!
 
 	URenderer* renderer = new URenderer();
 	renderer->Create(hWnd);
 	renderer->CreateShader();
 	renderer->CreateConstantBuffer();
+
+	// UI 초기화
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplWin32_Init((void*)hWnd);
+	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
+
+	UManager* manager = new UManager(renderer->Device);
+	g_Manager = manager;
+	manager->Initialize(hWnd); // 사운드 여기서 시작!
 
 	// 2. GPU 버퍼 생성 및 Manager 등록
 	std::vector<FVertex> triVertices;
@@ -88,11 +97,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Manager에게 이 버퍼를 쓰라고 등록합니다.
 	manager->initResource(PROBE, vBuffer, nullptr, (UINT)triVertices.size(), 0, sizeof(FVertex), 1.0f);
 
-	// UI 초기화
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplWin32_Init((void*)hWnd);
-	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
@@ -149,7 +153,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
-
+	
 	if (vBuffer) vBuffer->Release();
 	renderer->Release();
 	delete renderer;

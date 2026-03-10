@@ -142,7 +142,7 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 	for (auto p : PlanetList)
 	{
 		float dist = (p->GetLocation() - Player->GetLocation()).Size();
-		FVector acc = (GravititationalConstant * p->GetMass()) / pow(dist, 2);
+		FVector acc = (GravititationalConstant * p->GetMass()) / (float)pow(dist, 2);
 
 		Player->SetVelocity(Player->GetVelocity() + acc * deltaTime);
 	}
@@ -158,6 +158,8 @@ void UManager::BootGame(ID3D11Device * device)
 	
 	//	1. Local Score 및 ResourceManager 로드
 	LoadScore();
+	ResourceManager = new UResourceManager();
+
 	ResourceManager->Initialize(device);
 
 	//	2. 스테이지 정보 생성
@@ -186,7 +188,7 @@ void UManager::ShutDownGame()
 	//	1. Heap 해제
 	ResourceManager->Release();
 
-	CurRunState == ERunstate::ERS_Destroy;
+	CurRunState = ERunstate::ERS_Destroy;
 }
 
 /* Non-game Management */
