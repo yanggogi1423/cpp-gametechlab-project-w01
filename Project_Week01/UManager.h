@@ -66,7 +66,16 @@ struct FStageInfo
 	FVector ExitLocation;
 };
 
+
+
 #pragma endregion
+
+
+enum RESOURCE_TYPE
+{
+	PROBE,
+	SPHERE
+};
 
 namespace GenerateVertices {
 	void GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices);
