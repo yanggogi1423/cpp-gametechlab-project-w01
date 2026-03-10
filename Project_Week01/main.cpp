@@ -20,7 +20,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 // 나중에 랜덤 생성
-static DirectX::XMFLOAT3 myPos = { 0.0f, 0.0f, 0.0f };
+static DirectX::XMFLOAT3 myPos = { -1.0f, -1.0f, 0.0f };
 static DirectX::XMMATRIX matScale;
 //manager
 inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
