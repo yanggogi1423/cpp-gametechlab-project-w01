@@ -69,9 +69,6 @@
     <ClInclude Include="USoundManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="InGameManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UManager.cpp">
@@ -117,9 +114,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="USoundManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="InGameManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,6 +19,7 @@ constexpr float LeftBorder = -1.f;
 constexpr float RightBorder = 1.f;
 
 constexpr size_t PlanetListReservedSize = 10;
+constexpr float GravititationalConstant = 9.8f;
 
 #pragma region __GAME_STATE__
 
@@ -99,7 +100,7 @@ private:
 	void MainInit();		//	Opening(시작 화면)으로 분기
 	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
-	void EndingInit(std::string name, unsigned int score, bool bIsClear);
+	void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
 
 	//	Stage Progress
 	void ProgressStage();
@@ -108,6 +109,8 @@ private:
 
 	//	Game Logic
 	//	행성 배치
+
+	void ComputePhysicsAndApply(float deltaTime);
 
 
 	/* Non-game Management */
@@ -153,14 +156,14 @@ public:
 	}
 	~UManager()
 	{
-		DestroyGame();
+		ShutDownGame();
 	}
 
 	void Update(float deltaTime);
 
 	/* Getter, Setter */
 	const Probe& GetProbe() const { return (*Player);  }
-	const std::vector<UPrimitive>& const GetPlanetList() { return PlanetList; }
+	const std::vector<UPrimitive *> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
