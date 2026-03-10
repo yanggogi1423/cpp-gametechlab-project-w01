@@ -1,3 +1,4 @@
+#include <directxmath.h>
 #include "UPrimitive.h"
 
 void UPrimitive::SetLocation(const FVector& InLocation)
@@ -40,4 +41,10 @@ bool UPrimitive::GetColliding() const
     return bIsColliding;
 }
 
-
+DirectX::XMMATRIX UPrimitive::GetTransformMatrix() const
+{
+    using namespace DirectX;
+    XMMATRIX matScale = XMMatrixScaling(Scale, Scale, Scale);
+    XMMATRIX matTranslate = XMMatrixTranslation(Location.x, Location.y, Location.z);
+    return XMMatrixTranspose(matScale * matTranslate);
+}

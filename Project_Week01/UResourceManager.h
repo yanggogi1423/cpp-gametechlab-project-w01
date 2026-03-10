@@ -1,5 +1,8 @@
 #pragma once
 
+#include <unordered_map>
+#include <string>
+
 #include "WICTextureLoader/WICTextureLoader.h"
 
 #include "ImGui/imgui.h"
@@ -14,13 +17,14 @@ private:
 
 	bool bIsInitialzed;
 
+	//	Data 휘발 방지
+	std::unordered_map<std::string, ID3D11ShaderResourceView*> TextureMap;
+
 public:
 	//	Image Resouces
 	ID3D11ShaderResourceView* SRVBackground;
-	
 	ID3D11ShaderResourceView* SRVInGamePanel;
 	ID3D11ShaderResourceView* SRVLeaderBoardPanel;
-
 	ID3D11ShaderResourceView* SRVButtonSprite;
 
 	//	Fonts Resources
@@ -30,12 +34,14 @@ public:
 public:
 	UResourceManager() : SRVBackground(nullptr), SRVInGamePanel(nullptr), SRVLeaderBoardPanel(nullptr), SRVButtonSprite(nullptr),
 		FontLogo(nullptr), FontDefault(nullptr),
-		bIsInitialzed(false)
+		bIsInitialzed(false),
+		Device(nullptr)
 	{}
 
 	void Initialize(ID3D11Device* device);
 	void Release();
-
+	bool LoadTexture(const std::string& key, const wchar_t* filePath);
+	ID3D11ShaderResourceView* GetTexture(const std::string& key) const;
 	bool IsInitialize() { return bIsInitialzed; }
 };
 

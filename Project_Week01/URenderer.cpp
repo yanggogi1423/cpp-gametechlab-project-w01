@@ -79,7 +79,7 @@ void URenderer::CreateShader() {
 void URenderer::CreateConstantBuffer() {
     D3D11_BUFFER_DESC constantbufferdesc = {};
     // 16바이트 정렬 보정 로직 보강
-    constantbufferdesc.ByteWidth = (sizeof(FConstants) + 15) & ~0xF;
+    constantbufferdesc.ByteWidth = sizeof(DirectX::XMMATRIX);
     constantbufferdesc.Usage = D3D11_USAGE_DYNAMIC;
     constantbufferdesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
     constantbufferdesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
