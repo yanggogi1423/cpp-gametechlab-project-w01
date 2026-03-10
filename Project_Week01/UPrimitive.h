@@ -2,10 +2,11 @@
 #include <vector>
 #include "datatype.h"
 
+
+
 class UPrimitive 
 {
 protected:
-    std::vector<FVertex> vertices; // 정적 모양 데이터 (VB용)
     FVector Location;
     FVector Velocity;
     float Radius;
@@ -15,7 +16,7 @@ protected:
 
 public:
     UPrimitive()
-        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
+        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false) 
     {
     }
 
@@ -37,6 +38,7 @@ public:
     bool GetColliding() const;
 
     // 2. 렌더러가 사용할 데이터 제공 함수
-    const std::vector<FVertex>& GetVertices() const;
+    virtual const std::vector<FVertex>& GetVertices() const = 0;
+    virtual const std::vector<unsigned int>& GetIndex() const = 0;
     FConstants GetConstants() const;
 };

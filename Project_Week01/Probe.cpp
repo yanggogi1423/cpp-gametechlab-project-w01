@@ -1,6 +1,19 @@
 #include "Probe.h"
 
+ID3D11Buffer* Probe::vertexBuffer = nullptr;
+ID3D11Buffer* Probe::indexBuffer = nullptr;
+std::vector<FVertex> Probe::vertices;
+std::vector<unsigned int> Probe::index;
+
 Probe::Probe() : UPrimitive()
+{}
+
+Probe::~Probe()
+{}
+
+
+
+void Probe::initialize()
 {
 	vertices =
 	{
@@ -13,10 +26,6 @@ Probe::Probe() : UPrimitive()
 
 }
 
-Probe::~Probe()
-{
-	
-}
 const ID3D11Buffer*  Probe::getVertexBuffer()
 {
 	return vertexBuffer;

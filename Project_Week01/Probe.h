@@ -10,7 +10,8 @@ private:
 	static ID3D11Buffer* vertexBuffer;
 	static ID3D11Buffer* indexBuffer;
 
-
+	static std::vector<FVertex> vertices;
+	static std::vector<unsigned int> index;
 public:
 	Probe();
 	virtual ~Probe();
@@ -20,5 +21,7 @@ public:
 
 	static void setVertexBuffer(ID3D11Buffer*);
 	static void setIndexBuffer(ID3D11Buffer*);
+
+	static void initialize();
 
 };
