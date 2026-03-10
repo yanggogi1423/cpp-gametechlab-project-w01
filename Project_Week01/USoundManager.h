@@ -35,7 +35,7 @@ private:
 	//	Sound Struct (Inner)
 	struct SoundClip
 	{
-		std::vector<IDirectSoundBuffer8> Buffers;	//	동시에 여러 채널 재생 감안
+		std::vector<IDirectSoundBuffer8*> Buffers;	//	동시에 여러 채널 재생 감안
 		DWORD BufferSize = 0;
 		float VolumeScale = 1.f;
 		size_t NextIndex = 0;
