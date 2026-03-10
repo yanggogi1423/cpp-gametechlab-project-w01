@@ -25,7 +25,8 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow) {
 
     D3D11CreateDeviceAndSwapChain(
         nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-        D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+        //D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT,
         featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
         &swapchaindesc, &SwapChain, &Device, nullptr, &DeviceContext
     );
