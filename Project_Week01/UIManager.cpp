@@ -25,9 +25,7 @@ void UIManager::Render()
 	{
 		frame->Render();
 	}
-
-
-
+	 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }

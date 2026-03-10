@@ -33,6 +33,25 @@ void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* f
 	texts.push_back(textInfo);
 }
 
+void UIFrame::AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size)
+{
+	ImageInfo imageInfo;
+	imageInfo.texture = texture;
+	imageInfo.position = position;
+	imageInfo.size = size;
+	images.push_back(imageInfo);
+}
+
+void UIFrame::AddImageButton(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback) {
+	ImageButtonInfo imageButtonInfo;
+	imageButtonInfo.label = "ImageButton";
+	imageButtonInfo.texture = texture;
+	imageButtonInfo.position = position;
+	imageButtonInfo.size = size;
+	imageButtonInfo.callback = callback;
+	imageButtons.push_back(imageButtonInfo);
+}
+
 UIFrame& UIFrame::Position(ImVec2 newPosition)
 {
 	position = newPosition;
@@ -108,6 +127,21 @@ void UIFrame::Render()
 		ImGui::PushFont(text.font);
 		ImGui::Text("%s", text.text.c_str());
 		ImGui::PopFont();
+	}
+
+	for (const auto& image : images) 
+	{
+		ImGui::SetCursorPos(image.position);
+		ImGui::Image((ImTextureID)image.texture, image.size);
+	}
+
+	for (const auto& imageButton : imageButtons)
+	{
+		ImGui::SetCursorPos(imageButton.position);
+		if (ImGui::ImageButton(imageButton.label.c_str(), (ImTextureID)(imageButton.texture), imageButton.size))
+		{
+			imageButton.callback();
+		}
 	}
 
 	ImGui::End();

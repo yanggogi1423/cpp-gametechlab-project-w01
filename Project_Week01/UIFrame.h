@@ -7,6 +7,7 @@
 #include <functional>
 #include <string>
 #include "datatype.h"
+#include "UResourceManager.h"
 
 struct ButtonInfo
 {
@@ -14,6 +15,22 @@ struct ButtonInfo
 	ImVec2 position;
 	ImVec2 size;
 	std::function<void()> callback;
+};
+
+struct ImageButtonInfo
+{
+	std::string label;
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
+	std::function<void()> callback;
+};
+
+struct ImageInfo
+{
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
 };
 
 struct TextInfo
@@ -35,28 +52,27 @@ private:
 
 	std::vector<ButtonInfo> buttons;
 	std::vector<TextInfo> texts;
+	std::vector<ImageInfo> images;
+	std::vector<ImageButtonInfo> imageButtons;
 
 
 public:
 	UIFrame(const std::string& title);
-	//UIFrame(const std::string& title, ImVec2 position, ImVec2 size, bool noTitleBar = false, ImVec4 backgroundColor = ImVec4(39.f / 255.f, 35.f / 255.f, 75.f / 255.f, 1.0f));
 	~UIFrame();
 
 	void AddButton(const std::string& label, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddText(const std::string& text, const ImVec2& position, ImFont* font);
+	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
+	void AddImageButton(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 
 	ImVec2 GetPosition() const;
 	void SetPosition(const ImVec2& newPosition);
 	void Render();
 
 	UIFrame& Position(ImVec2 newPosition);
-
 	UIFrame& Size(ImVec2 newSize);
-
 	UIFrame& BackgroundColor(ImVec4 newColor);
-
 	UIFrame& NoTitleBar(bool noTitle);
-
 	UIFrame& BorderLineTransparency(float transparency);
 
 
