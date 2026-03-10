@@ -1,15 +1,16 @@
 #pragma once
 #include "UIFrame.h"
+#include <Memory>
 
 class UIManager
 {
 private:
-	std::vector<UIFrame> UIFrameList;
+	std::vector<std::unique_ptr<UIFrame>> UIFrameList;
 public:
 	UIManager();
 	~UIManager();
 
-	void AddFrame(const UIFrame& frame);
+	UIFrame& CreateFrame(const std::string& title);
 
 	void Render();
 };
