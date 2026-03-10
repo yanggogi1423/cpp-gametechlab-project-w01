@@ -18,13 +18,22 @@ void UIFrame::AddButton(const std::string& label, const ImVec2& position, const 
 	buttons.push_back(button);
 }
 
+void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* font)
+{
+	TextInfo textInfo;
+	textInfo.text = text;
+	textInfo.position = position;
+	textInfo.font = font;
+	texts.push_back(textInfo);
+}
+
 void UIFrame::Render()
 {
 	ImGui::SetNextWindowPos(position, ImGuiCond_Once);
 	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
 	ImGui::Begin(title.c_str());
 
-	for (auto button : buttons)
+	for (const auto& button : buttons)
 	{
 		ImGui::SetCursorPos(button.position);
 
@@ -32,6 +41,14 @@ void UIFrame::Render()
 		{
 			button.callback();
 		}
+	}
+
+	for (const auto& text : texts)
+	{
+		ImGui::SetCursorPos(text.position);
+		ImGui::PushFont(text.font);
+		ImGui::Text("%s", text.text.c_str());
+		ImGui::PopFont();
 	}
 
 	ImGui::End();

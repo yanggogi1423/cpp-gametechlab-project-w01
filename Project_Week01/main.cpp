@@ -137,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		updateConstant(renderer);
-			
+
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
 	}
