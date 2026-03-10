@@ -144,6 +144,10 @@
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="USoundManager.h" />
     <ClInclude Include="USphere.h" />
+    <ClInclude Include="WICTextureLoader\DirectXHelpers.h" />
+    <ClInclude Include="WICTextureLoader\LoaderHelpers.h" />
+    <ClInclude Include="WICTextureLoader\pch.h" />
+    <ClInclude Include="WICTextureLoader\PlatformHelpers.h" />
     <ClInclude Include="WICTextureLoader\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +166,8 @@
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="USoundManager.cpp" />
     <ClCompile Include="USphere.cpp" />
+    <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp" />
+    <ClCompile Include="WICTextureLoader\pch.cpp" />
     <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
