@@ -19,19 +19,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+
+struct FVertexStruct;
+
 // 나중에 랜덤 생성
 static DirectX::XMFLOAT3 myPos = { -1.0f, -1.0f, 0.0f };
 static DirectX::XMMATRIX matScale;
 //manager
-inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
-{
-	std::vector<FVertex> probeVertices = probe.GetVertices();
-	UINT triNumVertices = probeVertices.size();
-	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
 
-	outVertexStruct.vertexBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
-
-}
 
 inline void updateConstant(URenderer * renderer )
 {
@@ -85,8 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateShader();
 	
 	
-	FVertexStruct triangle;
-	createVertexStruct(triangle, probe, renderer);
+
 
 	
 	// constant 만들기
@@ -123,7 +117,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 
 		updateConstant(renderer);
-		renderer->RenderPrimitive(triangle);
 			
 		renderer->SwapBuffer();
 		////////////////////////////////////////////

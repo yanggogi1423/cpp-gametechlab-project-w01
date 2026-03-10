@@ -24,4 +24,6 @@ public:
 
 	static void initialize();
 
+	virtual const std::vector<FVertex>& GetVertices() const override;
+	virtual const std::vector<unsigned int>& GetIndex() const override;
 };

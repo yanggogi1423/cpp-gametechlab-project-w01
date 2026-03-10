@@ -68,3 +68,13 @@ void USphere::setIndexBuffer(ID3D11Buffer* pBuffer)
 }
 
 
+const std::vector<FVertex>& USphere::GetVertices() const
+{
+    return vertices;
+}
+
+
+const std::vector<unsigned int>& USphere::GetIndex() const
+{
+    return index;    // static std::vector<unsigned int> index; 를 반환
+}

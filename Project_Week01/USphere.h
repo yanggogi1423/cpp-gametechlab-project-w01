@@ -26,4 +26,7 @@ public:
 
 	static void initialize(float InRadius = 1.0f, unsigned int InSegments = 36);
 
+	virtual const std::vector<FVertex>& GetVertices() const override;
+	virtual const std::vector<unsigned int>& GetIndex() const override;
+
 };

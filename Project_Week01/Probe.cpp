@@ -39,9 +39,19 @@ void Probe::setVertexBuffer(ID3D11Buffer* pBuffer)
 {
 	if (vertexBuffer != nullptr) return;
 	vertexBuffer = pBuffer;
-}
+} 
 void Probe::setIndexBuffer(ID3D11Buffer* pBuffer)
 {
 	if (indexBuffer != nullptr) return;
 	indexBuffer = pBuffer;
+}
+
+const std::vector<FVertex>& Probe::GetVertices() const
+{
+	return vertices;
+}
+
+const std::vector<unsigned int>& Probe::GetIndex() const
+{
+	return index;
 }

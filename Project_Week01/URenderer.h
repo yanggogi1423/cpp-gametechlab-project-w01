@@ -33,8 +33,7 @@ public:
     void ReleaseConstantBuffer();
 
     // 버퍼 생성 및 렌더링
-    ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
-    void RenderPrimitive(FVertexStruct& vertexStruct);
+    //ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
     void indexRenderPrimitive(UINT numIndices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
