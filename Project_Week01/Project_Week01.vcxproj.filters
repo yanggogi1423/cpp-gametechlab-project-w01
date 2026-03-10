@@ -19,9 +19,6 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{42636267-b352-4e2f-841e-c902c3063a0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="WICTextureLoader">
-      <UniqueIdentifier>{8b04da0f-1045-4ec4-b46f-993d00284128}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="UManager.h">
@@ -72,8 +69,11 @@
     <ClInclude Include="USoundManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="WICTextureLoader\WICTextureLoader.h">
-      <Filter>WICTextureLoader</Filter>
+    <ClInclude Include="UIManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="UIFrame.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -122,8 +122,11 @@
     <ClCompile Include="USoundManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp">
-      <Filter>WICTextureLoader</Filter>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="UIFrame.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

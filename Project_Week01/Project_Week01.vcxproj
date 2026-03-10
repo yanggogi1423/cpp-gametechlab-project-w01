@@ -139,6 +139,8 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="Probe.h" />
+    <ClInclude Include="UIFrame.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="UManager.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="URenderer.h" />
@@ -161,6 +163,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="Probe.cpp" />
+    <ClCompile Include="UIFrame.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UManager.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="URenderer.cpp" />
