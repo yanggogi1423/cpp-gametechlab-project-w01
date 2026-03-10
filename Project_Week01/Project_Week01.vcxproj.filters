@@ -66,7 +66,14 @@
     <ClInclude Include="USphere.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+<<<<<<< Updated upstream
     <ClInclude Include="PlayerInput.h">
+=======
+    <ClInclude Include="USoundManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InGameManager.h">
+>>>>>>> Stashed changes
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,7 +117,14 @@
     <ClCompile Include="USphere.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+<<<<<<< Updated upstream
     <ClCompile Include="PlayerInput.cpp">
+=======
+    <ClCompile Include="USoundManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InGameManager.cpp">
+>>>>>>> Stashed changes
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
