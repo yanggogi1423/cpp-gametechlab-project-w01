@@ -66,6 +66,7 @@ void USoundManager::CreateSoundClip(const std::string& filePath, int poolSize, S
     dsbd.lpwfxFormat = &wave.wfx;
 
     IDirectSoundBuffer* pTemp = nullptr;
+	if (m_pDS == nullptr) return;
     if (FAILED(m_pDS->CreateSoundBuffer(&dsbd, &pTemp, NULL))) return;
 
     clip.Buffers.resize(poolSize);

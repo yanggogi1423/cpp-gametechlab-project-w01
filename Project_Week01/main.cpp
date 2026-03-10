@@ -8,6 +8,7 @@
 #include "ImGui/imgui_impl_win32.h"
 
 #include "UImanager.h"
+#include "UResourceManager.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -94,6 +95,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Init((void*)hWnd);
 	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
 
+	UResourceManager resourceManager;
+	resourceManager.Initialize(renderer->Device);
+
+	UIManager uiManager;
+	UIFrame& testFrame = uiManager.CreateFrame("Test Frame")
+		.Position(ImVec2(10.f, 30.f))
+		.Size(ImVec2(300.f, 200.f));
+
+	testFrame.AddText("Hello, ImGui!", ImVec2(10.f, 30.f), resourceManager.FontDefault);
+	testFrame.AddImage(resourceManager.SRVBackground, ImVec2(10.f, 40.f), ImVec2(100.f, 100.f));
+
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
 	QueryPerformanceFrequency(&freq);
@@ -134,10 +146,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		{
 			renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount);
 		}
+		ImGui::Begin("title.c_str(), nullptr, flags");
+
+		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
+		ImGui::End();
 
 		// ImGui 실제 렌더링
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+		//uiManager.Render();
 
 		renderer->SwapBuffer();
 	}
