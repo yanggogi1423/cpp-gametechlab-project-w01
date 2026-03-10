@@ -9,21 +9,12 @@
 /* Game Management */
 void UManager::CollisionDetection()
 {
-<<<<<<< Updated upstream
 	if (!Player) return;
 	
 	//	1. Collision between Probe and Border
 	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
 
 	//	2. Collision between Probe and Planets
-=======
-	//	1. Collision between Probe and Border -> 
-	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
-
-	//	2. Collision between Probe and Planets
-	
->>>>>>> Stashed changes
-
 }
 
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
@@ -58,7 +49,7 @@ void UManager::InGameRunInit()
 //	Stage를 클리어하거나, 플레이어가 사망했을 때 호출
 //	bIsClear는 클리어 여부를 담음. (main에서 호출됨) -> default parameter를 고려하여 설계
 //	name은 사용자에게 직접 입력 받습니다.
-void UManager::EndingInit(std::string name = RandomNameGenerator(), unsigned int score, bool bIsClear)
+void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 {
 	CurRunState = ERunstate::ERS_Ending;
 
@@ -138,6 +129,17 @@ void UManager::ClearGameObjects()
 
 	//	Reserve size
 	PlanetList.reserve(PlanetListReservedSize);
+}
+
+void UManager::ComputePhysicsAndApply(float deltaTime)
+{
+	for (auto p : PlanetList)
+	{
+		float dist = (p->GetLocation() - Player->GetLocation()).Size();
+		FVector acc = (GravititationalConstant * p->GetMass()) / pow(dist, 2);
+
+		Player->SetVelocity(Player->GetVelocity() + acc * deltaTime);
+	}
 }
 
 void UManager::BootGame()
@@ -242,16 +244,15 @@ void UManager::Update(float deltaTime)
 	case ERunstate::ERS_Main:
 		break;
 	case ERunstate::ERS_InGameReady:
-		for (auto planet : PlanetList)
-		{
-			FVector NewPosition = planet->GetLocation() + (planet->GetVelocity() + deltaTime);
-			planet->SetLocation(NewPosition);
-		}
-
-		CollisionDetection();
 
 		break;
 	case ERunstate::ERS_InGameRun:
+		//	Value Input
+		ComputePhysicsAndApply(deltaTime);
+
+		//	Physics Update
+		Player->SetLocation(Player->GetLocation() + Player->GetVelocity() * deltaTime);
+
 		CollisionDetection();	//	필요하다면 반복
 		break;
 	case ERunstate::ERS_Ending:

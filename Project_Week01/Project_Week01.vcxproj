@@ -138,7 +138,6 @@
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="PlayerInput.h" />
-    <ClInclude Include="InGameManager.h" />
     <ClInclude Include="Probe.h" />
     <ClInclude Include="UManager.h" />
     <ClInclude Include="UPrimitive.h" />
@@ -154,7 +153,6 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="InGameManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="Probe.cpp" />
