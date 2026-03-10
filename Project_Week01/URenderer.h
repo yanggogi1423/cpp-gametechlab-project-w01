@@ -3,17 +3,6 @@
 #include "datatype.h"
 
 
-// D3D library link
-#pragma comment(lib, "d3d11")
-#pragma comment(lib , "d3dcompiler")
-
-
-
-#include "datatype.h"
-
-
-#pragma once
-
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <directxmath.h>
@@ -44,7 +33,7 @@ public:
     void ReleaseConstantBuffer();
 
     // 버퍼 생성 및 렌더링
-    ID3D11Buffer* CreateVertexBuffer(FVertexSimple* vertices, UINT bytewidth);
+    ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
     void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
