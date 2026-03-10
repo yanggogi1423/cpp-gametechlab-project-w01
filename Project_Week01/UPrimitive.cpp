@@ -40,11 +40,4 @@ bool UPrimitive::GetColliding() const
     return bIsColliding;
 }
 
-FConstants UPrimitive::GetConstants() const
-{
-    // 현재 Location을 기반으로 상수 버퍼 데이터 패키징
-    FConstants Data(Location);
-    Data.scale = Scale;
-    return Data;
-}
 

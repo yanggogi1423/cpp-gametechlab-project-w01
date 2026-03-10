@@ -92,11 +92,6 @@ void UManager::ProgressStage()
 }
 // probe sphere initialize
 
-void UManager::initialize_vertices_index()
-{
-	Probe::initialize();
-	USphere::initialize(); 
-}
 
 
 

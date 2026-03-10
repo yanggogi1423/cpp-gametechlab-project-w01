@@ -12,9 +12,7 @@
 #include "datatype.h"
 #include "USoundManager.h"
 #include "UPrimitive.h"
-#include "Probe.h"
 #include "USphere.h"
-#include "datatype.h"
 
 
 //	Constants
@@ -70,6 +68,8 @@ struct FStageInfo
 
 #pragma endregion
 
+
+struct ID3D11Buffer;
 
 class UManager
 {
@@ -131,6 +131,21 @@ private:
 	void LoadScore();
 	void SaveScore();
 	void DisplayScore(std::string name, unsigned int score);
+	
+
+// mesh info
+private:
+	struct MeshResource {
+		ID3D11Buffer* VB = nullptr;      // Vertex Buffer
+		ID3D11Buffer* IB = nullptr;      // Index Buffer 
+		unsigned int VertexCount = 0;    // 정점 개수
+		unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
+		unsigned int Stride = 0;         // 정점 1개의 크기 (sizeof(FVertex))
+
+	};
+	
+	MeshResource ProbeResource;
+	MeshResource SphereResource;
 
 
 public:
@@ -177,11 +192,6 @@ public:
 	const std::vector<USphere *> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
-
-
-	// initialize planet , probe
-	void initialize_vertices_index();
-	
 
 
 };
