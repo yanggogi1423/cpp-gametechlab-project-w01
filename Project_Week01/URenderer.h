@@ -9,8 +9,15 @@
 
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
 
+struct FVertexStruct {
+    ID3D11Buffer* vertices = nullptr;
+    UINT byteWidth;
+    UINT verticesSize;
+};
 
 class URenderer {
+    
+
 public:
     URenderer() = default;
     ~URenderer() { Release(); }
@@ -34,7 +41,7 @@ public:
 
     // 버퍼 생성 및 렌더링
     ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
-    void RenderPrimitive(ID3D11Buffer* pBuffer, UINT numVertices);
+    void RenderPrimitive(FVertexStruct& vertexStruct);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
 private:
@@ -67,4 +74,5 @@ public:
     FLOAT ClearColor[4] = { 0.025f, 0.025f, 0.025f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     unsigned int Stride = 0;
+
 };
