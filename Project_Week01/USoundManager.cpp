@@ -147,7 +147,7 @@ void USoundManager::StopBGM()
     }
 }
 
-void USoundManager::StopAllSFX()
+void USoundManager::StopSFX()
 {
     for (auto& pair : SfxClips)
     {
@@ -161,13 +161,50 @@ void USoundManager::StopAllSFX()
     }
 }
 
-void USoundManager::StopSFX() { StopAllSFX(); }
+// USoundManager.cpp 하단부를 이 코드로 교체하세요.
 
-void USoundManager::SetBGMVolume()
+void USoundManager::LoadBGM(EBGM type, const std::string& path)
 {
+    // 이미 로드된 경우 중복 로드 방지
+    if (BgmClips.find(type) != BgmClips.end()) return;
+
+    SoundClip clip;
+    // BGM은 여러 개 겹쳐 틀 일이 없으므로 poolSize는 1이면 충분합니다.
+    CreateSoundClip(path, 1, clip);
+
+    // 생성된 클립을 창고(BgmClips)에 저장
+    if (!clip.Buffers.empty())
+    {
+        BgmClips[type] = clip;
+    }
+}
+
+void USoundManager::LoadSFX(ESFX type, const std::string& path, int poolSize)
+{
+    // 중복 로드 방지
+    if (SfxClips.find(type) != SfxClips.end()) return;
+
+    SoundClip clip;
+    // 효과음은 인자로 받은 poolSize만큼 버퍼를 생성합니다.
+    CreateSoundClip(path, poolSize, clip);
+
+    // 생성된 클립을 창고(SfxClips)에 저장
+    if (!clip.Buffers.empty())
+    {
+        SfxClips[type] = clip;
+    }
+}
+
+void USoundManager::SetBGMVolume(float volumeScale)
+{
+    if (volumeScale < 0.0f) volumeScale = 0.0f;
+    if (volumeScale > 1.0f) volumeScale = 1.0f;
+
     for (auto& pair : BgmClips)
     {
-        LONG dsVol = (LONG)((1.0f - pair.second.VolumeScale) * -10000);
+        pair.second.VolumeScale = volumeScale;
+        LONG dsVol = (LONG)((1.0f - volumeScale) * -10000);
+
         if (!pair.second.Buffers.empty() && pair.second.Buffers[0])
             pair.second.Buffers[0]->SetVolume(dsVol);
     }

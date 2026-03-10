@@ -78,6 +78,9 @@ private:
 	//	Time
 	float RemainTimer;
 
+	//  Sound
+	USoundManager m_SoundMgr;
+
 	//	Boot and Destroy - 반복 호출을 막기 위한 flag -> Flag 말고 Enum으로 변경
 	//bool bBootDone;
 	//bool bIsAlreadyDestroy;
@@ -94,7 +97,6 @@ private:
 	std::vector<FStageInfo> StageInfoList;
 	
 	/* Other Managers */
-	USoundManager* SoundManager;
 
 	/* Game Management */
 private:
@@ -130,6 +132,10 @@ private:
 
 
 public:
+	// 사운드 초기화
+	void Initialize(HWND hwnd);
+	void OnMouseClick();
+	
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
 	static std::string RandomNameGenerator()
 	{
@@ -154,14 +160,14 @@ public:
 	UManager()
 		: CurRunState(ERunstate::ERS_Boot), 
 		CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),
-		FileName("ranking.txt"),
-		SoundManager(nullptr)
+		FileName("ranking.txt")
 		//,bBootDone(false), bIsAlreadyDestroy(false)
 	{
 		BootGame();
 	}
 	~UManager()
 	{
+		m_SoundMgr.Dispose();
 		ShutDownGame();
 	}
 
@@ -173,5 +179,8 @@ public:
 	const std::vector<UPrimitive *> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
+
+
+
 
 };

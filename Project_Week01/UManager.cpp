@@ -3,6 +3,7 @@
 #include "Probe.h"
 #include "USphere.h"
 #include "datatype.h"
+#include "USoundManager.h"
 
 //	Private Functions
 
@@ -101,7 +102,7 @@ void UManager::InitGameObjects()
 	Player = new Probe();
 	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
 	
-	USphere* TestPlanet = new USphere(0.2f, 36);
+	USphere* TestPlanet = new USphere();
 	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
 	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
 
@@ -237,6 +238,34 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 
 
 //	Public Functions
+void UManager::Initialize(HWND hwnd) // 사운드 초기화
+{
+	m_SoundMgr.Initialize(hwnd);
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
+
+	m_SoundMgr.SetBGMVolume(0.3f); // 적당한 볼륨
+	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+}
+
+// 마우스 클릭 시 호출될 함수
+void UManager::OnMouseClick()
+{
+	// 세부 재생 로직은 SoundManager가 알아서 합니다.
+	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
+}
+
+// 상태 전환 시 사운드 변경 예시
+void UManager::InGameRunInit()
+{
+	CurRunState = ERunstate::ERS_InGameRun;
+	ClearGameObjects();
+	InitGameObjects();
+
+	// 게임 시작 시 음악을 바꾸고 싶다면
+	// m_SoundMgr.PlayBGM(EBGM::EBGM_InGameRun); 
+}
+
 void UManager::Update(float deltaTime)
 {
 	switch (CurRunState)

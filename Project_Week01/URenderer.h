@@ -8,15 +8,6 @@
 #include <directxmath.h>
 
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
-
-struct FVertexStruct {
-    ID3D11Buffer* vertexBuffer = nullptr;
-    ID3D11Buffer* indexBuffer = nullptr;
-    UINT byteWidth;
-    UINT verticesSize;
-};
-
-
 class URenderer {
     
 
@@ -42,8 +33,8 @@ public:
     void ReleaseConstantBuffer();
 
     // 버퍼 생성 및 렌더링
-    ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
-    void RenderPrimitive(FVertexStruct& vertexStruct);
+    //ID3D11Buffer* CreateVertexBuffer(FVertex* vertices, UINT bytewidth);
+    void indexRenderPrimitive(UINT numIndices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
 
     void CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count);

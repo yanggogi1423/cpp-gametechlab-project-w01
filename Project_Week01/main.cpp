@@ -4,9 +4,25 @@
 
 #include <windows.h>
 
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_internal.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "ImGui/imgui_impl_win32.h"
+
+#include "UImanager.h"
+
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+static UManager* g_Manager = nullptr; // 전역 UManager 포인터
+
 // 각종 메시지를 처리할 함수
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	//버튼 입력 받기 준비
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	switch (message)
 	{
 	case WM_DESTROY:
@@ -19,20 +35,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	return 0;
 }
+
+struct FVertexStruct;
+
 // 나중에 랜덤 생성
 static DirectX::XMFLOAT3 myPos = { -1.0f, -1.0f, 0.0f };
 static DirectX::XMMATRIX matScale;
 //manager
-inline void createVertexStruct(FVertexStruct& outVertexStruct, Probe probe , URenderer* renderer)
-{
-	std::vector<FVertex> probeVertices = probe.GetVertices();
-	UINT triNumVertices = probeVertices.size();
-	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
-
-	outVertexStruct.vertexBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
-
-}
-
 inline void updateConstant(URenderer * renderer )
 {
 
@@ -79,34 +88,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 각종 생성하는 코드를 여기에 추가합니다.
 
+	UManager* manager = new UManager();
+	g_Manager = manager;	
+
+	manager->Initialize(hWnd);
+
 	URenderer* renderer = new URenderer();
 	Probe probe;
 	renderer->Create(hWnd);
 	renderer->CreateShader();
-	
-	
-	FVertexStruct triangle;
-	createVertexStruct(triangle, probe, renderer);
 
 	
 	// constant 만들기
 	renderer->CreateConstantBuffer();
 
 
+	/* UI Initialization */
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init((void*)hWnd);
+	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
 
 
-	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
+	// [추가] 고정밀 타이머 변수 초기화
+	LARGE_INTEGER freq, prevTime, currTime;
+	QueryPerformanceFrequency(&freq);
+	QueryPerformanceCounter(&prevTime);
+	float deltaTime = 0.0f;
+
+	// Main Loop
 	while (bIsExit == false)
 	{
 		MSG msg;
 
-		// 처리할 메시지가 더 이상 없을때 까지 수행
+		// 메시지 처리 루프
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
-			// 키 입력 메시지를 번역
 			TranslateMessage(&msg);
-
-			// 메시지를 적절한 윈도우 프로시저에 전달, 메시지가 위에서 등록한 WndProc 으로 전달됨
 			DispatchMessage(&msg);
 
 			if (msg.message == WM_QUIT)
@@ -116,20 +135,37 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
+		if (bIsExit) break;
+
+		// DeltaTime 계산 (프레임 간 경과 시간)
+		QueryPerformanceCounter(&currTime);
+		deltaTime = static_cast<float>(currTime.QuadPart - prevTime.QuadPart) / static_cast<float>(freq.QuadPart);
+		prevTime = currTime;
+
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
 		renderer->Prepare();
 		renderer->PrepareShader();
 
+		// 3. [추가] 매니저 업데이트 (물리 계산, 플레이어 이동, 충돌 감지)
+		// 이 안에서 deltaTime을 사용하여 일정한 속도로 움직이게 됩니다.
+		manager->Update(deltaTime);
+
+		// 4. 상수 버퍼 업데이트 및 렌더링
 		updateConstant(renderer);
-		renderer->RenderPrimitive(triangle);
-			
+		renderer->RenderPrimitive(triangle); // 렌더링 호출 확인
+
 		renderer->SwapBuffer();
 		////////////////////////////////////////////
 	}
 
-	// 소멸하는 코드를 여기에 추가합니다.
+	manager->Release();
+	delete manager;
+
+	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 
 	renderer->ReleaseShader();
 	renderer->Release();

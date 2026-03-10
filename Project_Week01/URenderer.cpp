@@ -25,7 +25,8 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow) {
 
     D3D11CreateDeviceAndSwapChain(
         nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-        D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+        //D3D11_CREATE_DEVICE_BGRA_SUPPORT | D3D11_CREATE_DEVICE_DEBUG,
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT,
         featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
         &swapchaindesc, &SwapChain, &Device, nullptr, &DeviceContext
     );
@@ -117,24 +118,28 @@ void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
     }
 }
 
-ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
-    D3D11_BUFFER_DESC vertexbufferdesc = {};
-    vertexbufferdesc.ByteWidth = bytewidth;
-    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
-    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
+//    D3D11_BUFFER_DESC vertexbufferdesc = {};
+//    vertexbufferdesc.ByteWidth = bytewidth;
+//    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
+//    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+//
+//    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+//    ID3D11Buffer* vertexBuffer = nullptr;
+//
+//    Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
+//    return vertexBuffer;
+//}
 
-    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
-    ID3D11Buffer* vertexBuffer = nullptr;
 
-    Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
-    return vertexBuffer;
+
+void URenderer::indexRenderPrimitive(UINT numIndices)
+{
+    DeviceContext->DrawIndexed(numIndices,0,0);
 }
 
-void URenderer::RenderPrimitive(FVertexStruct& vertexStruct) {
-    UINT offset = 0;
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexStruct.vertexBuffer, &Stride, &offset);
-    DeviceContext->Draw(vertexStruct.verticesSize, 0);
-}
+
+
 
 void URenderer::SwapBuffer() {
     SwapChain->Present(1, 0);

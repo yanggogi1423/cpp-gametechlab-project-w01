@@ -25,7 +25,7 @@ enum class EBGM
 // 효과음 카테고리
 enum class ESFX
 {
-    ESFX_ButtonClick,
+    ESFX_MouseClick,
     ESFX_InGameStart
 };
 
@@ -45,10 +45,11 @@ public:
 
     void PlaySFX(ESFX sfx);
     void StopSFX();
-    void StopAllSFX();
 
+    void LoadBGM(EBGM type, const std::string& path);
+    void LoadSFX(ESFX type, const std::string& path, int poolSize = 5);
    
-    void SetBGMVolume();
+    void SetBGMVolume(float volumeScale);
     void SetSFXVolume();
 
     float GetBGMVolume();
