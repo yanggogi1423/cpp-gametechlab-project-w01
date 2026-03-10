@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "Probe.h"
+#include "datatype.h"
 
 
 //	Constants
@@ -85,10 +86,10 @@ private:
 	void CollsionResolution();
 
 	//	Scene Initialization
-	void MainInit();
-	void InGameReadyInit();
+	void MainInit();		//	Opening(시작 화면)으로 분기
+	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
-	void EndingInit();
+	void EndingInit(bool bIsClear);		//	Clear 혹은 사망 판정 시 호출 및 분기
 
 	//	Stage Progress
 	void ProgressStage();
@@ -100,8 +101,8 @@ private:
 
 
 	/* Non-game Management */
-	void BootGame();
-	void DestroyGame();
+	void BootGame();	//	Application 실행 시 호출 (게임 데이터 준비)
+	void DestroyGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
 	void LoadScore();

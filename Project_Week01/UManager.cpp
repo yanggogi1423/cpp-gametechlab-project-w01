@@ -16,7 +16,7 @@ void UManager::CollisionDetection()
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
 void UManager::CollsionResolution()
 {
-
+	EndingInit(false);
 }
 
 void UManager::MainInit()
@@ -38,13 +38,24 @@ void UManager::InGameRunInit()
 	CurRunState = ERunstate::ERS_InGameRun;
 
 	ClearGameObjects();
+
+	InitGameObjects();
 }
 
-void UManager::EndingInit()
+void UManager::EndingInit(bool bIsClear)
 {
 	CurRunState = ERunstate::ERS_Ending;
 
 	ClearGameObjects();
+
+	if (bIsClear)
+	{
+
+	}
+	else 
+	{
+
+	}
 }
 
 void UManager::ProgressStage()
@@ -104,12 +115,16 @@ void UManager::BootGame()
 		//	TODO : Make an error log
 		return;
 	}
-
+	
+	//	1. Local Score 로드
 	LoadScore();
 
-	//	1. 스테이지 정보 생성
+	//	2. 스테이지 정보 생성
 
-	//	2. 
+
+	//	3. 메인 State로 분기
+	MainInit();
+
 }
 
 //	외부에서 호출해줘야 함 (혹은 UManager Destructor에서 호출됨)
