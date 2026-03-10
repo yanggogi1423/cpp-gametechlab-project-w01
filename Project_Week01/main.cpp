@@ -20,8 +20,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	// 윈도우 클래스 이름
@@ -45,13 +43,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 각종 생성하는 코드를 여기에 추가합니다.
 
-	URenderer renderer;
+	URenderer* renderer = new URenderer();
 	Probe probe;
+	renderer->Create(hWnd);
 
-
-	renderer.Create(hWnd);
-
-	renderer.CreateShader();
+	renderer->CreateShader();
 
 
 
@@ -62,9 +58,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UINT triByteWidth = static_cast<UINT>(sizeof(FVertex) * triNumVertices);
 
 	// vertex 만듬
-	triangleBuffer = renderer.CreateVertexBuffer(probeVertices.data(), triByteWidth);
+	triangleBuffer = renderer->CreateVertexBuffer(probeVertices.data(), triByteWidth);
 	
+	// constant 만들기
+	renderer->CreateConstantBuffer();
 
+	FVector cons(1.0f, 1.0f, 1.0f);
+	FConstants fCons(cons);
+	
+	renderer->UpdateConstant(fCons);
 
 
 	// Main Loop (Quit Message가 들어오기 전까지 아래 Loop를 무한히 실행하게 됨)
@@ -88,15 +90,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
+
+
 		////////////////////////////////////////////
 		// 매번 실행되는 코드를 여기에 추가합니다.
 
-		renderer.RenderPrimitive(triangleBuffer, triNumVertices);
+		renderer->Prepare();
+		renderer->PrepareShader();
 
+
+		renderer->RenderPrimitive(triangleBuffer, triNumVertices);
+
+		renderer->SwapBuffer();
 		////////////////////////////////////////////
 	}
 
 	// 소멸하는 코드를 여기에 추가합니다.
 
+	renderer->ReleaseShader();
+	renderer->Release();
+
+	delete renderer;
 	return 0;
 }
