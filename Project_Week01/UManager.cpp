@@ -1,8 +1,4 @@
 #include "UManager.h"
-#include "UPrimitive.h"
-#include "Probe.h"
-#include "USphere.h"
-#include "datatype.h"
 
 //	Private Functions
 
@@ -94,7 +90,12 @@ void UManager::ProgressStage()
 
 	ClearGameObjects();
 }
+// probe sphere initialize
 
+
+
+
+// TODO 수정해야함
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
@@ -120,7 +121,7 @@ void UManager::ClearGameObjects()
 	}
 	Player = nullptr;
 
-	for (auto planet : PlanetList)
+	for (auto& planet : PlanetList)
 	{
 		if (planet) delete planet;
 	}
@@ -262,4 +263,41 @@ void UManager::Update(float deltaTime)
 	}
 
 }
+
+void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
+{
+
+	switch (rt)
+	{
+	case PROBE:
+		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride ,scale);
+		break;
+	case SPHERE:
+		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride , scale);
+		break;
+	default:
+		break;
+	}
+
+}
+
+MeshResource UManager::getProbeResource() const
+{	
+	return ProbeResource;
+}
+MeshResource UManager::getSphereResource() const
+{	
+	return SphereResource;
+}
+
+void UManager::setProbeResource(const MeshResource& mr)
+{
+	this->ProbeResource = mr;
+}
+void UManager::setSphereResource(const MeshResource& mr)
+{
+	this->SphereResource = mr;
+}
+
+
 
