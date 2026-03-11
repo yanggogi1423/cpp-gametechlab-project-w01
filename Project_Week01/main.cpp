@@ -10,6 +10,7 @@
 #include "UResourceManager.h"
 #include "StateMachine.h"
 #include "BootState.h"
+#include "EndingState.h"
 
 #pragma region __DEBUG_CONSOLE__
 
@@ -134,6 +135,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	StateMachine stateMachine;
 	stateMachine.Initialize(new BootState(), manager);
+	//stateMachine.Initialize(new EndingState(), manager);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;

@@ -3,6 +3,7 @@
 
 EndingState::EndingState() : FileName("ranking.txt")
 {
+	nextState = this;
 }
 
 void EndingState::OnEnter(UManager* manager)
@@ -13,8 +14,9 @@ void EndingState::OnEnter(UManager* manager)
 
 
 	UIFrame& scoreFrame = uiManager->CreateFrame("Score")
-		.Position(ImVec2(100, 100))
-		.Size(ImVec2(500, 200));
+		.Position(ImVec2(175, 100))
+		.Size(ImVec2(1050, 625))
+		.NoTitleBar(true);
 
 	const int displayCount = 10;
 	int maxCount = min(displayCount, ScoreList.size());
@@ -22,22 +24,48 @@ void EndingState::OnEnter(UManager* manager)
 	for (int i = 0; i < maxCount; i++)
 	{
 		auto name = std::get<1>(ScoreList[i]);
-		scoreFrame.AddText(name, ImVec2(30, i * 20.f), ResourceManager->FontDefault);
+		scoreFrame.AddText(name, ImVec2(120, i * 20.f), ResourceManager->FontInfoRegular);
 	}
 
+	auto buttonFrameWidth = 1050;
+	auto buttonFrameHeight = 200;
 	UIFrame& buttonFrame = uiManager->CreateFrame("Button")
-		.Position(ImVec2(100, 300))
-		.Size(ImVec2(500, 200));
+		.Position(ImVec2(175, 675))
+		.Size(ImVec2(buttonFrameWidth, buttonFrameHeight))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0.f, 0.f, 0.f, 0.f));
 
-	buttonFrame.AddButton("ShutDown", ImVec2(50, 50), ImVec2(50, 50), [&] {ShutDownGame(); });
-	buttonFrame.AddButton("Retry", ImVec2(50, 150), ImVec2(50, 50), [&] {nextState = new InGameReadyState(); });
-	buttonFrame.AddButton("StageSelect", ImVec2(50, 250), ImVec2(50, 50), [&] {nextState = new StageSelectionState(); });
+	auto buttonSize = 180.f;
+	auto buttonYPos = 100.f;
+	auto gap = 300;
+
+	buttonFrame.AddSpriteButton("GoToMain", 
+		ResourceManager->SRVButtonSprite, 
+		ImVec2(buttonFrameWidth * 0.5f - gap, buttonYPos), 
+		ImVec2(buttonSize, buttonSize), 
+		17, 
+		[&] {goToMain = true; }
+	);
+	buttonFrame.AddSpriteButton("Retry", 
+		ResourceManager->SRVButtonSprite, 
+		ImVec2(buttonFrameWidth * 0.5f, buttonYPos), 
+		ImVec2(buttonSize, buttonSize), 
+		11, 
+		[&] {retry = true; }
+	);
+	buttonFrame.AddSpriteButton("StageSelect", 
+		ResourceManager->SRVButtonSprite, 
+		ImVec2(buttonFrameWidth * 0.5f + gap, buttonYPos), 
+		ImVec2(buttonSize, buttonSize), 
+		39, 
+		[&] {stageSelect = true; }
+	);
 }
 
 IState* EndingState::Update(float deltaTime, UManager* manager)
 {
-	nextState = this;
-	return nextState;
+		
+	return this;
 }
 
 void EndingState::Render(URenderer* renderer, UManager* manager)
