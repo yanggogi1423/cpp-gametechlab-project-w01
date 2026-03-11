@@ -158,7 +158,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 
 		// 3. 속도 업데이트
-		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
+		player->SetVelocity(player->GetVelocity() + accVec);
 	}
 
 	auto pos = player->GetLocation();
@@ -168,7 +168,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
 
 	auto curLocation = player->GetLocation();
-	player->SetLocation((curLocation + player->GetVelocity()) * deltaTime);
+	player->SetLocation(curLocation+ player->GetVelocity() * deltaTime);
 
 
 
