@@ -1,9 +1,26 @@
 #include "USphere.h"
 #include <cmath>
 
+int USphere::count = 1;
 
 USphere::USphere()
 {
+    //enum ImageName
+    //{
+    //    ROCKET,
+    //    BLACK_SPHERE,
+    //    WHITE_SPHERE,
+    //    JUPITER,
+    //    SATURN,
+    //    SUN,
+    //    GOAL,
+    //    COUNT
+    //};
+    imageName = static_cast<ImageName>(count);
+    count++;
+    if (count >= ImageName::GOAL) {
+        count = ImageName::BLACK_SPHERE;
+    }
 }
 
 DirectX::XMMATRIX USphere::GetTransformMatrix()
