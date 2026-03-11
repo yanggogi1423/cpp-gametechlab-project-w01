@@ -256,7 +256,7 @@ void UManager::OnMouseClick()
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
 }
 
-UManager::UManager(ID3D11Device* device)
+UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
 	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device , deviceContext);

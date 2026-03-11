@@ -64,7 +64,7 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 
 	// 2. 행성들 렌더링
 	MeshResource* sphereRes = manager->getSphereResource();
-	for (const auto& planet : manager->GetPlanetList()) {
+	for (auto& planet : manager->GetPlanetList()) {
 		renderer->UpdateConstant(planet.GetTransformMatrix());
 		renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
 	}

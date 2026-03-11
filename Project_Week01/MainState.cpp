@@ -4,13 +4,13 @@
 
 void MainState::OnEnter(UManager* manager)
 {
-	//uiManager = new UIManager();
+	uiManager = new UIManager();
 
-	//UIFrame& bgFrame = uiManager->CreateFrame("MainState")
-	//	.Position(ImVec2(0, 0))
-	//	.Size(ImVec2(1400, 1050))
-	//	.NoTitleBar(true)
-	//	.BackgroundColor(ImVec4(0, 0, 0, 0));
+	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
 
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));

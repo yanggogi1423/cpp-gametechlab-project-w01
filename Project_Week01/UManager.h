@@ -155,7 +155,7 @@ private:
 
 
 	/* Non-game Management */
-	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
+	//void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
 
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
@@ -173,9 +173,9 @@ public:
 	void ClearGameObjects();
 	void ComputePhysicsAndApply(float deltaTime);
 
-	// Score 관련
-	void DisplayScore(std::string name, unsigned int score);
+	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
+	
 	//	Collision 관련
 	void CollisionDetection();
 	void CollsionResolution();

@@ -47,7 +47,7 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 	MeshResource* sphereRes = manager->getSphereResource();
 	if (sphereRes->VB != nullptr)
 	{
-		for (const auto& planet : manager->GetPlanetList())
+		for ( auto& planet : manager->GetPlanetList())
 		{
 			renderer->UpdateConstant(planet.GetTransformMatrix());
 			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
