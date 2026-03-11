@@ -42,6 +42,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		{
 			player->SetColliding(true);
 			manager->SetSuccess(false);
+			manager->PlaySFX(ESFX::ESFX_Clear);
 			return new EndingState();
 		}
 	}
@@ -51,6 +52,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	if (goalDist < 0.15f)
 	{
 		manager->SetSuccess(true);
+		manager->PlaySFX(ESFX::ESFX_Fail);
 		return new EndingState();
 	}
 
