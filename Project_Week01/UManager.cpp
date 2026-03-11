@@ -363,8 +363,15 @@ UManager::UManager(ID3D11Device* device)
 	//,bBootDone(false), bIsAlreadyDestroy(false)
 {
 	BootGame(device);
+
+	// vertex init
 	ProbeResource.GenerateTriangle();
 	SphereResource.GenerateSphere();
+
+	// planet list
+	// usphere 초기화를 해야하는데....
+	PlanetList = std::vector<USphere>(50);
+
 }
 
 void UManager::Update(float deltaTime)

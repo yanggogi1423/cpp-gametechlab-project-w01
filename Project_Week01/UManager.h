@@ -134,7 +134,7 @@ private:
 
 	/* GameObjects */
 	Probe* Player;
-	std::vector<USphere*> PlanetList;	//	이후에 template 수정할 수도 있음
+	std::vector<USphere> PlanetList;	//	이후에 template 수정할 수도 있음
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
