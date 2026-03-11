@@ -15,12 +15,12 @@ FVector PlayerInput::GetMousePosition()
     float mouseX = io.MousePos.x;
     float mouseY = io.MousePos.y;
 
-	float width = io.DisplaySize.x;
+	float width = 1050.f;
 	float height = io.DisplaySize.y;
 
 
 	//-1 ~ 1 사이 좌표 리턴
-	return FVector((mouseX / width - 0.5f) * 2.f, (mouseY / height - 0.5f) * 2.f, 0.f);
+	return FVector((mouseX / width - 0.5f) * 2.f, -(mouseY / height - 0.5f) * 2.f, 0.f);
 }
 
 //클릭

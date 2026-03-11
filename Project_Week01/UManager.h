@@ -17,7 +17,6 @@
 #include "USphere.h"
 #include "UResourceManager.h"
 #include "PlayerInput.h"
-#include "UPlanetPlacementManager.h"
 #include "IState.h"
 #include "Goal.h"
 
@@ -139,7 +138,7 @@ private:
 	
 	/* Other Managers */
 	UResourceManager* ResourceManager;
-	UPlanetPlacementManager* PlanetPlacementManager;
+	
 
 	/* Player Inputs */
 	PlayerInput* InputManager;

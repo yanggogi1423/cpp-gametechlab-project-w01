@@ -1,10 +1,110 @@
 #include "InGameRunState.h"
 #include "UManager.h" // 매니저의 자원 접근을 위해 포함
 
+#include "MainState.h"
+#include "InGameReadyState.h"
+
 void InGameRunState::OnEnter(UManager* manager)
 {
 	// 1. [이사 완료] UManager::InGameRunInit 로직
 	// 이제 이 상태에 진입한 것 자체가 'InGameRun'이 시작되었음을 의미합니다.
+
+	// 5. UI 초기화 (기존 로직 유지)
+	uiManager = new UIManager();
+
+	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	//	Background
+	const int tileSize = 350;
+	const int segX = WindowWidth / tileSize;   // 20
+	const int segY = WindowHeight / tileSize;  // 15
+
+	for (int y = 0; y < segY; y++)
+	{
+		for (int x = 0; x < segX; x++)
+		{
+			bgFrame.AddImage(
+				manager->GetResourceManager()->GetTexture("Background"),
+				ImVec2((float)(tileSize * x), (float)(tileSize * y)),
+				ImVec2((float)tileSize, (float)tileSize)
+			);
+		}
+	}
+
+	UIFrame& HUDFrame = uiManager->CreateFrame("Ready Phase")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(WindowWidth, WindowHeight))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+	HUDFrame.AddImage(manager->GetResourceManager()->SRVInGamePanel,
+		ImVec2(WindowWidth * 3 / 4.f, 0),
+		ImVec2(WindowWidth / 4, WindowHeight)
+	);
+
+	HUDFrame.AddText("Simulating...",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
+		manager->GetResourceManager()->FontInfoLight);
+
+	//std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
+
+	//HUDFrame.AddText("Remain Time : " + timerText,
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+	//	manager->GetResourceManager()->FontInfoLight);
+
+	//HUDFrame.AddImageButton("Planet 1",
+	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 220),
+	//	ImVec2(100, 100),
+	//	[&]() {
+	//		USphere* newPlanet = new USphere();
+	//		PlanetPlacementManager->SetSelectedPlanet(newPlanet);
+	//	}
+	//);
+
+
+	//HUDFrame.AddImageButton("Start",
+	//	manager->GetResourceManager()->SRVLeaderBoardPanel,
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+	//	ImVec2(100, 50),
+	//	[&]() {
+	//		bGoToStart = true;
+	//	}
+	//);
+	//HUDFrame.AddText("Start",
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+	//	manager->GetResourceManager()->FontInfoLight);
+
+	HUDFrame.AddImageButton("Retry",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToRetry = true;
+		}
+	);
+	HUDFrame.AddText("Retry",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		manager->GetResourceManager()->FontInfoLight);
+
+
+	HUDFrame.AddImageButton("Home",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToMain = true;
+		}
+	);
+	HUDFrame.AddText("Home",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		manager->GetResourceManager()->FontInfoLight);
 }
 
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
@@ -67,11 +167,27 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		return new EndingState();
 	}
 
-	 return nextState;
+	if (bGoToMain)
+	{
+		nextState = new MainState();
+	}
+	else if (bGoToRetry)
+	{
+		nextState = new InGameReadyState();
+	}
+
+
+	return nextState;
 }
 
 void InGameRunState::Render(URenderer* renderer, UManager* manager)
 {
+	// 4. [이사 완료] main.cpp에 있던 3D 객체 렌더링 루프
+
+	// (3) UI 렌더링 (필요 시)
+	if (uiManager) uiManager->Render();
+
+	// (1) 플레이어(Probe) 렌더링
 	Probe* pPlayer = manager->GetProbe();
 	if (pPlayer != nullptr)
 	{
@@ -79,7 +195,8 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		MeshResource* probeRes = manager->getProbeResource();
 		if (probeRes->VB != nullptr)
 		{
-			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+			renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			//renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 		}
 	}
 
@@ -89,11 +206,12 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		for ( auto& planet : manager->GetPlanetList())
 		{
 			renderer->UpdateConstant(planet.GetTransformMatrix());
-			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			//renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 		}
 	}
 
-	if (uiManager) uiManager->Render();
+	
 }
 
 void InGameRunState::OnExit(UManager* manager)

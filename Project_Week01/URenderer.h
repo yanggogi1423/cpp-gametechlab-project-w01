@@ -58,6 +58,8 @@ private:
 
     // 안쓰는 렌더러
     void RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount);
+
+public:
     void indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices);
 public:
     // 주요 D3D11 인터페이스

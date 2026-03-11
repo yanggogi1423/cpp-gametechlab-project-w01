@@ -11,6 +11,26 @@
 #include "StateMachine.h"
 #include "BootState.h"
 
+#pragma region __DEBUG_CONSOLE__
+
+#include <iostream>
+
+void CreateConsole()
+{
+	AllocConsole();
+
+	FILE* fp;
+	freopen_s(&fp, "CONOUT$", "w", stdout);
+	freopen_s(&fp, "CONOUT$", "w", stderr);
+	freopen_s(&fp, "CONIN$", "r", stdin);
+
+	std::cout.clear();
+	std::cerr.clear();
+	std::cin.clear();
+}
+
+#pragma endregion
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 inline void createBuffer(UManager* manager, URenderer* renderer)
@@ -81,6 +101,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		hInstance,
 		nullptr
 	);
+
+#pragma region __DEBUG_CONSOLE__
+	
+	CreateConsole();
+	std::cout << "Debug Console Initialized!" << std::endl;
+
+#pragma endregion
 
 	// 1. 매니저 및 렌더러 생성
 

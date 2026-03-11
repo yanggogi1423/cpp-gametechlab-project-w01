@@ -1,17 +1,30 @@
 #include "InGameReadyState.h"
 #include "UManager.h" // 매니저의 자원 접근을 위해 포함
 
+#include "MainState.h"
+#include "InGameRunState.h"
+
+#pragma region __DEBUG_CONSOLE__
+#include <iostream>
+#pragma endregion
+
 void InGameReadyState::OnEnter(UManager* manager)
 {
+	/* Placement Manager */
+
+	PlanetPlacementManager = new UPlanetPlacementManager(manager);
+
 	// 1. 기존 객체 제거 (ClearGameObjects는 public으로 변경 필요)
 	manager->ClearGameObjects();
+
 
 	// 2. 스테이지 정보 추출 (필요한 Getter 추가가 필수적입니다)
 	// CurStage와 StageInfoList는 현재 private이므로 Getter를 통해 가져와야 합니다.
 	int StageIdx = (int)manager->GetCurStage() - 1;
 	const auto& stageInfoList = manager->GetStageInfoList();
 
-	if (StageIdx < 0 || StageIdx >= (int)stageInfoList.size()) return;
+
+	if (StageIdx < 0 || StageIdx >= (int)stageInfoList.size()) return; 
 
 	const FStageInfo& stageInfo = stageInfoList[StageIdx];
 	manager->SetRemainTimer(stageInfo.MaxTime); // 타이머 설정
@@ -81,17 +94,116 @@ void InGameReadyState::OnEnter(UManager* manager)
 	}
 	player->SetScale(0.1f);
 
+
 	// 5. UI 초기화 (기존 로직 유지)
 	uiManager = new UIManager();
-	UIFrame& readyFrame = uiManager->CreateFrame("Ready Phase")
-		.Position(ImVec2(10, 10))
-		.Size(ImVec2(200, 100));
+
+	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	//	Background
+	const int tileSize = 350;
+	const int segX = WindowWidth / tileSize;   // 20
+	const int segY = WindowHeight / tileSize;  // 15
+
+	for (int y = 0; y < segY; y++)
+	{
+		for (int x = 0; x < segX; x++)
+		{
+			bgFrame.AddImage(
+				manager->GetResourceManager()->GetTexture("Background"),
+				ImVec2((float)(tileSize * x), (float)(tileSize * y)),
+				ImVec2((float)tileSize, (float)tileSize)
+			);
+		}
+	}
+
+	UIFrame& HUDFrame = uiManager->CreateFrame("Ready Phase")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(WindowWidth, WindowHeight))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+	HUDFrame.AddImage(manager->GetResourceManager()->SRVInGamePanel,
+		ImVec2(WindowWidth * 3 / 4.f, 0),
+		ImVec2(WindowWidth / 4, WindowHeight)
+	);
+
+	HUDFrame.AddImageButton("Planet 1",
+		manager->GetResourceManager()->GetTexture(ImageName::SATURN),
+		ImVec2(WindowWidth * 3 / 4.f + 150, 220),
+		ImVec2(100, 100),
+		[&]() {
+			USphere* newPlanet = new USphere();
+			PlanetPlacementManager->SetSelectedPlanet(newPlanet);
+		}
+	); 
+
+
+	HUDFrame.AddImageButton("Start",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToStart = true;
+		}
+	);
+	HUDFrame.AddText("Start",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+		manager->GetResourceManager()->FontInfoLight);
+
+	HUDFrame.AddImageButton("Retry",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToRetry = true;
+		}
+	);
+	HUDFrame.AddText("Retry",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		manager->GetResourceManager()->FontInfoLight);
+
+
+	HUDFrame.AddImageButton("Home",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToMain = true;
+		}
+	);
+	HUDFrame.AddText("Home",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		manager->GetResourceManager()->FontInfoLight);
+
 }
 
 IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
 	// 준비 단계에서는 마우스 클릭으로 행성을 배치하는 로직 등을 추가할 수 있습니다.
+
+	if(bGoToMain)
+	{
+		nextState = new MainState();
+	}
+	else if (bGoToRetry)
+	{
+		nextState = new InGameReadyState();
+	}
+	else if (bGoToStart)
+	{
+		nextState = new InGameRunState();
+	}
+
+	PlanetPlacementManager->Update(deltaTime);
+
 	return nextState;
 }
 
@@ -99,23 +211,47 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 // texture 렌더링
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
+	if (uiManager) 
+	{
+		uiManager->Render();
+		//std::cout << "UI Manager Rendered!" << std::endl;
+	}
+	//else std::cout << "UI Manager is null!" << std::endl;
 
 	// 1. 플레이어 렌더링
 	Probe* pPlayer = manager->GetProbe();
+
+	//if (pPlayer == nullptr) {
+	//	std::cout << "Player is null!" << std::endl;
+	//}
+
 	if (pPlayer) {
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* res = manager->getProbeResource();
-		renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		//renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		renderer->indexRenderPrimitive(res->VB, res->IB, res->IndexCount);
 	}
 
 	// 2. 행성들 렌더링
 	MeshResource* sphereRes = manager->getSphereResource();
 	for (auto& planet : manager->GetPlanetList()) {
 		renderer->UpdateConstant(planet.GetTransformMatrix());
-		renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+		renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+		//renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 	}
 
-	if (uiManager) uiManager->Render();
+	if (PlanetPlacementManager->IsPlacable())
+	{
+		USphere* selectedPlanet = PlanetPlacementManager->GetSelectedPlanet();
+		if (selectedPlanet)
+		{
+			renderer->UpdateConstant(selectedPlanet->GetTransformMatrix());
+			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			//renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(selectedPlanet->getImageName()));
+		}
+	}
+
+	
 }
 
 void InGameReadyState::OnExit(UManager* manager)
