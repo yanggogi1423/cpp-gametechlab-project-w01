@@ -3,6 +3,7 @@
 
 class StageSelectionState : public IState
 {
+public:
 	StageSelectionState() = default;
 	virtual ~StageSelectionState() = default;
 	void OnEnter() override;

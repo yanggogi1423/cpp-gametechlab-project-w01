@@ -131,8 +131,8 @@ private:
 	//bool bIsAlreadyDestroy;
 
 private:
-	const std::string FileName;
-	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
+	//const std::string FileName; EndingState로 이동
+	//std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList; EndingState로 이동
 
 	/* GameObjects */
 	Probe* Player;
@@ -159,12 +159,14 @@ private:
 	void StageSelectInit();	//	Stage Select 화면으로 분기
 	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
-	void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
+
+	//EndingState
+	//void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
 	
 	// Stage Progression
 	void ProgressStage();
 	void InitGameObjects();
-	void ClearGameObjects();
+	void ClearGameObjects(); //InGameRunExit
 
 	//	Game Logic
 
@@ -197,24 +199,26 @@ public:
 	void OnNextStageClicked();
 
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
-	static std::string RandomNameGenerator()
-	{
-		const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		const int appendLength = 8;
+	// 
+	// EndingState
+	//static std::string RandomNameGenerator()
+	//{
+	//	const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	//	const int appendLength = 8;
 
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
+	//	std::random_device rd;
+	//	std::mt19937 mt(rd());
+	//	std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
 
-		std::string name = "User_";
+	//	std::string name = "User_";
 
-		for (int i = 0; i < appendLength; i++)
-		{
-			name += charSet[dist(mt)];
-		}
+	//	for (int i = 0; i < appendLength; i++)
+	//	{
+	//		name += charSet[dist(mt)];
+	//	}
 
-		return name;
-	}
+	//	return name;
+	//}
 
 	/* Cons, Des */
 	UManager(ID3D11Device * device);

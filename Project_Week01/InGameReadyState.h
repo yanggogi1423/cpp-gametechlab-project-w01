@@ -3,6 +3,7 @@
 
 class InGameReadyState : public IState
 {
+public:
 	InGameReadyState() = default;
 	virtual ~InGameReadyState() = default;
 	void OnEnter() override;

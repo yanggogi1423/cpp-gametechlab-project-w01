@@ -103,26 +103,26 @@ void UManager::InGameRunInit()
 //	Stage를 클리어하거나, 플레이어가 사망했을 때 호출
 //	bIsClear는 클리어 여부를 담음. (main에서 호출됨) -> default parameter를 고려하여 설계
 //	name은 사용자에게 직접 입력 받습니다.
-void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
-{
-	CurRunState = ERunstate::ERS_Ending;
-
-	ClearGameObjects();
-
-	if (bIsClear)
-	{
-		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
-	}
-	else
-	{
-		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
-	}
-
-	
-
-	//	Score Display
-	DisplayScore(name, score);
-}
+//void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
+//{
+//	CurRunState = ERunstate::ERS_Ending;
+//
+//	ClearGameObjects();
+//
+//	if (bIsClear)
+//	{
+//		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
+//	}
+//	else
+//	{
+//		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
+//	}
+//
+//	
+//
+//	//	Score Display
+//	DisplayScore(name, score);
+//}
 
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
@@ -149,19 +149,19 @@ void UManager::InitGameObjects()
 
 //	모든 오브젝트 삭제
 //	RunState와 Stage 상태 변동시 항상 적용
-void UManager::ClearGameObjects()
-{
-	if (Player)
-	{ 
-		delete Player; 
-		Player = nullptr;
-	}
-
-	PlanetList.clear();
-
-	//	Reserve size
-	PlanetList.reserve(PlanetListReservedSize);
-}
+//void UManager::ClearGameObjects()
+//{
+//	if (Player)
+//	{ 
+//		delete Player; 
+//		Player = nullptr;
+//	}
+//
+//	PlanetList.clear();
+//
+//	//	Reserve size
+//	PlanetList.reserve(PlanetListReservedSize);
+//}
 
 void UManager::ComputePhysicsAndApply(float deltaTime)
 {
@@ -191,7 +191,7 @@ void UManager::BootGame(ID3D11Device * device)
 	}
 	
 	//	1. Local Score 및 ResourceManager 로드
-	LoadScore();
+	//LoadScore(); //-> EndingState로 이동
 	ResourceManager = new UResourceManager();
 	ResourceManager->Initialize(device);
 
@@ -208,102 +208,107 @@ void UManager::BootGame(ID3D11Device * device)
 }
 
 //	외부에서 호출해줘야 함 (혹은 UManager Destructor에서 호출됨)
-void UManager::ShutDownGame()
-{
-	if (CurRunState == ERunstate::ERS_Destroy) 
-	{
-		//	TODO : Make an error log
-		return;
-	}
-
-	SaveScore();
-
-
-
-	//	1. Heap 해제
-	ResourceManager->Release();
-
-	CurRunState = ERunstate::ERS_Destroy;
-}
+// EndingState로 이동
+//void UManager::ShutDownGame()
+//{
+//	if (CurRunState == ERunstate::ERS_Destroy) 
+//	{
+//		//	TODO : Make an error log
+//		return;
+//	}
+//
+//	SaveScore();
+//
+//
+//
+//	//	1. Heap 해제
+//	ResourceManager->Release();
+//
+//	CurRunState = ERunstate::ERS_Destroy;
+//}
 
 /* Non-game Management */
 //	DataStruct : <stage>,<nickname>,<score> (CSV-like based txt)
 //	실행 시에만 Load
-void UManager::LoadScore()
-{
-	ScoreList.clear();
-
-	std::ifstream ifs(FileName);
-	std::string line;
-
-
-	while (std::getline(ifs, line))
-	{
-		std::stringstream ss(line);
-
-		unsigned int stage;
-		std::string name;
-		unsigned int score;
-
-		char dummy;
-
-		//	구분자 : ,
-		ss >> stage;
-		ss >> dummy;	//	첫 번째 ',' 가짐
-		std::getline(ss, name, ',');
-		ss >> score;
-
-		ScoreList.push_back({ stage, name, score });
-	}
-
-	ifs.close();
-}
+// EndingState로 이동
+//void UManager::LoadScore()
+//{
+//	ScoreList.clear();
+//
+//	std::ifstream ifs(FileName);
+//	std::string line;
+//
+//
+//	while (std::getline(ifs, line))
+//	{
+//		std::stringstream ss(line);
+//
+//		unsigned int stage;
+//		std::string name;
+//		unsigned int score;
+//
+//		char dummy;
+//
+//		//	구분자 : ,
+//		ss >> stage;
+//		ss >> dummy;	//	첫 번째 ',' 가짐
+//		std::getline(ss, name, ',');
+//		ss >> score;
+//
+//		ScoreList.push_back({ stage, name, score });
+//	}
+//
+//	ifs.close();
+//}
 
 //	Vector 정렬 후 File 형식에 맞추어 Parsing
 //	이는 Shutdown
-void UManager::SaveScore()
-{
-	std::ofstream ofs(FileName);
-	// ScoreList 튜플 구조 <Stage, Name, Score>에 맞춰 저장합니다.
-	for (const auto& s : ScoreList)
-	{
-		ofs << std::get<0>(s) << "," << std::get<1>(s) << "," << std::get<2>(s) << "\n";
-	}
-	ofs.close();
-}
+// 	EndingState로 이동
+//void UManager::SaveScore()
+//{
+//	std::ofstream ofs(FileName);
+//	// ScoreList 튜플 구조 <Stage, Name, Score>에 맞춰 저장합니다.
+//	for (const auto& s : ScoreList)
+//	{
+//		ofs << std::get<0>(s) << "," << std::get<1>(s) << "," << std::get<2>(s) << "\n";
+//	}
+//	ofs.close();
+//}
 
 //	File이 아닌 Runtime Vector를 통해 읽어옴
-void UManager::DisplayScore(std::string name, unsigned int score)
-{
-	int stage = -1;
-	switch (CurStage)
-	{
-	case EStage::ES_Stage1:
-		stage = 1;
-		break;
-	case EStage::ES_Stage2:
-		stage = 2;
-		break;
-	case EStage::ES_Stage3:
-		stage = 3;
-		break;
-	default:
-		break;
-	}
-	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-	ScoreList.push_back({ stage, name, score });
-	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
-		{
-			//	다른 스테이지일 경우 Sort하지 않음
-			//	Display 시에도 Stage로 filtering하면 됨
-			if (std::get<0>(a) != std::get<0>(b)) return false;
-
-			return std::get<2>(a) < std::get<2>(b);
-		}
-	);
-
-	//	TODO : Imgui를 통해 display
-}
+// 
+//EndingState로 이동
+//void UManager::DisplayScore(std::string name, unsigned int score)
+//{
+//	int stage = -1;
+//	switch (CurStage)
+//	{
+//	case EStage::ES_Stage1:
+//		stage = 1;
+//		break;
+//	case EStage::ES_Stage2:
+//		stage = 2;
+//		break;
+//	case EStage::ES_Stage3:
+//		stage = 3;
+//		break;
+//	default:
+//		break;
+//	}
+//	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
+//	ScoreList.push_back({ stage, name, score });
+//	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
+//		{
+//			//	다른 스테이지일 경우 Sort하지 않음
+//			//	Display 시에도 Stage로 filtering하면 됨
+//			if (std::get<0>(a) != std::get<0>(b)) return false;
+//
+//			return std::get<2>(a) < std::get<2>(b);
+//		}
+//	);
+//
+//	//	TODO : Imgui를 통해 display
+//}
 
 
 void UManager::CreateNewPlanetWorld(USphere& in)
@@ -324,25 +329,26 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
 }
 
-void UManager::ProgressStage()
-{
-	switch (CurAvailableStage)
-	{
-	case EStage::ES_Stage1:
-		CurAvailableStage = EStage::ES_Stage2;
-		break;
-
-	case EStage::ES_Stage2:
-		CurAvailableStage = EStage::ES_Stage3;
-		break;
-
-	case EStage::ES_Stage3:
-		//	Do nothing
-		break;
-	}
-
-	ClearGameObjects();
-}
+//EndingState
+//void UManager::ProgressStage()
+//{
+//	switch (CurAvailableStage)
+//	{
+//	case EStage::ES_Stage1:
+//		CurAvailableStage = EStage::ES_Stage2;
+//		break;
+//
+//	case EStage::ES_Stage2:
+//		CurAvailableStage = EStage::ES_Stage3;
+//		break;
+//
+//	case EStage::ES_Stage3:
+//		//	Do nothing
+//		break;
+//	}
+//
+//	ClearGameObjects();
+//}
 
 // 마우스 클릭 시 호출될 함수
 void UManager::OnMouseClick()
@@ -386,16 +392,17 @@ void UManager::OnStageSelected(EStage selected)
 }
 
 // 결과 화면 시 호출될 함수
-void UManager::OnStageResult(bool bSuccess) 
-{
-	ProgressStage();
-
-	unsigned int finalScore = 0;
-	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
-	else finalScore = 0;
-
-	EndingInit(bSuccess, finalScore, RandomNameGenerator());
-}
+// EndingState로 이동 
+//void UManager::OnStageResult(bool bSuccess) 
+//{
+//	ProgressStage();
+//
+//	unsigned int finalScore = 0;
+//	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
+//	else finalScore = 0;
+//
+//	EndingInit(bSuccess, finalScore, RandomNameGenerator());
+//}
 
 
 /* Cons, Des */
