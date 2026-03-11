@@ -72,6 +72,8 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 
 	}
 
+	
+
 	//	Score Display
 	DisplayScore(name, score);
 }
@@ -207,7 +209,7 @@ void UManager::ShutDownGame()
 }
 
 /* Non-game Management */
-//	DataStruct : <nickname>,<score> (CSV-like based txt)
+//	DataStruct : <stage>,<nickname>,<score> (CSV-like based txt)
 //	실행 시에만 Load
 void UManager::LoadScore()
 {
@@ -216,31 +218,38 @@ void UManager::LoadScore()
 	std::ifstream ifs(FileName);
 	std::string line;
 
+
 	while (std::getline(ifs, line))
 	{
 		std::stringstream ss(line);
 
+		unsigned int stage;
 		std::string name;
 		unsigned int score;
 
+		char dummy;
+
 		//	구분자 : ,
+		ss >> stage;
+		ss >> dummy;	//	첫 번째 ',' 가짐
 		std::getline(ss, name, ',');
 		ss >> score;
 
-		ScoreList.push_back({ name, score });
+		ScoreList.push_back({ stage, name, score });
 	}
 
 	ifs.close();
 }
 
 //	Vector 정렬 후 File 형식에 맞추어 Parsing
+//	이는 Shutdown
 void UManager::SaveScore()
 {
 	std::ofstream ofs(FileName);
 
 	for (auto s : ScoreList)
 	{
-		ofs << s.first << "," << s.second << "\n";
+		ofs << std::get<1>(s) << "," << std::get<1>(s) << "\n";
 	}
 
 	ofs.close();
@@ -249,11 +258,26 @@ void UManager::SaveScore()
 //	File이 아닌 Runtime Vector를 통해 읽어옴
 void UManager::DisplayScore(std::string name, unsigned int score)
 {
+	int stage = -1;
+	switch (CurStage)
+	{
+	case EStage::ES_Stage1:
+		stage = 1;
+		break;
+	case EStage::ES_Stage2:
+		stage = 2;
+		break;
+	case EStage::ES_Stage3:
+		stage = 3;
+		break;
+	default:
+		break;
+	}
 	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-	ScoreList.push_back({ name, score });
-	std::sort(ScoreList.begin(), ScoreList.end(), [](const std::pair<std::string, unsigned int>& a, const std::pair<std::string, unsigned int>& b)
+	ScoreList.push_back({ stage, name, score });
+	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
 		{
-			return a.second < b.second;
+			return std::get<2>(a) < std::get<2>(b);
 		}
 	);
 
