@@ -7,11 +7,20 @@ public:
 	MainState() = default;
 	~MainState() = default;
 	void OnEnter(UManager * manager) override;
-	IState* Update(URenderer* renderer) override;
-	void OnExit() override;
+	IState* Update(float deltaTime, UManager* manager) override;
+	void Render(URenderer* renderer, UManager* manager) override;
+	void OnExit(UManager* manager) override;
 
+	//	LOGO Animation
+	const float TopOffsetY = -25.f;
+	const float BottomOffsetY = 25.f;
+	float OffsetY = 0.f;
+	float DY = -0.5f;
 
-	//예시용
-	IState* GoToExampleState();
+	UIFrame* LogoFrame;
+
+	//	Contributors
+	UIFrame* InfoFrame;
+	//bool bInfoVisible = false;
 };
 

@@ -18,6 +18,7 @@
 #include "UResourceManager.h"
 #include "PlayerInput.h"
 #include "UPlanetPlacementManager.h"
+#include "IState.h"
 
 
 //	Constants
@@ -110,11 +111,12 @@ struct MeshResource {
 class UManager
 {
 private:
+	IState* m_pCurrentState = nullptr;
+	
 	//	Game State
 	ERunstate CurRunState;
-	EStage CurStage;			//	현재 선택한 스테이지
+	EStage CurStage;
 	EStage CurAvailableStage;	//	선택 가능한 스테이지
-	float LoadingTimer = 0.0f;
 
 	//	Time
 	float RemainTimer;
@@ -148,56 +150,42 @@ private:
 	/* Player Inputs */
 	PlayerInput* InputManager;
 
-	/* Game Management */
 private:
-	//	Collision 관련
-	void CollisionDetection();
-	void CollsionResolution();
-
-	//	Scene Initialization
-	void MainInit();		//	Opening(시작 화면)으로 분기
-	void StageSelectInit();	//	Stage Select 화면으로 분기
-	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
-	void InGameRunInit();	//	사실상 Simulation Start
-
-	//EndingState
-	//void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
-	
 	// Stage Progression
-	//void ProgressStage();
-	void InitGameObjects();
-	//void ClearGameObjects(); //InGameRunExit
-
-	//	Game Logic
-
-	void ComputePhysicsAndApply(float deltaTime);
-
 
 
 	/* Non-game Management */
+	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
 
-	void BootGame(ID3D11Device * device, ID3D11DeviceContext* deviceContext);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
-	//void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
-
-	//	File Load
-	//void LoadScore();
-	//void SaveScore();
-	//void DisplayScore(std::string name, unsigned int score);
-	
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
 	void CreateNewPlanetWorld(USphere& in);
 
-public:
+	// StageInfo 관련
+	EStage GetCurStage() const { return CurStage; }
+	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
+	
+	// Remain Timer 관련
+	float GetRemainTimer() const { return RemainTimer; }
+	void SetRemainTimer(float time) { RemainTimer = time; }
+    
+	void SetPlayer(Probe* p) { Player = p; }
+	void ClearGameObjects();
+	void ComputePhysicsAndApply(float deltaTime);
+
+	// Score 관련
+	void DisplayScore(std::string name, unsigned int score);
+
+	//	Collision 관련
+	void CollisionDetection();
+	void CollsionResolution();
+
 	void Initialize(HWND hwnd);
 	void Release();
 	void OnMouseClick();
-	void OnStageSelected(EStage selected); // Stage 선택 (잠금 체크 포함)
-	void OnHomeClicked();      // -> Title
-	void OnSimulationStart();  // Ready -> Run
-	//void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
-	void OnRestartClicked();   // Ending -> Ready
-	void OnNextStageClicked();
+
+	// Sound 관련
+	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
 	// 
@@ -229,9 +217,6 @@ public:
 		m_SoundMgr.Dispose();
 		//ShutDownGame();
 	}
-
-	void Update(float deltaTime);
-
 
 	/* Getter, Setter */
 	Probe* GetProbe() const { return Player; }

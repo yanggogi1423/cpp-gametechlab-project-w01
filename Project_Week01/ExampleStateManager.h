@@ -10,6 +10,6 @@ private:
 public:
 	ExampleStateManager(UManager * manager);
 	~ExampleStateManager();
-	void Update(URenderer* renderer);
+	void Update(float deltaTime, URenderer* renderer);
 };
 

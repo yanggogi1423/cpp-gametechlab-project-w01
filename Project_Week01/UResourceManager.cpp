@@ -29,7 +29,7 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	//	Logo Fonts
 	FontLogo = io.Fonts->AddFontFromFileTTF
 	(
-		"res\\fonts\\ExtraBold.ttf",
+		"res\\fonts\\GravityBold8.ttf",
 		108.f,
 		nullptr,
 		io.Fonts->GetGlyphRangesDefault()
@@ -38,10 +38,34 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	//	Default Fonts
 	FontDefault = io.Fonts->AddFontFromFileTTF
 	(
-		"res\\fonts\\Medium.ttf",
+		"res\\fonts\\GravityRegular5.ttf",
 		32.f,
 		nullptr,
 		io.Fonts->GetGlyphRangesDefault()
+	);
+
+	FontInfoBold = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicBold.ttf",
+		60.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
+	);
+
+	FontInfoRegular = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicRegular.ttf",
+		36.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
+	);
+
+	FontInfoLight = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicLight.ttf",
+		17.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
 	);
 
 	/* Tip List Setting */

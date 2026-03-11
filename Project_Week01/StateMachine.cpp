@@ -1,35 +1,44 @@
 #include "StateMachine.h"
-
 #include "UManager.h"
 
-StateMachine::StateMachine(UManager * manager)
-{
-	Manager = manager;
-	currentState = new MainState();
-	currentState->OnEnter(Manager);
-}
+StateMachine::StateMachine() : currentState(nullptr) {}
 
 StateMachine::~StateMachine()
 {
 	if (currentState)
 	{
-		currentState->OnExit();
+		// 종료 시 메모리 누수 방지
 		delete currentState;
 		currentState = nullptr;
 	}
 }
 
-void StateMachine::Update(URenderer* renderer)
+void StateMachine::Initialize(IState* initialState, UManager* manager)
+{
+	currentState = initialState;
+	if (currentState) currentState->OnEnter(manager);
+}
+
+void StateMachine::Update(float deltaTime, UManager* manager)
 {
 	if (currentState)
 	{
-		IState* nextState = currentState->Update(renderer);
-		if (nextState != currentState)
+		IState* next = currentState->Update(deltaTime, manager);
+
+		if (next != currentState)
 		{
-			currentState->OnExit();
+			currentState->OnExit(manager);
 			delete currentState;
-			currentState = nextState;
-			currentState->OnEnter(Manager);
+			currentState = next;
+			currentState->OnEnter(manager);
 		}
+	}
+}
+
+void StateMachine::Render(URenderer* renderer, UManager* manager)
+{
+	if (currentState)
+	{
+		currentState->Render(renderer, manager);
 	}
 }

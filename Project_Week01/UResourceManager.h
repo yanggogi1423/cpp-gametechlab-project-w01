@@ -53,6 +53,9 @@ public:
 	//	Fonts Resources
 	ImFont* FontLogo;
 	ImFont* FontDefault;
+	ImFont* FontInfoBold;
+	ImFont* FontInfoRegular;
+	ImFont* FontInfoLight;
 	
 public:
 	UResourceManager() : SRVBackground(nullptr), SRVInGamePanel(nullptr), SRVLeaderBoardPanel(nullptr), SRVButtonSprite(nullptr),
