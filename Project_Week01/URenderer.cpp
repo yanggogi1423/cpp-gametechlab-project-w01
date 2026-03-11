@@ -215,6 +215,24 @@ void URenderer::createSamplerState()
     Device->CreateSamplerState(&samplerDesc, &samplerState);
 }
 
+void URenderer::CreateBlendState() {
+    D3D11_BLEND_DESC blendDesc = {};
+    blendDesc.AlphaToCoverageEnable = FALSE;
+    blendDesc.IndependentBlendEnable = FALSE;
+
+    // PNG 투명도(알파) 혼합 공식 설정
+    blendDesc.RenderTarget[0].BlendEnable = TRUE;
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    Device->CreateBlendState(&blendDesc, &AlphaBlendState);
+}
+
 
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
@@ -254,6 +272,9 @@ void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
 void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView* srv)
 {
     UINT offset = 0;
+    // 투명도가 있는 물체를 그리기 직전에 호출
+    DeviceContext->OMSetBlendState(AlphaBlendState, nullptr, 0xFFFFFFFF);
+
     DeviceContext->IASetInputLayout(textureInputLayout);
     DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);

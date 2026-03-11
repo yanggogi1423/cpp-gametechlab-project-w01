@@ -81,11 +81,13 @@ public:
 
     //texture
     ID3D11SamplerState* samplerState = nullptr;
-
     void createSamplerState();
 
+    // blend
+    ID3D11BlendState* AlphaBlendState = nullptr;
+    void CreateBlendState();
+
     // 렌더링 상태 데이터
-    //FLOAT ClearColor[4] = { 1.f, 1.f, 1.f, 1.f };
     FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     
