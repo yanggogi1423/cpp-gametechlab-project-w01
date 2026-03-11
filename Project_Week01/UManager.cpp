@@ -217,13 +217,17 @@ void UManager::CreateNewPlanetWorld(USphere& in)
 void UManager::Initialize(HWND hwnd) // 사운드 초기화
 {
 	m_SoundMgr.Initialize(hwnd);
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_TitleScreen, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level1, "Sound/Level1.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level2, "Sound/Level2.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level3, "Sound/Level3.wav");
+	
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "Sound/Clear.wav", 5);
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
-	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+	m_SoundMgr.PlayBGM(EBGM::EBGM_TitleScreen);
 }
 
 //EndingState

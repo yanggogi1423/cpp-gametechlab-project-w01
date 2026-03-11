@@ -118,7 +118,7 @@ void MainState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontInfoBold
 	);
 
-	infoFrame.AddText("Kim KiHoon (PM)",
+	infoFrame.AddText("KIM KiHoon (PM)",
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 190),
 		manager->GetResourceManager()->FontInfoRegular);
 

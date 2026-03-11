@@ -125,9 +125,6 @@ private:
 	float Score;
 	std::string PlayerName;
 
-	//  Sound
-	USoundManager m_SoundMgr;
-
 	//	Boot and Destroy - 반복 호출을 막기 위한 flag -> Flag 말고 Enum으로 변경
 	//bool bBootDone;
 	//bool bIsAlreadyDestroy;
@@ -185,6 +182,9 @@ public:
 	void OnMouseClick();
 
 	// Sound 관련
+	//  Sound
+	USoundManager m_SoundMgr;
+	void PlayBGM(EBGM bgm) { m_SoundMgr.PlayBGM(bgm); }
 	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
