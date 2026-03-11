@@ -27,8 +27,11 @@ void UManager::CollsionResolution()
 void UManager::MainInit()
 {
 	ClearGameObjects();
-	
 	CurRunState = ERunstate::ERS_Main;
+
+	// 플레이어를 미리 생성하여 nullptr 에러를 방지하고 위치를 고정합니다.
+	Player = new Probe();
+	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
 }
 
 void UManager::InGameReadyInit()
@@ -36,6 +39,10 @@ void UManager::InGameReadyInit()
 	ClearGameObjects();
 
 	CurRunState = ERunstate::ERS_InGameReady;
+
+	// [중요] CurStage에 해당하는 정보를 StageInfoList에서 찾아와서 
+	// 장애물이나 플레이어 시작 위치를 설정하는 로직이 여기에 들어와야 합니다.
+	// FStageInfo currentInfo = StageInfoList[(int)CurStage - 1];
 }
 
 void UManager::InGameRunInit()
@@ -141,10 +148,18 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 {
 	for (auto p : PlanetList)
 	{
-		float dist = (p->GetLocation() - Player->GetLocation()).Size();
-		FVector acc = (GravititationalConstant * p->GetMass()) / (float)pow(dist, 2);
+		// 1. 방향 벡터 및 거리 계산
+		FVector direction = p->GetLocation() - Player->GetLocation();
+		float dist = direction.Size();
+		if (dist < 1e-4f) continue; // 0으로 나누기 방지
 
-		Player->SetVelocity(Player->GetVelocity() + acc * deltaTime);
+		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+		FVector unitDir = direction / dist;
+		float accMag = (GravititationalConstant * p->GetMass()) / (float)pow(dist, 2);
+		FVector accVec = unitDir * accMag;
+
+		// 3. 속도 업데이트
+		Player->SetVelocity(Player->GetVelocity() + accVec * deltaTime);
 	}
 }
 
@@ -250,7 +265,7 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 void UManager::Initialize(HWND hwnd) // 사운드 초기화
 {
 	m_SoundMgr.Initialize(hwnd);
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
@@ -264,22 +279,81 @@ void UManager::OnMouseClick()
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
 }
 
+void UManager::OnPlayClicked()
+{
+	CurRunState = ERunstate::ERS_StageSelect;
+}
+
+void UManager::OnHomeClicked()
+{
+	MainInit();
+}
+
+void UManager::OnSimulationStart()
+{
+	// 배치 완료 후 시뮬레이션 시작
+	InGameRunInit();
+}
+
+void UManager::OnRestartClicked()
+{
+	// 현재 스테이지를 다시 준비 상태로
+	InGameReadyInit();
+}
+
+void UManager::OnNextStageClicked()
+{
+	// 다음 스테이지를 자동으로 선택
+	EStage nextStage = (EStage)((int)CurStage + 1);
+	OnStageSelected(nextStage);
+}
+
+// 스테이지 선택 시 호출될 함수
+void UManager::OnStageSelected(EStage selected)
+{
+	if ((int)selected > (int)CurAvailableStage) return;
+	
+	CurStage = selected;
+	LoadingTimer = 2.0f; // 로딩 시간 설정
+	CurRunState = ERunstate::ERS_Loading;
+}
+
+// 결과 화면 시 호출될 함수
+void UManager::OnStageResult(bool bSuccess) {
+	CurRunState = ERunstate::ERS_Ending;
+
+	if (bSuccess) {
+		// [해금 로직] 현재 스테이지를 깼고, 다음 스테이지가 아직 잠겨있다면 해금
+		if (CurStage == CurAvailableStage) {
+			if (CurAvailableStage == EStage::ES_Stage1) CurAvailableStage = EStage::ES_Stage2;
+			else if (CurAvailableStage == EStage::ES_Stage2) CurAvailableStage = EStage::ES_Stage3;
+		}
+	}
+	// EndingInit(bSuccess, score, name); 호출 등으로 이어짐
+}
+
 void UManager::Update(float deltaTime)
 {
 	switch (CurRunState)
 	{
 	case ERunstate::ERS_Main:
 		break;
-	case ERunstate::ERS_InGameReady:
+	case ERunstate::ERS_Loading:
+		LoadingTimer -= deltaTime;
+		if (LoadingTimer <= 0.0f)
+		{
+			InGameReadyInit();
+		}
+		break;
 
+	case ERunstate::ERS_InGameReady:
 		break;
 	case ERunstate::ERS_InGameRun:
 		//	Value Input
 		ComputePhysicsAndApply(deltaTime);
-
 		//	Physics Update
 		Player->SetLocation(Player->GetLocation() + Player->GetVelocity() * deltaTime);
-
+		//  Renderer에서 Player의 Location과 PlanetList의 Location을 참조하여 그려줌
 		CollisionDetection();	//	필요하다면 반복
 		break;
 	case ERunstate::ERS_Ending:

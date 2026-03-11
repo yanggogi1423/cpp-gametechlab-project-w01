@@ -36,23 +36,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-static DirectX::XMFLOAT3 myPos = { 0.0f, 0.0f, 0.0f };
-static DirectX::XMMATRIX matScale;
-
-inline void updateConstant(URenderer* renderer, float deltaTime)
-{
-	using namespace DirectX;
-
-	myPos.x += 0.1f * deltaTime;
-	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-
-	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
-	XMMATRIX constant = matScale * matTranslate;
-	constant = XMMatrixTranspose(constant);
-
-	renderer->UpdateConstant(constant);
-}
-
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
 	WCHAR WindowClass[] = L"JungleWindowClass";
@@ -142,14 +125,38 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		renderer->PrepareShader();
 		manager->Update(deltaTime);
-		updateConstant(renderer, deltaTime);
 
-		// Manager로부터 버퍼를 받아와 렌더링
-		MeshResource probeRes = manager->getProbeResource();
-		if (probeRes.VB != nullptr)
+		// 1. 플레이어(Probe) 렌더링
+		Probe* pPlayer = manager->GetProbe();
+		if (pPlayer != nullptr)
 		{
-			renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount);
+			// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
+			renderer->UpdateConstant(pPlayer->GetTransformMatrix());
+
+			MeshResource probeRes = manager->getProbeResource();
+			if (probeRes.VB != nullptr)
+			{
+				renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount); 
+			}
 		}
+
+		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
+		for (auto planet : manager->GetPlanetList())
+		{
+			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
+			renderer->UpdateConstant(planet->GetTransformMatrix());
+
+			MeshResource sphereRes = manager->getSphereResource();
+			if (sphereRes.VB != nullptr)
+			{
+				renderer->RenderPrimitive(sphereRes.VB, sphereRes.VertexCount);
+			}
+		}
+
+		ImGui::Begin("title.c_str(), nullptr, flags");
+
+		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
+		ImGui::End();
 
 		// ImGui 실제 렌더링
 		ImGui::Render();
