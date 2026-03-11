@@ -128,7 +128,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BootState.h" />
     <ClInclude Include="datatype.h" />
+    <ClInclude Include="EndingState.h" />
+    <ClInclude Include="InGameReadyState.h" />
+    <ClInclude Include="InGameRunState.h" />
+    <ClInclude Include="LoadingState.h" />
+    <ClInclude Include="MainState.h" />
+    <ClInclude Include="ExampleState.h" />
+    <ClInclude Include="ExampleStateManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
     <ClInclude Include="ImGui\imgui.h" />
     <ClInclude Include="ImGui\imgui_impl_dx11.h" />
@@ -139,6 +147,8 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="PlayerInput.h" />
     <ClInclude Include="Probe.h" />
+    <ClInclude Include="StageSelectionState.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="UIFrame.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UManager.h" />
@@ -155,6 +165,14 @@
     <ClInclude Include="WICTextureLoader\WICTextureLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BootState.cpp" />
+    <ClCompile Include="EndingState.cpp" />
+    <ClCompile Include="InGameReadyState.cpp" />
+    <ClCompile Include="InGameRunState.cpp" />
+    <ClCompile Include="LoadingState.cpp" />
+    <ClCompile Include="MainState.cpp" />
+    <ClCompile Include="ExampleState.cpp" />
+    <ClCompile Include="ExampleStateManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
     <ClCompile Include="ImGui\imgui_demo.cpp" />
     <ClCompile Include="ImGui\imgui_draw.cpp" />
@@ -162,9 +180,12 @@
     <ClCompile Include="ImGui\imgui_impl_win32.cpp" />
     <ClCompile Include="ImGui\imgui_tables.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="IState.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PlayerInput.cpp" />
     <ClCompile Include="Probe.cpp" />
+    <ClCompile Include="StageSelectionState.cpp" />
+    <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="UIFrame.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UManager.cpp" />
