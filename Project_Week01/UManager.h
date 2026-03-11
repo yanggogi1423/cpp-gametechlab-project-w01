@@ -220,7 +220,7 @@ public:
 
 	/* Getter, Setter */
 	Probe* GetProbe() const { return Player; }
-	const std::vector<USphere *> & GetPlanetList() const { return PlanetList; }
+	const std::vector<USphere> & GetPlanetList() const { return PlanetList; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 
