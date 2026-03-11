@@ -20,6 +20,7 @@
       <UniqueIdentifier>{42636267-b352-4e2f-841e-c902c3063a0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+
   <ItemGroup>
     <ClInclude Include="UManager.h">
       <Filter>헤더 파일</Filter>
@@ -36,30 +37,6 @@
     <ClInclude Include="URenderer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ImGui\imconfig.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_dx11.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_impl_win32.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imgui_internal.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_rectpack.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_textedit.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGui\imstb_truetype.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="USphere.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -75,7 +52,7 @@
     <ClInclude Include="UIFrame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-<<<<<<< HEAD
+
     <ClInclude Include="BootState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -106,48 +83,59 @@
     <ClInclude Include="StateMachine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-=======
->>>>>>> f7803286329dc8e8b13a2c50e620eb1b6b60cb6f
+    <ClInclude Include="IState.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+
     <ClInclude Include="UResourceManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\DirectXHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\LoaderHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\PlatformHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\WICTextureLoader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="UResourceManager.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\DirectXHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\LoaderHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\PlatformHelpers.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="WICTextureLoader\WICTextureLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UPlanetPlacementManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+
+    <ClInclude Include="ImGui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_dx11.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_impl_win32.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+
+    <ClInclude Include="WICTextureLoader\DirectXHelpers.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader\LoaderHelpers.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader\pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader\PlatformHelpers.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader\WICTextureLoader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
+
   <ItemGroup>
     <ClCompile Include="UManager.cpp">
       <Filter>소스 파일</Filter>
@@ -164,27 +152,6 @@
     <ClCompile Include="URenderer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="USphere.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -200,7 +167,7 @@
     <ClCompile Include="UIFrame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-<<<<<<< HEAD
+
     <ClCompile Include="BootState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -225,45 +192,53 @@
     <ClCompile Include="ExampleStateManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="IState.h">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
     <ClCompile Include="StageSelectionState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="StateMachine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-=======
->>>>>>> f7803286329dc8e8b13a2c50e620eb1b6b60cb6f
+
     <ClCompile Include="UResourceManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="UResourceManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UPlanetPlacementManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_dx11.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_impl_win32.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+
+    <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader\pch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
+
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
       <Filter>Shaders</Filter>

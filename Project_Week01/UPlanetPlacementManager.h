@@ -9,7 +9,10 @@
 */
 
 #include "USphere.h"
-#include "UManager.h"
+
+class UManager;
+
+//#include "UManager.h"
 
 enum class EPlacementState
 {

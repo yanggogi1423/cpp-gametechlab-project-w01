@@ -1,5 +1,7 @@
 #include "UPlanetPlacementManager.h"
 
+#include "UManager.h"
+
 void UPlanetPlacementManager::OnPlanetButtonClick(USphere* in)
 {
 	SetSelectedPlanet(in);
