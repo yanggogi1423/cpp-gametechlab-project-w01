@@ -293,7 +293,7 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 
 void UManager::CreateNewPlanetWorld(USphere& in)
 {
-	PlanetList.push_back(&in);	//	이후에 Reference
+	PlanetList.push_back(in);	//	이후에 Reference
 }
 
 //	Public Functions
