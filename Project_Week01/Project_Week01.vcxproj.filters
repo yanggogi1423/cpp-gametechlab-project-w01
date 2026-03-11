@@ -75,6 +75,7 @@
     <ClInclude Include="UIFrame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="BootState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -105,6 +106,8 @@
     <ClInclude Include="StateMachine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+=======
+>>>>>>> f7803286329dc8e8b13a2c50e620eb1b6b60cb6f
     <ClInclude Include="UResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -176,6 +179,7 @@
     <ClCompile Include="UIFrame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="BootState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -209,6 +213,8 @@
     <ClCompile Include="StateMachine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+=======
+>>>>>>> f7803286329dc8e8b13a2c50e620eb1b6b60cb6f
     <ClCompile Include="UResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
