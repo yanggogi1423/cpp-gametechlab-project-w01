@@ -15,5 +15,10 @@ public:
 	IState* Update(float deltaTime, class UManager* manager) override;
 	void Render(class URenderer* renderer, class UManager* manager) override;
 	void OnExit(class UManager* manager) override;
+
+	UIFrame* hudFrame;
+	bool bGoToStart = false;
+	bool bGoToRetry = false;
+	bool bGoToMain = false;
 };
 

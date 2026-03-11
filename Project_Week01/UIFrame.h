@@ -35,6 +35,17 @@ struct ImageInfo
 	ImVec2 size;
 };
 
+struct Image9Info
+{
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
+	float borderLeft;
+	float borderRight;
+	float borderTop;
+	float borderBottom;
+};
+
 struct TextInfo
 {
 	std::string text;
@@ -82,9 +93,11 @@ private:
 	std::vector<ButtonInfo> buttons;
 	std::vector<TextInfo> texts;
 	std::vector<ImageInfo> images;
+	std::vector<Image9Info> images9;
 	std::vector<ImageButtonInfo> imageButtons;
 	std::vector<SpriteButtonInfo> spriteButtons;
 	std::vector<SpriteButton9Info> spriteButtons9;
+	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
 
 
 public:
@@ -92,8 +105,10 @@ public:
 	~UIFrame();
 
 	void AddButton(const std::string& label, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
+	void AddSelectableText(const std::string& label, const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color = ImVec4(1.f, 1.f, 1.f, 1.f));
 	void AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color = ImVec4(1.f, 1.f, 1.f, 1.f));
 	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
+	void AddImage9(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, float border);
 	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
 	void AddSpriteButton9(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, float border, std::function<void()> callback);
@@ -107,6 +122,8 @@ public:
 	UIFrame& BackgroundColor(ImVec4 newColor);
 	UIFrame& NoTitleBar(bool noTitle);
 	UIFrame& BorderLineTransparency(float transparency);
+
+	TextInfo* GetSelectableText(const std::string& label);
 
 	bool bVisibility = true;
 };

@@ -1,6 +1,10 @@
 #include "StateMachine.h"
 #include "UManager.h"
 
+#pragma region __DEBUG_CONSOLE__
+#include <iostream>
+#pragma endregion
+
 StateMachine::StateMachine() : currentState(nullptr) {}
 
 StateMachine::~StateMachine()
@@ -27,6 +31,8 @@ void StateMachine::Update(float deltaTime, UManager* manager)
 
 		if (next != currentState)
 		{
+			std::cout << "State Transition: " << typeid(*currentState).name() << " -> " << typeid(*next).name() << std::endl;
+
 			currentState->OnExit(manager);
 			delete currentState;
 			currentState = next;

@@ -17,7 +17,6 @@
 #include "USphere.h"
 #include "UResourceManager.h"
 #include "PlayerInput.h"
-#include "UPlanetPlacementManager.h"
 #include "IState.h"
 #include "Goal.h"
 
@@ -29,7 +28,7 @@ constexpr float GameLeftBorder = -1.f;
 constexpr float GameRightBorder = 0.75f;
 
 constexpr size_t PlanetListReservedSize = 50;
-constexpr float GravititationalConstant = 9.8f;
+constexpr float GravititationalConstant = 0.098f;
 
 #pragma region __GAME_STATE__
 
@@ -139,7 +138,7 @@ private:
 	
 	/* Other Managers */
 	UResourceManager* ResourceManager;
-	UPlanetPlacementManager* PlanetPlacementManager;
+	
 
 	/* Player Inputs */
 	PlayerInput* InputManager;

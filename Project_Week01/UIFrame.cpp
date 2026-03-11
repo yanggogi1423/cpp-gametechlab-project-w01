@@ -136,6 +136,17 @@ void UIFrame::AddButton(const std::string& label, const ImVec2& position, const 
 	buttons.push_back(button);
 }
 
+void UIFrame::AddSelectableText(const std::string& label, const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color)
+{
+	TextInfo textInfo;
+	textInfo.text = text;
+	textInfo.position = position;
+	textInfo.font = font;
+	textInfo.color = color;
+
+	selectableTexts[label] = std::make_unique<TextInfo>(textInfo);
+}
+
 void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color)
 {
 	TextInfo textInfo;
@@ -154,6 +165,27 @@ void UIFrame::AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position
 	imageInfo.position = position;
 	imageInfo.size = size;
 	images.push_back(imageInfo);
+}
+
+void UIFrame::AddImage9(
+	ID3D11ShaderResourceView* texture,
+	const ImVec2& position,
+	const ImVec2& size,
+	float border)
+{
+	if (texture == nullptr)
+		return;
+
+	Image9Info imageInfo;
+	imageInfo.texture = texture;
+	imageInfo.position = position;
+	imageInfo.size = size;
+	imageInfo.borderLeft = border;
+	imageInfo.borderRight = border;
+	imageInfo.borderTop = border;
+	imageInfo.borderBottom = border;
+
+	images9.push_back(imageInfo);
 }
 
 void UIFrame::AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback) {
@@ -249,6 +281,11 @@ UIFrame& UIFrame::BorderLineTransparency(float transparency)
 	return *this;
 }
 
+TextInfo* UIFrame::GetSelectableText(const std::string& label)
+{
+	return selectableTexts[label].get();
+}
+
 
 void UIFrame::SetPosition(const ImVec2& newPosition)
 {
@@ -287,6 +324,32 @@ void UIFrame::Render()
 	{
 		ImGui::SetCursorPos(image.position);
 		ImGui::Image((ImTextureID)image.texture, image.size);
+	}
+
+	for (const auto& image9 : images9)
+	{
+		ImVec2 pos = {
+			image9.position.x - image9.size.x * 0.5f,
+			image9.position.y - image9.size.y * 0.5f
+		};
+
+		ImGui::SetCursorPos(pos);
+
+		ImVec2 screenPos = ImGui::GetCursorScreenPos();
+
+		DrawNineSliceImage(
+			image9.texture,
+			screenPos,
+			image9.size,
+			ImVec2(0.0f, 0.0f),
+			ImVec2(1.0f, 1.0f),
+			image9.borderLeft,
+			image9.borderRight,
+			image9.borderTop,
+			image9.borderBottom
+		);
+
+		ImGui::Dummy(image9.size);
 	}
 
 	for (const auto& button : buttons)
@@ -384,6 +447,28 @@ void UIFrame::Render()
 
 	for (const auto& text : texts)
 	{
+		ImGui::PushFont(text.font);
+
+		ImVec2 textSize = ImGui::CalcTextSize(text.text.c_str());
+
+		ImVec2 pos = {
+			text.position.x - textSize.x * 0.5f,
+			text.position.y - textSize.y * 0.5f
+		};
+
+		ImGui::SetCursorPos(pos);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, text.color);
+		ImGui::Text("%s", text.text.c_str());
+		ImGui::PopStyleColor();
+
+		ImGui::PopFont();
+	}
+
+	for (auto& pair : selectableTexts) 
+	{
+		auto text = *pair.second.get();
+
 		ImGui::PushFont(text.font);
 
 		ImVec2 textSize = ImGui::CalcTextSize(text.text.c_str());

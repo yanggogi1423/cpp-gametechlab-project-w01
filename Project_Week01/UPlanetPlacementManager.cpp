@@ -2,6 +2,8 @@
 
 #include "UManager.h"
 
+#include <iostream>
+
 void UPlanetPlacementManager::OnPlanetButtonClick(USphere* in)
 {
 	SetSelectedPlanet(in);
@@ -42,8 +44,15 @@ void UPlanetPlacementManager::Update(float deltaTime)
 
 		break;
 	//	Planet 선택 상태
-	case EPlacementState::EPS_Select:	
+	case EPlacementState::EPS_Select:
 		//	Set
+
+		SelectedPlanet->SetLocation(Manager->GetInputManager()->GetMousePosition());
+
+		std::cout << "Selected Planet Location: (" << SelectedPlanet->GetLocation().x << ", "
+			<< SelectedPlanet->GetLocation().y << ", "
+			<< SelectedPlanet->GetLocation().z << ")" << std::endl;
+
 		if (Manager->GetInputManager()->IsMouseClicked(0))
 		{
 			Manager->CreateNewPlanetWorld(*SelectedPlanet);

@@ -7,6 +7,8 @@ void LoadingState::OnEnter(UManager* manager)
 {
     m_currentTimer = 0.0f;
     uiManager = new UIManager();
+
+
 }
 
 IState* LoadingState::Update(float deltaTime, UManager* manager)
@@ -24,14 +26,14 @@ void LoadingState::Render(URenderer* renderer, UManager* manager)
 {
     if (uiManager)
     {
-        ImGui::SetNextWindowPos(ImVec2(412, 462));
-        ImGui::Begin("Loading", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+        //ImGui::SetNextWindowPos(ImVec2(412, 462));
+        //ImGui::Begin("Loading", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
 
-        float progress = m_currentTimer / TOTAL_LOADING_TIME;
-        ImGui::Text("Loading Stage...");
-        ImGui::ProgressBar(progress, ImVec2(200, 30), "Please Wait");
+        //float progress = m_currentTimer / TOTAL_LOADING_TIME;
+        //ImGui::Text("Loading Stage...");
+        //ImGui::ProgressBar(progress, ImVec2(200, 30), "Please Wait");
 
-        ImGui::End();
+        //ImGui::End();
 
         uiManager->Render();
     }

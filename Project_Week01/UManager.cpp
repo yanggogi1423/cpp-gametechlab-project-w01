@@ -81,7 +81,7 @@ void UManager::OnMouseClick()
 }
 
 UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
-	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_Stage1), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device , deviceContext);
 
@@ -125,18 +125,24 @@ void MeshResource::GenerateTriangle()
 {
 	// FTextureVertex 구조: { x, y, z,  r, g, b, a,  u, v }
 	Vertices = {
-		// 위쪽 꼭짓점: 텍스처의 상단 중앙 (0.5, 0.0)
-		{  0.0f,  0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  0.5f, 0.0f },
+		// 0: 왼쪽 위 (Left-Top)
+		{ -0.3f,  0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  0.0f, 0.0f },
 
-		// 오른쪽 아래: 텍스처의 우측 하단 (1.0, 1.0)
+		// 1: 오른쪽 위 (Right-Top)
+		{  0.3f,  0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 0.0f },
+
+		// 2: 오른쪽 아래 (Right-Bottom)
 		{  0.3f, -0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 1.0f },
 
-		// 왼쪽 아래: 텍스처의 좌측 하단 (0.0, 1.0)
+		// 3: 왼쪽 아래 (Left-Bottom)
 		{ -0.3f, -0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  0.0f, 1.0f }
 	};
 
 	// 시계 방향(CW)으로 인덱스 설정
-	Indexes = { 0, 1, 2 };
+	Indexes = {
+	0, 1, 2,
+	0, 2, 3
+	};
 
 	VertexCount = static_cast<UINT>(Vertices.size());
 	IndexCount = static_cast<UINT>(Indexes.size());

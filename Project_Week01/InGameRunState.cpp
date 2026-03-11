@@ -1,15 +1,141 @@
 #include "InGameRunState.h"
 #include "UManager.h" // 매니저의 자원 접근을 위해 포함
 
+#include "MainState.h"
+#include "InGameReadyState.h"
+
+#include<iostream>
+
 void InGameRunState::OnEnter(UManager* manager)
 {
 	// 1. [이사 완료] UManager::InGameRunInit 로직
 	// 이제 이 상태에 진입한 것 자체가 'InGameRun'이 시작되었음을 의미합니다.
+
+	// 5. UI 초기화 (기존 로직 유지)
+	uiManager = new UIManager();
+
+	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	//	Background
+	const int tileSize = 350;
+	const int segX = WindowWidth / tileSize;   // 20
+	const int segY = WindowHeight / tileSize;  // 15
+
+	for (int y = 0; y < segY; y++)
+	{
+		for (int x = 0; x < segX; x++)
+		{
+			bgFrame.AddImage(
+				manager->GetResourceManager()->GetTexture("Background"),
+				ImVec2((float)(tileSize * x), (float)(tileSize * y)),
+				ImVec2((float)tileSize, (float)tileSize)
+			);
+		}
+	}
+
+	UIFrame& HUDFrame = uiManager->CreateFrame("Ready Phase")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(WindowWidth, WindowHeight))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
+
+	HUDFrame.AddImage(manager->GetResourceManager()->SRVInGamePanel,
+		ImVec2(WindowWidth * 3 / 4.f, 0),
+		ImVec2(WindowWidth / 4, WindowHeight)
+	);
+
+	HUDFrame.AddText("Simulating...",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
+		manager->GetResourceManager()->FontInfoLight);
+
+	//std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
+
+	//HUDFrame.AddText("Remain Time : " + timerText,
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+	//	manager->GetResourceManager()->FontInfoLight);
+
+	HUDFrame.AddSelectableText("Timer", "Remain Time : " + std::to_string(manager->GetRemainTimer()),
+		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+		manager->GetResourceManager()->FontInfoLight);
+
+	//HUDFrame.AddImageButton("Planet 1",
+	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 220),
+	//	ImVec2(100, 100),
+	//	[&]() {
+	//		USphere* newPlanet = new USphere();
+	//		PlanetPlacementManager->SetSelectedPlanet(newPlanet);
+	//	}
+	//);
+
+
+	//HUDFrame.AddImageButton("Start",
+	//	manager->GetResourceManager()->SRVLeaderBoardPanel,
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+	//	ImVec2(100, 50),
+	//	[&]() {
+	//		bGoToStart = true;
+	//	}
+	//);
+	//HUDFrame.AddText("Start",
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
+	//	manager->GetResourceManager()->FontInfoLight);
+
+	HUDFrame.AddImageButton("Retry",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToRetry = true;
+		}
+	);
+	HUDFrame.AddText("Retry",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
+		manager->GetResourceManager()->FontInfoLight);
+
+
+	HUDFrame.AddImageButton("Home",
+		manager->GetResourceManager()->SRVLeaderBoardPanel,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		ImVec2(100, 50),
+		[&]() {
+			bGoToMain = true;
+		}
+	);
+	HUDFrame.AddText("Home",
+		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
+		manager->GetResourceManager()->FontInfoLight);
+
+	hudFrame = &HUDFrame;
 }
 
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
+
+	float remainTime = manager->GetRemainTimer(); // Getter 필요
+
+	remainTime = remainTime - deltaTime;
+	remainTime = max(0.f, remainTime);
+	manager->SetRemainTimer(remainTime); // Setter 필요
+
+	auto textInfo = hudFrame->GetSelectableText("Timer");
+	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
+	textInfo->text = "Remain Time : " + remainTimestr;
+	std::cout << textInfo->text << std::endl;
+
+	if (remainTime <= 0.f)
+	{
+		manager->SetSuccess(false);
+		std::cout << "Time out" << std::endl;
+		return new EndingState();
+	}
 
 	auto planetList = manager->GetPlanetList();
 	auto player = manager->GetProbe();
@@ -28,9 +154,24 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
+		std::cout << "x: " << unitDir.x << " y: " << unitDir.y <<std::endl;
+
+
 		// 3. 속도 업데이트
 		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
 	}
+
+	auto pos = player->GetLocation();
+	auto vel = player->GetVelocity();
+
+	std::cout << "Location: ( " << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+	std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
+
+	auto curLocation = player->GetLocation();
+	player->SetLocation((curLocation + player->GetVelocity()) * deltaTime);
+
+
+
 
 	FVector pLoc = player->GetLocation();
 
@@ -38,42 +179,59 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	for (const auto& p : planetList)
 	{
 		float dist = (p.GetLocation() - pLoc).Size();
-		if (dist < p.GetScale() + player->GetScale())
+		if (dist < p.GetRadius() + player->GetRadius())
 		{
 			player->SetColliding(true);
 			manager->SetSuccess(false);
+			std::cout << "Planet Collide" << std::endl;
+
+			std::cout << "Planet radius: " << p.GetRadius() <<std::endl;
+			std::cout << "Player radius: " << player->GetRadius() << std::endl;
+
+
+			std::cout << dist << std::endl;
+
 			manager->PlaySFX(ESFX::ESFX_Clear);
 			return new EndingState();
 		}
 	}
 
 	// Collision between Probe and Exit Location
-	float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
-	if (goalDist < 0.15f)
+	//float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
+	//if (goalDist < 0.15f)
+	//{
+	//	manager->SetSuccess(true);
+	//	std::cout << "Gaol Collide" << std::endl;
+	//	return new EndingState();
+	//}
+
+
+	if (bGoToMain)
 	{
+		std::cout << "bGoToMain" << std::endl;
+		nextState = new MainState();
 		manager->SetSuccess(true);
 		manager->PlaySFX(ESFX::ESFX_Fail);
 		return new EndingState();
 	}
-
-	// 3. 타이머 업데이트 (ReadyState에서 설정된 시간 소모)
-	float remainTime = manager->GetRemainTimer(); // Getter 필요
-
-	remainTime = remainTime - deltaTime;
-	remainTime = max(0.f, remainTime);
-	manager->SetRemainTimer(remainTime); // Setter 필요
-
-	if (remainTime <= 0.f)
+	else if (bGoToRetry)
 	{
-		manager->SetSuccess(false);
-		return new EndingState();
+		std::cout << "bGoToRetry" << std::endl;
+		nextState = new InGameReadyState();
 	}
 
-	 return nextState;
+
+	return nextState;
 }
 
 void InGameRunState::Render(URenderer* renderer, UManager* manager)
 {
+	// 4. [이사 완료] main.cpp에 있던 3D 객체 렌더링 루프
+
+	// (3) UI 렌더링 (필요 시)
+	if (uiManager) uiManager->Render();
+
+	// (1) 플레이어(Probe) 렌더링
 	Probe* pPlayer = manager->GetProbe();
 	if (pPlayer != nullptr)
 	{
@@ -81,7 +239,8 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		MeshResource* probeRes = manager->getProbeResource();
 		if (probeRes->VB != nullptr)
 		{
-			renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			//renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 		}
 	}
 
@@ -91,11 +250,12 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		for ( auto& planet : manager->GetPlanetList())
 		{
 			renderer->UpdateConstant(planet.GetTransformMatrix());
-			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			//renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 		}
 	}
 
-	if (uiManager) uiManager->Render();
+	
 }
 
 void InGameRunState::OnExit(UManager* manager)

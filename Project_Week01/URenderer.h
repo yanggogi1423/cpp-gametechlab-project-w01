@@ -41,15 +41,9 @@ public:
     void CreateIndexBuffer(ID3D11Buffer*& indexBuffer, UINT* indices, UINT count);
 
     // 렌더링
-    void indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
-    void RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount);
-    
+
     void textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView * srv);
-
-
-
-
 
 private:
     // 내부 초기화 메서드
@@ -62,7 +56,11 @@ private:
     void CreateRasterizerState();
     void ReleaseRasterizerState();
 
+    // 안쓰는 렌더러
+    void RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount);
 
+public:
+    void indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices);
 public:
     // 주요 D3D11 인터페이스
     ID3D11Device* Device = nullptr;

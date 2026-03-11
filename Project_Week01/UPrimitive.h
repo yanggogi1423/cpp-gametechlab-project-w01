@@ -18,7 +18,7 @@ protected:
 
 public:
     UPrimitive()
-        : Location(0.0f, 0.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Radius(1.0f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
+        : Location(1.0f, -1.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Radius(0.001f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
     {
     }
 
@@ -29,6 +29,9 @@ public:
     // 1. 매니저(물리 엔진)가 사용할 함수
 	void SetScale(float InScale) { Scale = InScale; }
     float GetScale() const { return Scale; }
+
+    void SetRadius(float InRadius) { Radius = InRadius; }
+    float GetRadius() const { return Radius; }
     
     void SetLocation(const FVector& InLocation);
     FVector GetLocation() const;
