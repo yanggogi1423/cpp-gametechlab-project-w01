@@ -47,7 +47,8 @@ void UManager::MainInit()
 
 	// 테스트용 행성 생성 (나중에 제거)
 	Player = new Probe();
-	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
+	Player->SetLocation({ -1.0f, -1.0f, 0.0f });
+
 	Player->SetScale(0.1f);
 
 	PlanetList.emplace_back();

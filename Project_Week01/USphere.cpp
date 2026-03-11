@@ -12,3 +12,8 @@ DirectX::XMMATRIX USphere::GetTransformMatrix()
 	return ret;
 }
 
+ImageName USphere::getImageName()
+{
+	return imageName;
+}
+

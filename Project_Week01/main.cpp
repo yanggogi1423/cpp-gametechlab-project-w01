@@ -94,9 +94,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	QueryPerformanceCounter(&prevTime);
 	float deltaTime = 0.0f;
 
+
+	// frame 제한
+	const int targetFPS = 10;
+	const double targetFrameTime = 1000.0 / targetFPS;
+
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+
+	LARGE_INTEGER startTime, endTime;
+	double elapsedTime = 0.0;
+
+
 	bool bIsExit = false;
 	while (!bIsExit)
 	{
+
+		QueryPerformanceCounter(&startTime);
 		MSG msg;
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
@@ -152,6 +166,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		temp.Update(renderer);
 
 		renderer->SwapBuffer();
+
+
+		do {
+			Sleep(0);
+			QueryPerformanceCounter(&endTime);
+			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
+		} while (elapsedTime < targetFrameTime);
 	}
 
 	
