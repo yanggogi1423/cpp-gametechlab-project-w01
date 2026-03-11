@@ -228,14 +228,16 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 	if (pPlayer) {
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* res = manager->getProbeResource();
-		renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		//renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		renderer->indexRenderPrimitive(res->VB, res->IB, res->IndexCount);
 	}
 
 	// 2. 행성들 렌더링
 	MeshResource* sphereRes = manager->getSphereResource();
 	for (auto& planet : manager->GetPlanetList()) {
 		renderer->UpdateConstant(planet.GetTransformMatrix());
-		renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+		renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+		//renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 	}
 
 	if (PlanetPlacementManager->IsPlacable())

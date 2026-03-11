@@ -52,11 +52,11 @@ void InGameRunState::OnEnter(UManager* manager)
 		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
 		manager->GetResourceManager()->FontInfoLight);
 
-	std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
+	//std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
 
-	HUDFrame.AddText("Remain Time : " + timerText,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
-		manager->GetResourceManager()->FontInfoLight);
+	//HUDFrame.AddText("Remain Time : " + timerText,
+	//	ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+	//	manager->GetResourceManager()->FontInfoLight);
 
 	//HUDFrame.AddImageButton("Planet 1",
 	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
@@ -195,7 +195,8 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		MeshResource* probeRes = manager->getProbeResource();
 		if (probeRes->VB != nullptr)
 		{
-			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+			renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			//renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 		}
 	}
 
@@ -205,7 +206,8 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		for ( auto& planet : manager->GetPlanetList())
 		{
 			renderer->UpdateConstant(planet.GetTransformMatrix());
-			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			//renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 		}
 	}
 
