@@ -207,19 +207,8 @@ public:
 	}
 
 	/* Cons, Des */
-	UManager(ID3D11Device * device)
-		: CurRunState(ERunstate::ERS_Boot), 
-		CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),
-		FileName("ranking.txt"),
-		ResourceManager(nullptr),
-		Score(0.f)
-		//,bBootDone(false), bIsAlreadyDestroy(false)
-	{
-		BootGame(device);
-		ProbeResource.GenerateTriangle();
-		SphereResource.GenerateSphere();
+	UManager(ID3D11Device * device);
 
-	}
 	~UManager()
 	{
 		m_SoundMgr.Dispose();

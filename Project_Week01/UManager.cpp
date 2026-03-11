@@ -356,6 +356,17 @@ void UManager::OnStageResult(bool bSuccess) {
 	// EndingInit(bSuccess, score, name); 호출 등으로 이어짐
 }
 
+
+/* Cons, Des */
+UManager::UManager(ID3D11Device* device)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),FileName("ranking.txt"),ResourceManager(nullptr),Score(0.f)
+	//,bBootDone(false), bIsAlreadyDestroy(false)
+{
+	BootGame(device);
+	ProbeResource.GenerateTriangle();
+	SphereResource.GenerateSphere();
+}
+
 void UManager::Update(float deltaTime)
 {
 	switch (CurRunState)

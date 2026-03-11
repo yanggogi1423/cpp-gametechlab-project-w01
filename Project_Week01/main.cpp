@@ -127,19 +127,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->PrepareShader();
 		manager->Update(deltaTime);
 
-		//// 1. 플레이어(Probe) 렌더링
-		//Probe* pPlayer = manager->GetProbe();
-		//if (pPlayer != nullptr)
-		//{
-		//	// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
-		//	renderer->UpdateConstant(pPlayer->GetTransformMatrix());
+		// 1. 플레이어(Probe) 렌더링
+		Probe* pPlayer = manager->GetProbe();
+		if (pPlayer != nullptr)
+		{
+			// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
+			renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 
-		//	MeshResource* probeRes = manager->getProbeResource();
-		//	if (probeRes->VB != nullptr)
-		//	{
-		//		renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
-		//	}
-		//}
+			MeshResource* probeRes = manager->getProbeResource();
+			if (probeRes->VB != nullptr)
+			{
+				renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
+			}
+		}
 
 		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
 		for (auto& planet : manager->GetPlanetList())
