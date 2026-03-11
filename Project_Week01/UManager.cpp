@@ -45,11 +45,11 @@ void UManager::MainInit()
 	ClearGameObjects();
 	CurRunState = ERunstate::ERS_Main;
 
+	// 테스트용 행성 생성 (나중에 제거)
 	Player = new Probe();
 	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
 	Player->SetScale(0.1f);
 
-	// 테스트용 행성 생성 (나중에 제거)
 	PlanetList.emplace_back();
 	USphere& testP = PlanetList.back();
 	testP.SetLocation({ 0.5f, 0.0f, 0.0f });
