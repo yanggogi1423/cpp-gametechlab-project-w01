@@ -5,7 +5,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 {
 	this->Device = device;
 
-	//	시간 없어서 하드 코딩합니다.
+	/* Image Setting */
 
 	// 기본 텍스처 로드 (경로는 프로젝트에 맞게 수정)
 	 LoadTexture("Background", L"res/image/Background.png");
@@ -18,6 +18,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 	SRVLeaderBoardPanel = GetTexture("LeaderBoardPanel");
 	SRVButtonSprite = GetTexture("ButtonSprite");
 
+	/* Fonts Setting */
 	ImGuiIO& io = ImGui::GetIO();
 
 	//	Logo Fonts
@@ -37,6 +38,25 @@ void UResourceManager::Initialize(ID3D11Device* device)
 		nullptr,
 		io.Fonts->GetGlyphRangesDefault()
 	);
+
+	/* Tip List Setting */
+
+	tipList.push_back("4일 만에 만들기에는 볼륨이 컸습니다.");
+	tipList.push_back("랭킹을 올리려면 빠른 길을 선택해야 합니다.");
+	tipList.push_back("잘 만들었죠?");
+	tipList.push_back("정글은 밥이 맛있습니다.");
+	tipList.push_back("식사 시간보다 25분 늦게 가면 안 기다려도 됩니다.");
+	tipList.push_back("목요일 회식이 기대됩니다.");
+
+	/* Loading List Setting */
+	loadingList.push_back("Loading");
+	loadingList.push_back("Loading.");
+	loadingList.push_back("Loading..");
+	loadingList.push_back("Loading...");
+
+	/* How To Play List Setting */
+	howToPlayList.push_back("[How To Play]");
+	//	TODO : Make a list
 
 	bIsInitialzed = true;
 }
@@ -80,4 +100,15 @@ ID3D11ShaderResourceView* UResourceManager::GetTexture(const std::string& key) c
 		return nullptr;
 
 	return found->second;
+}
+
+std::string UResourceManager::GetRandomTips() const
+{
+	if (!bIsInitialzed) return "[UResourceManager] Please initialize first.";
+
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_int_distribution<int> dist(0, tipList.size() - 1);
+
+	return tipList[dist(mt)];
 }

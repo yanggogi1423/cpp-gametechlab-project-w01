@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 #include <string>
+#include <vector>
+#include <random>
 
 #include "WICTextureLoader/WICTextureLoader.h"
 
@@ -19,6 +21,16 @@ private:
 
 	//	Data 휘발 방지
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> TextureMap;
+
+	//	Tip data
+	std::vector<std::string> tipList;
+
+public:
+	//	Loading data
+	std::vector<std::string> loadingList;
+
+	//	How To Play
+	std::vector<std::string> howToPlayList;
 
 public:
 	//	Image Resouces
@@ -43,5 +55,7 @@ public:
 	bool LoadTexture(const std::string& key, const wchar_t* filePath);
 	ID3D11ShaderResourceView* GetTexture(const std::string& key) const;
 	bool IsInitialize() { return bIsInitialzed; }
+
+	std::string GetRandomTips() const;
 };
 
