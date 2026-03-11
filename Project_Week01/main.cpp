@@ -73,7 +73,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->Create(hWnd);
 	renderer->CreateShader();
 	renderer->CreateConstantBuffer();
-
 	//////////////////////1.Imgui 초기화//////////////////////
 	UIManager::InitImGui(hWnd, renderer);
 	///////////////////////////////////////////////////////

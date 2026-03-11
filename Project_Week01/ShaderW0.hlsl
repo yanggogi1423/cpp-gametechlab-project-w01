@@ -1,5 +1,6 @@
 // ShaderW0.hlsl
-
+Texture2D tex : register(t0); // SRV (PNG 파일)
+SamplerState samp : register(s0); // 위에서 만든 SamplerState
 cbuffer constants : register(b0)
 {
     matrix worldViewProj; // 위치, 회전, 크기가 모두 포함된 4x4 행렬
@@ -35,8 +36,12 @@ PS_INPUT mainVS(VS_INPUT input)
     return output;
 }
 
-float4 mainPS(PS_INPUT input) : SV_TARGET
+float4 mainPS(PS_INPUT input) : SV_Target
 {
-    // Output the color directly
-    return input.color;
+    // 2. 샘플링 (텍스처에서 색상을 읽어옴)
+    float4 texColor = tex.Sample(samp, input.uv);
+    
+    // 정점 색상과 곱해서 최종 색상 결정
+    // 만약 정점 색상이 흰색(1,1,1,1)이면 텍스처 색상만 나옵니다.
+    return texColor * input.color;
 }

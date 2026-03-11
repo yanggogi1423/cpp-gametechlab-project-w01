@@ -106,7 +106,7 @@ void URenderer::PrepareShader() {
     DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
     DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
 
-    
+    createSamplerState();
 
     if (ConstantBuffer) {
         DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
@@ -201,6 +201,20 @@ void URenderer::ReleaseRasterizerState() {
     RasterizerState = nullptr;
 }
 
+void URenderer::createSamplerState()
+{
+    D3D11_SAMPLER_DESC samplerDesc = {};
+    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링 (부드럽게)
+    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;    // UV가 1을 넘어가면 반복
+    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    samplerDesc.MinLOD = 0;
+    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    Device->CreateSamplerState(&samplerDesc, &samplerState);
+}
+
 
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
@@ -244,6 +258,7 @@ void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer*
     DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
     DeviceContext->PSSetShaderResources(0, 1, &srv);
+    DeviceContext->PSSetSamplers(0, 1, &samplerState);
     DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
