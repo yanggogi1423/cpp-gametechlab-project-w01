@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <directxmath.h>
 #include "datatype.h"
 
 
@@ -25,6 +26,9 @@ public:
     }
 
     // 1. 매니저(물리 엔진)가 사용할 함수
+	void SetScale(float InScale) { Scale = InScale; }
+    float GetScale() const { return Scale; }
+    
     void SetLocation(const FVector& InLocation);
     FVector GetLocation() const;
 
@@ -37,6 +41,7 @@ public:
     void SetColliding(bool bInColliding);
     bool GetColliding() const;
 
-
+    // 2. 변환 행렬 생성
+    DirectX::XMMATRIX GetTransformMatrix() const;
 
 };
