@@ -5,13 +5,11 @@ class MainState : public IState
 {
 public:
 	MainState() = default;
-	~MainState() = default;
-	void OnEnter() override;
-	IState* Update(URenderer* renderer) override;
-	void OnExit() override;
-
-
-	//예시용
-	IState* GoToExampleState();
+	virtual ~MainState() = default;
+	
+	void OnEnter(UManager* manager) override;
+	IState* Update(float deltaTime, UManager* manager) override;
+	void Render(URenderer* renderer, UManager* manager) override;
+	void OnExit(UManager* manager) override;
 };
 

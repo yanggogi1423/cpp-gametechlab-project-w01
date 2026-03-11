@@ -1,16 +1,15 @@
-#include "URenderer.h"
-#include "UManager.h"
-
 #include <windows.h>
 
 #include "ImGui/imgui.h"
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
 
+#include "URenderer.h"
+#include "UManager.h"
 #include "UImanager.h"
 #include "UResourceManager.h"
-
-#include "ExampleStateManager.h"
+#include "StateMachine.h"
+#include "BootState.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -77,15 +76,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UIManager::InitImGui(hWnd, renderer);
 	///////////////////////////////////////////////////////
 
-
-	ExampleStateManager temp = ExampleStateManager();
-
 	UManager* manager = new UManager(renderer->Device);
 	g_Manager = manager;
 	manager->Initialize(hWnd); // 사운드 여기서 시작!
 	
 	createBuffer(manager, renderer);
 
+	StateMachine stateMachine;
+	stateMachine.Initialize(new BootState(), manager);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
@@ -118,36 +116,36 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		//ImGui::NewFrame();
 
 		renderer->PrepareShader();
-		manager->Update(deltaTime);
 
 		// 1. 플레이어(Probe) 렌더링
-		Probe* pPlayer = manager->GetProbe();
-		if (pPlayer != nullptr)
-		{
-			// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
-			renderer->UpdateConstant(pPlayer->GetTransformMatrix());
-
-			MeshResource* probeRes = manager->getProbeResource();
-			if (probeRes->VB != nullptr)
-			{
-				renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
-			}
-		}
+		//Probe* pPlayer = manager->GetProbe();
+		//if (pPlayer != nullptr)
+		//{
+		//	// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
+		//	renderer->UpdateConstant(pPlayer->GetTransformMatrix());
+		//
+		//	MeshResource* probeRes = manager->getProbeResource();
+		//	if (probeRes->VB != nullptr)
+		//	{
+		//		renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
+		//	}
+		//}
 
 		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
-		for (auto& planet : manager->GetPlanetList())
-		{
-			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
-			renderer->UpdateConstant(planet.GetTransformMatrix());
+		//for (auto& planet : manager->GetPlanetList())
+		//{
+		//	// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
+		//	renderer->UpdateConstant(planet.GetTransformMatrix());
+		//
+		//	MeshResource* sphereRes = manager->getSphereResource();
+		//	if (sphereRes->VB != nullptr)
+		//	{
+		//		renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+		//	}
+		//}
 
-			MeshResource* sphereRes = manager->getSphereResource();
-			if (sphereRes->VB != nullptr)
-			{
-				renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
-			}
-		}
-
-		temp.Update(renderer);
+		stateMachine.Update(deltaTime, manager);
+		stateMachine.Render(renderer, manager);
 
 		renderer->SwapBuffer();
 	}

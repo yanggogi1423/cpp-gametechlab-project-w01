@@ -3,10 +3,17 @@
 
 class LoadingState : public IState
 {
-	LoadingState() = default;
-	virtual ~LoadingState() = default;
-	void OnEnter() override;
-	IState* Update(URenderer* renderer) override;
-	void OnExit() override;
+private:
+    float m_currentTimer = 0.0f;
+    const float TOTAL_LOADING_TIME = 2.0f;
+
+public:
+    LoadingState() = default;
+    virtual ~LoadingState() = default;
+
+    void OnEnter(class UManager* manager) override;
+    IState* Update(float deltaTime, class UManager* manager) override;
+    void Render(class URenderer* renderer, class UManager* manager) override;
+    void OnExit(class UManager* manager) override;
 };
 

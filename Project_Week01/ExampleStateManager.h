@@ -9,6 +9,6 @@ private:
 public:
 	ExampleStateManager();
 	~ExampleStateManager();
-	void Update(URenderer* renderer);
+	void Update(float deltaTime, URenderer* renderer);
 };
 
