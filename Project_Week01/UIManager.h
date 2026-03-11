@@ -1,5 +1,6 @@
 #pragma once
 #include "UIFrame.h"
+#include "URenderer.h"
 #include <Memory>
 
 class UIManager
@@ -11,6 +12,9 @@ public:
 	~UIManager();
 
 	UIFrame& CreateFrame(const std::string& title);
+
+	static void InitImGui(HWND hWnd, URenderer* renderer);
+	static void ShutdownImGui();
 
 	void Render();
 };
