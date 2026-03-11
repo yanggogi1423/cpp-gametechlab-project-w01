@@ -4,6 +4,8 @@
 #include "MainState.h"
 #include "InGameReadyState.h"
 
+#include<iostream>
+
 void InGameRunState::OnEnter(UManager* manager)
 {
 	// 1. [이사 완료] UManager::InGameRunInit 로직
@@ -58,6 +60,10 @@ void InGameRunState::OnEnter(UManager* manager)
 	//	ImVec2(WindowWidth * 3 / 4.f + 150, 500),
 	//	manager->GetResourceManager()->FontInfoLight);
 
+	HUDFrame.AddSelectableText("Timer", "Remain Time : " + std::to_string(manager->GetRemainTimer()),
+		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+		manager->GetResourceManager()->FontInfoLight);
+
 	//HUDFrame.AddImageButton("Planet 1",
 	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
 	//	ImVec2(WindowWidth * 3 / 4.f + 150, 220),
@@ -105,11 +111,30 @@ void InGameRunState::OnEnter(UManager* manager)
 	HUDFrame.AddText("Home",
 		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
 		manager->GetResourceManager()->FontInfoLight);
+
+	hudFrame = &HUDFrame;
 }
 
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
+
+	float remainTime = manager->GetRemainTimer(); // Getter 필요
+
+	remainTime = remainTime - deltaTime;
+	remainTime = max(0.f, remainTime);
+	manager->SetRemainTimer(remainTime); // Setter 필요
+
+	auto textInfo = hudFrame->GetSelectableText("Timer");
+	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
+	textInfo->text = "Remain Time : " + remainTimestr;
+	std::cout << textInfo->text << std::endl;
+
+	if (remainTime <= 0.f)
+	{
+		manager->SetSuccess(false);
+		return new EndingState();
+	}
 
 	auto planetList = manager->GetPlanetList();
 	auto player = manager->GetProbe();
@@ -154,18 +179,6 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		return new EndingState();
 	}
 
-	// 3. 타이머 업데이트 (ReadyState에서 설정된 시간 소모)
-	float remainTime = manager->GetRemainTimer(); // Getter 필요
-
-	remainTime = remainTime - deltaTime;
-	remainTime = max(0.f, remainTime);
-	manager->SetRemainTimer(remainTime); // Setter 필요
-
-	if (remainTime <= 0.f)
-	{
-		manager->SetSuccess(false);
-		return new EndingState();
-	}
 
 	if (bGoToMain)
 	{
