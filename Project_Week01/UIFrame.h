@@ -40,6 +40,17 @@ struct TextInfo
 	ImFont* font;
 };
 
+struct SpriteButtonInfo
+{
+	std::string label;
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
+	ImVec2 uv0;
+	ImVec2 uv1;
+	std::function<void()> callback;
+};
+
 class UIFrame
 {
 private:
@@ -54,6 +65,7 @@ private:
 	std::vector<TextInfo> texts;
 	std::vector<ImageInfo> images;
 	std::vector<ImageButtonInfo> imageButtons;
+	std::vector<SpriteButtonInfo> spriteButtons;
 
 
 public:
@@ -63,7 +75,8 @@ public:
 	void AddButton(const std::string& label, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddText(const std::string& text, const ImVec2& position, ImFont* font);
 	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
-	void AddImageButton(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
+	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
+	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
 
 	ImVec2 GetPosition() const;
 	void SetPosition(const ImVec2& newPosition);
