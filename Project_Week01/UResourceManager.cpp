@@ -17,6 +17,7 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 
 	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
 	 ImageLoadTexture(ImageName::SATURN, L"res/image/saturn.png");
+	 ImageLoadTexture(ImageName::GOAL, L"res/image/goal.png");
 
 	SRVBackground = GetTexture("Background");
 	SRVInGamePanel = GetTexture("InGamePanel");

@@ -34,26 +34,30 @@ void InGameReadyState::OnEnter(UManager* manager)
 		player = new Probe();
 		manager->SetPlayer(player); // Player 포인터 설정을 위한 Setter 추가 필요
 	}
-
-	
+	// 5. Goal 생성 & 배치
+	Goal goal = manager->getGoal();
+	// 플레이어의 위치는 레벨에 따라 세팅 
 	switch (StageIdx)
 	{
 	case 0:
 		player->SetLocation({ 0.0f, -1.0f, 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.0f , 1.0f , 0.0f }); 
 		break;
 	case 1:
 		player->SetLocation({ 0.5f , 1.0f , 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
-
+		goal.SetLocation({ -1.0f ,-1.0f , 0.0f });
 		break;
 	case 2:
 		player->SetLocation({ -1.0f , 0.0f , 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.5f , 0.0f , 0.0f });
 		break;
 	default:
 		player->SetLocation({ 0.0f, -1.0f, 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.0f , 1.0f , 0.0f });
 		break;
 	}
 	player->SetScale(0.1f);

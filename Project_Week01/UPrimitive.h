@@ -30,7 +30,7 @@ public:
 	void SetScale(float InScale) { Scale = InScale; }
     float GetScale() const { return Scale; }
     
-    void SetLocation( FVector& InLocation);
+    void SetLocation(const FVector& InLocation);
     FVector GetLocation() const;
 
     void SetVelocity(const FVector& InVelocity); 

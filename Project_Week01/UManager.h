@@ -19,6 +19,7 @@
 #include "PlayerInput.h"
 #include "UPlanetPlacementManager.h"
 #include "IState.h"
+#include "Goal.h"
 
 
 //	Constants
@@ -70,7 +71,8 @@ struct FStageInfo
 	std::vector<std::pair<int, FVector>> ObstacleList; //인덱스와 위치 정보
 
 	//	3. 탈출구 객체 위치
-	FVector ExitLocation;
+	Goal goal;
+
 };
 
 #pragma endregion
@@ -139,6 +141,8 @@ private:
 	/* GameObjects */
 	Probe* Player;
 	std::vector<USphere> PlanetList;	//	이후에 template 수정할 수도 있음
+	Goal exitLocation;
+
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
@@ -224,6 +228,9 @@ public:
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }
+
+	Goal getGoal(); 
+
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 

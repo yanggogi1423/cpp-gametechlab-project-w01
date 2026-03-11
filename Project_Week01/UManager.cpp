@@ -271,7 +271,11 @@ MeshResource* UManager::getProbeResource()
 {	
 	return &ProbeResource;
 }
-MeshResource* UManager::getSphereResource() 
+Goal UManager::getGoal()
+{
+	return ;
+}
+MeshResource* UManager::getSphereResource()
 {	
 	return &SphereResource;
 }
