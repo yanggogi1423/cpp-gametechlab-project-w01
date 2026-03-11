@@ -86,6 +86,7 @@ UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
 
 	ProbeResource.GenerateTriangle();
 	SphereResource.GenerateSphere(1.0f);
+	GoalResource.GenerateTriangle();
 
 	PlanetList.reserve(PlanetListReservedSize);
 }
@@ -99,9 +100,19 @@ MeshResource* UManager::getSphereResource()
 {	
 	return &SphereResource;
 }
+MeshResource* UManager::getGoalResource()
+{
+	return &GoalResource;
+}
 void UManager::setProbeResource( MeshResource& mr)
 {
 	this->ProbeResource = mr;
+}
+
+void UManager::setGoalResource(MeshResource& mr)
+{
+	this->GoalResource = mr;
+
 }
 void UManager::setSphereResource( MeshResource& mr)
 {

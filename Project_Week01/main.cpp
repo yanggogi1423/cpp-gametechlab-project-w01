@@ -10,6 +10,7 @@
 #include "UResourceManager.h"
 #include "StateMachine.h"
 #include "BootState.h"
+#include "EndingState.h"
 
 #pragma region __DEBUG_CONSOLE__
 
@@ -37,15 +38,21 @@ inline void createBuffer(UManager* manager, URenderer* renderer)
 {
 	MeshResource* probe = manager->getProbeResource();
 	MeshResource* sphere = manager->getSphereResource();
+	MeshResource* goal = manager->getGoalResource();
 
 	renderer->CreateVertexBuffer(probe->VB, probe->Vertices.data(), probe->Vertices.size() * sizeof(FTextureVertex));
 	renderer->CreateVertexBuffer(sphere->VB, sphere->Vertices.data(), sphere->Vertices.size() * sizeof(FTextureVertex));
+	renderer->CreateVertexBuffer(goal->VB, goal->Vertices.data(), goal->Vertices.size() * sizeof(FTextureVertex));
+
 
 	renderer->CreateIndexBuffer(probe->IB, probe->Indexes.data(), probe->IndexCount);
 	renderer->CreateIndexBuffer(sphere->IB, sphere->Indexes.data(), sphere->IndexCount);
+	renderer->CreateIndexBuffer(goal->IB, goal->Indexes.data(), goal->IndexCount);
+
 
 	manager->setProbeResource(*probe);
 	manager->setSphereResource(*sphere);
+	manager->setGoalResource(*goal);
 }
 
 
@@ -127,7 +134,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	createBuffer(manager, renderer);
 
 	StateMachine stateMachine;
-	stateMachine.Initialize(new BootState(), manager);
+	//stateMachine.Initialize(new BootState(), manager);
+	stateMachine.Initialize(new EndingState(), manager);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
