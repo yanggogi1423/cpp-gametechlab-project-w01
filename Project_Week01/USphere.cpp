@@ -16,9 +16,11 @@ USphere::USphere()
     //    GOAL,
     //    COUNT
     //};
-    imageName = ImageName(count);
+    imageName = static_cast<ImageName>(count);
     count++;
-    count = (count % ImageName::GOAL) + 1;
+    if (count >= ImageName::GOAL) {
+        count = ImageName::BLACK_SPHERE;
+    }
 }
 
 DirectX::XMMATRIX USphere::GetTransformMatrix()
