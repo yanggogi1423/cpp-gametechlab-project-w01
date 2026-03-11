@@ -10,6 +10,8 @@
 #include "UImanager.h"
 #include "UResourceManager.h"
 
+#include "ExampleStateManager.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 inline void createBuffer(UManager* manager, URenderer* renderer)
@@ -71,11 +73,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateShader();
 	renderer->CreateConstantBuffer();
 
-	// UI 초기화
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplWin32_Init((void*)hWnd);
-	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
+	//////////////////////1.Imgui 초기화//////////////////////
+	UIManager::InitImGui(hWnd, renderer);
+	///////////////////////////////////////////////////////
+
+
+	ExampleStateManager temp = ExampleStateManager();
 
 	UManager* manager = new UManager(renderer->Device);
 	g_Manager = manager;
@@ -83,16 +86,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	createBuffer(manager, renderer);
 
-	UResourceManager resourceManager;
-	resourceManager.Initialize(renderer->Device);
-
-	UIManager uiManager;
-	UIFrame& testFrame = uiManager.CreateFrame("Test Frame")
-		.Position(ImVec2(10.f, 30.f))
-		.Size(ImVec2(300.f, 200.f));
-
-	testFrame.AddText("Hello, ImGui!", ImVec2(10.f, 30.f), resourceManager.FontDefault);
-	testFrame.AddImage(resourceManager.SRVBackground, ImVec2(10.f, 40.f), ImVec2(100.f, 100.f));
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
@@ -120,9 +113,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->Prepare();
 
 		// ImGui 프레임 시작 신호 (없으면 프리징 발생!)
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+		//ImGui_ImplDX11_NewFrame();
+		//ImGui_ImplWin32_NewFrame();
+		//ImGui::NewFrame();
 
 		renderer->PrepareShader();
 		manager->Update(deltaTime);
@@ -141,27 +134,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		// 2. 행성(Sphere)들 렌더링
-		MeshResource* sphereRes = manager->getSphereResource();
-		if (sphereRes->VB != nullptr)
+		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
+		for (auto& planet : manager->GetPlanetList())
 		{
-			for (const auto& planet : manager->GetPlanetList())
+			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
+			renderer->UpdateConstant(planet.GetTransformMatrix());
+
+			MeshResource* sphereRes = manager->getSphereResource();
+			if (sphereRes->VB != nullptr)
 			{
-				// 동일한 Sphere VB를 쓰면서 행렬만 바꿔서 GPU로 전달
-				renderer->UpdateConstant(planet.GetTransformMatrix());
 				renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
 			}
 		}
 
-		ImGui::Begin("title.c_str(), nullptr, flags");
-
-		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
-		ImGui::End();
-
-		// ImGui 실제 렌더링
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		//uiManager.Render();
+		temp.Update(renderer);
 
 		renderer->SwapBuffer();
 	}

@@ -108,7 +108,7 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 	CurRunState = ERunstate::ERS_Ending;
 
 	ClearGameObjects();
-	
+
 	if (bIsClear)
 	{
 		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
@@ -193,8 +193,9 @@ void UManager::BootGame(ID3D11Device * device)
 	//	1. Local Score 및 ResourceManager 로드
 	LoadScore();
 	ResourceManager = new UResourceManager();
-
 	ResourceManager->Initialize(device);
+
+	InputManager = new PlayerInput();
 
 	//	2. 스테이지 정보 생성
 	StageInfoList.push_back({ EStage::ES_Stage1,30.f });
@@ -293,6 +294,10 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 	ScoreList.push_back({ stage, name, score });
 	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
 		{
+			//	다른 스테이지일 경우 Sort하지 않음
+			//	Display 시에도 Stage로 filtering하면 됨
+			if (std::get<0>(a) != std::get<0>(b)) return false;
+
 			return std::get<2>(a) < std::get<2>(b);
 		}
 	);
@@ -300,6 +305,11 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 	//	TODO : Imgui를 통해 display
 }
 
+
+void UManager::CreateNewPlanetWorld(USphere& in)
+{
+	PlanetList.push_back(in);	//	이후에 Reference
+}
 
 //	Public Functions
 void UManager::Initialize(HWND hwnd) // 사운드 초기화

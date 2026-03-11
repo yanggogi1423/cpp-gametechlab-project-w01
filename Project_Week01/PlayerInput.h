@@ -23,5 +23,6 @@ public:
 	bool IsMouseDown(int mouseButton);
 	bool IsMouseReleased(int mouseButton);
 
-
+	//	Flaging
+	bool IsMouseHoveringUI();
 };
