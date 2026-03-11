@@ -136,6 +136,17 @@ void UIFrame::AddButton(const std::string& label, const ImVec2& position, const 
 	buttons.push_back(button);
 }
 
+void UIFrame::AddSelectableText(const std::string& label, const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color)
+{
+	TextInfo textInfo;
+	textInfo.text = text;
+	textInfo.position = position;
+	textInfo.font = font;
+	textInfo.color = color;
+
+	selectableTexts[label] = std::make_unique<TextInfo>(textInfo);
+}
+
 void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color)
 {
 	TextInfo textInfo;
@@ -268,6 +279,11 @@ UIFrame& UIFrame::BorderLineTransparency(float transparency)
 {
 	borderLineTransparency = transparency;
 	return *this;
+}
+
+TextInfo* UIFrame::GetSelectableText(const std::string& label)
+{
+	return selectableTexts[label].get();
 }
 
 
@@ -431,6 +447,28 @@ void UIFrame::Render()
 
 	for (const auto& text : texts)
 	{
+		ImGui::PushFont(text.font);
+
+		ImVec2 textSize = ImGui::CalcTextSize(text.text.c_str());
+
+		ImVec2 pos = {
+			text.position.x - textSize.x * 0.5f,
+			text.position.y - textSize.y * 0.5f
+		};
+
+		ImGui::SetCursorPos(pos);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, text.color);
+		ImGui::Text("%s", text.text.c_str());
+		ImGui::PopStyleColor();
+
+		ImGui::PopFont();
+	}
+
+	for (auto& pair : selectableTexts) 
+	{
+		auto text = *pair.second.get();
+
 		ImGui::PushFont(text.font);
 
 		ImVec2 textSize = ImGui::CalcTextSize(text.text.c_str());
