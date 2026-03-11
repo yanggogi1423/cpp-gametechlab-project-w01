@@ -20,7 +20,7 @@ DirectX::XMMATRIX Probe::GetTransformMatrix()
     // 3. DirectXMath를 이용한 2D 행렬 조립
     // Z축을 중심으로 회전시키면 XY 평면상에서 회전합니다.
     DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 1.0f);
-    DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(0);
+    DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(1.0f);
     DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Location.x, Location.y, 0.0f);
 
     // 4. 최종 월드 행렬 (SRT: Scale * Rotation * Translation 순서)

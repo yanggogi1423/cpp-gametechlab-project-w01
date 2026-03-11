@@ -17,10 +17,18 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 
 
 	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
-	 ImageLoadTexture(ImageName::SATURN, L"res/image/saturn.png");
-	 ImageLoadTexture(ImageName::BLACK_SPHERE, L"res/image/blackplanet.png");
-	 ImageLoadTexture(ImageName::WHITE_SPHERE, L"res/image/whiteplanet.png");
-	 ImageLoadTexture(ImageName::JUPITER, L"res/image/jupiter.png");
+	 ImageLoadTexture(ImageName::PLANET1, L"res/image/planet1.png");
+	 ImageLoadTexture(ImageName::PLANET2, L"res/image/planet2.png");
+	 ImageLoadTexture(ImageName::PLANET3, L"res/image/planet3.png");
+	 ImageLoadTexture(ImageName::PLANET4, L"res/image/planet4.png");
+	 ImageLoadTexture(ImageName::PLANET5, L"res/image/planet5.png");
+	 ImageLoadTexture(ImageName::PLANET6, L"res/image/planet6.png");
+	 ImageLoadTexture(ImageName::PLANET7, L"res/image/planet7.png");
+	 ImageLoadTexture(ImageName::PLANET8, L"res/image/planet8.png");
+	 ImageLoadTexture(ImageName::PLANET9, L"res/image/planet9.png");
+	 ImageLoadTexture(ImageName::PLANET10, L"res/image/planet10.png");
+	 ImageLoadTexture(ImageName::PLANET11, L"res/image/planet11.png");
+	 ImageLoadTexture(ImageName::PLANET13, L"res/image/planet13.png");
 	 ImageLoadTexture(ImageName::SUN, L"res/image/sun.png");
 	 ImageLoadTexture(ImageName::GOAL, L"res/image/goal.png");
 

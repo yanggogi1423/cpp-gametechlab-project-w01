@@ -7,7 +7,7 @@ struct ID3D11Buffer;
 class USphere : public UPrimitive
 {
 private:
-	ImageName imageName = ImageName::BLACK_SPHERE;
+	ImageName imageName = ImageName::PLANET1;
 
 public:
 	USphere();
