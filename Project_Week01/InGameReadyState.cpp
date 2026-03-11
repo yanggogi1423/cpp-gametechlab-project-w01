@@ -105,7 +105,6 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 	if (pPlayer) {
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* res = manager->getProbeResource();
-		renderer->indexRenderPrimitive(res->VB, res->IB, res->IndexCount);
 		renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 	}
 
@@ -114,7 +113,6 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 	for (auto& planet : manager->GetPlanetList()) {
 		renderer->UpdateConstant(planet.GetTransformMatrix());
 		renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
-
 	}
 
 	if (uiManager) uiManager->Render();

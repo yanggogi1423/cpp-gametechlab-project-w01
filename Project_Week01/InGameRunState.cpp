@@ -79,7 +79,7 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		MeshResource* probeRes = manager->getProbeResource();
 		if (probeRes->VB != nullptr)
 		{
-			renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 		}
 	}
 
@@ -89,7 +89,7 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		for ( auto& planet : manager->GetPlanetList())
 		{
 			renderer->UpdateConstant(planet.GetTransformMatrix());
-			renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
 		}
 	}
 

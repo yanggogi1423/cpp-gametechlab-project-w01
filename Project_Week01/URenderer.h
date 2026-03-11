@@ -45,10 +45,6 @@ public:
 
     void textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView * srv);
 
-
-
-
-
 private:
     // 내부 초기화 메서드
     void CreateDeviceAndSwapChain(HWND hWindow);
