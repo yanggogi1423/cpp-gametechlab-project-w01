@@ -97,6 +97,7 @@ private:
 	std::vector<ImageButtonInfo> imageButtons;
 	std::vector<SpriteButtonInfo> spriteButtons;
 	std::vector<SpriteButton9Info> spriteButtons9;
+	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
 
 
 public:
@@ -104,6 +105,7 @@ public:
 	~UIFrame();
 
 	void AddButton(const std::string& label, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
+	void AddSelectableText(const std::string& label, const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color = ImVec4(1.f, 1.f, 1.f, 1.f));
 	void AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color = ImVec4(1.f, 1.f, 1.f, 1.f));
 	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
 	void AddImage9(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, float border);
@@ -120,6 +122,8 @@ public:
 	UIFrame& BackgroundColor(ImVec4 newColor);
 	UIFrame& NoTitleBar(bool noTitle);
 	UIFrame& BorderLineTransparency(float transparency);
+
+	TextInfo* GetSelectableText(const std::string& label);
 
 	bool bVisibility = true;
 };

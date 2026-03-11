@@ -9,6 +9,8 @@ void EndingState::OnEnter(UManager* manager)
 {
 	ResourceManager = manager->GetResourceManager();
 	OnStageResult(manager->GetSuccess(), manager->GetRemainTimer(), manager->GetCurStageInt());
+	uiManager = new UIManager();
+
 
 	UIFrame& scoreFrame = uiManager->CreateFrame("Score")
 		.Position(ImVec2(100, 100))
