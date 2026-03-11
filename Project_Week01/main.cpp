@@ -46,9 +46,12 @@ inline void createBuffer(UManager* manager, URenderer* renderer)
 
 	renderer->CreateIndexBuffer(probe->IB, probe->Indexes.data(), probe->IndexCount);
 	renderer->CreateIndexBuffer(sphere->IB, sphere->Indexes.data(), sphere->IndexCount);
+	renderer->CreateIndexBuffer(goal->IB, goal->Indexes.data(), goal->IndexCount);
+
 
 	manager->setProbeResource(*probe);
 	manager->setSphereResource(*sphere);
+	manager->setGoalResource(*goal);
 }
 
 

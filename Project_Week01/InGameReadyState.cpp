@@ -74,7 +74,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 	case 0:
 		player->SetLocation({ 1.0f, -1.0f, 0.0f });
 		player->SetVelocity(FVector(0.0f, 1.0f, 0.0f) * 0.0f);
-		goal.SetLocation({ 1.0f , 1.0f , 0.0f }); 
+		goal.SetLocation({ 0.0f , 0.0f , 0.0f }); 
 		break;
 	case 1:
 		player->SetLocation({ 0.5f , 1.0f , 0.0f });
@@ -211,6 +211,11 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 // texture 렌더링
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
+
+	MeshResource* goal = manager->getGoalResource();
+	if (goal != nullptr) {
+		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
+	}
 	if (uiManager) 
 	{
 		uiManager->Render();
@@ -225,11 +230,12 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 	//	std::cout << "Player is null!" << std::endl;
 	//}
 
+
+
 	if (pPlayer) {
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* res = manager->getProbeResource();
 		renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
-		//renderer->indexRenderPrimitive(res->VB, res->IB, res->IndexCount);
 	}
 
 	// 2. 행성들 렌더링
@@ -251,7 +257,7 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 		}
 	}
 
-	
+
 }
 
 void InGameReadyState::OnExit(UManager* manager)
