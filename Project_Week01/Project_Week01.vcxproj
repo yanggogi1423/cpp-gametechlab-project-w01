@@ -131,6 +131,7 @@
     <ClInclude Include="BootState.h" />
     <ClInclude Include="datatype.h" />
     <ClInclude Include="EndingState.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="InGameReadyState.h" />
     <ClInclude Include="InGameRunState.h" />
     <ClInclude Include="LoadingState.h" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClCompile Include="BootState.cpp" />
     <ClCompile Include="EndingState.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="InGameReadyState.cpp" />
     <ClCompile Include="InGameRunState.cpp" />
     <ClCompile Include="LoadingState.cpp" />
