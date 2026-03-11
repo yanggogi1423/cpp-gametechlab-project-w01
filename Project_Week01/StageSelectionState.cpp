@@ -17,6 +17,8 @@ IState* StageSelectionState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
 
+
+
 	// [참고] 스테이지가 선택되어 manager의 상태가 Loading으로 바뀌면,
 	// 여기서 상태 전환(LoadingState로 이동 등)을 판단할 수 있습니다.
 
