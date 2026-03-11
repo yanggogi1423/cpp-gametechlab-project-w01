@@ -16,7 +16,8 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 
 
 
-	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
+
+	 //ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
 	 ImageLoadTexture(ImageName::PLANET1, L"res/image/planet1.png");
 	 ImageLoadTexture(ImageName::PLANET2, L"res/image/planet2.png");
 	 ImageLoadTexture(ImageName::PLANET3, L"res/image/planet3.png");

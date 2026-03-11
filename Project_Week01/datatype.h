@@ -82,6 +82,8 @@ struct FTextureVertex {
 	float u, v;
 };
 
+
+
 enum ImageName
 {
 	ROCKET,
@@ -97,7 +99,6 @@ enum ImageName
 	PLANET10,
 	PLANET11,
 	PLANET13,
-
 	GOAL,
 	SUN,
 	COUNT

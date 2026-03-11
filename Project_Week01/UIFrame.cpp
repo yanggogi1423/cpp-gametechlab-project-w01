@@ -112,6 +112,9 @@ namespace
 	}
 }
 
+
+
+
 UIFrame::UIFrame(const std::string& title) : title(title)
 {
 	position = ImVec2(0.0f, 0.0f);
