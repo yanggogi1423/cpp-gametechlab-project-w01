@@ -246,14 +246,23 @@ void UManager::DisplayScore(std::string name, unsigned int score)
 	int stage = -1;
 	switch (CurStage)
 	{
+	case EStage::ES_Stage1:
+		stage = 1;
+		break;
+	case EStage::ES_Stage2:
+		stage = 2;
+		break;
+	case EStage::ES_Stage3:
+		stage = 3;
+		break;
 	default:
 		break;
 	}
 	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-	ScoreList.push_back({ name, score });
-	std::sort(ScoreList.begin(), ScoreList.end(), [](const std::pair<std::string, unsigned int>& a, const std::pair<std::string, unsigned int>& b)
+	ScoreList.push_back({ stage, name, score });
+	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
 		{
-			return a.second < b.second;
+			return std::get<2>(a) < std::get<2>(b);
 		}
 	);
 
