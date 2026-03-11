@@ -63,9 +63,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassW(&wndclass);
 
 	//	4 * 3 (1400 * 1050)
-	HWND hWnd = CreateWindowExW(0, WindowClass, Title, WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		CW_USEDEFAULT, CW_USEDEFAULT, WindowWidth, WindowHeight,
-		nullptr, nullptr, hInstance, nullptr);
+	DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+
+	RECT rc = { 0, 0, WindowWidth, WindowHeight };
+	AdjustWindowRect(&rc, style, FALSE);
+
+	HWND hWnd = CreateWindowExW(
+		0,
+		WindowClass,
+		Title,
+		style | WS_VISIBLE,
+		CW_USEDEFAULT,
+		CW_USEDEFAULT,
+		rc.right - rc.left,
+		rc.bottom - rc.top,
+		nullptr,
+		nullptr,
+		hInstance,
+		nullptr
+	);
 
 	// 1. 매니저 및 렌더러 생성
 

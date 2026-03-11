@@ -9,6 +9,8 @@
 #include "datatype.h"
 #include "UResourceManager.h"
 
+
+
 struct ButtonInfo
 {
 	std::string label;
@@ -52,6 +54,21 @@ struct SpriteButtonInfo
 	std::function<void()> callback;
 };
 
+struct SpriteButton9Info
+{
+	std::string label;
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
+	ImVec2 uv0;
+	ImVec2 uv1;
+	float borderLeft;
+	float borderRight;
+	float borderTop;
+	float borderBottom;
+	std::function<void()> callback;
+};
+
 class UIFrame
 {
 private:
@@ -67,6 +84,7 @@ private:
 	std::vector<ImageInfo> images;
 	std::vector<ImageButtonInfo> imageButtons;
 	std::vector<SpriteButtonInfo> spriteButtons;
+	std::vector<SpriteButton9Info> spriteButtons9;
 
 
 public:
@@ -78,6 +96,7 @@ public:
 	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
 	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
+	void AddSpriteButton9(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, float border, std::function<void()> callback);
 
 	ImVec2 GetPosition() const;
 	void SetPosition(const ImVec2& newPosition);
@@ -89,6 +108,5 @@ public:
 	UIFrame& NoTitleBar(bool noTitle);
 	UIFrame& BorderLineTransparency(float transparency);
 
-
-
+	bool bVisibility = true;
 };
