@@ -171,7 +171,7 @@ void MainState::Render(URenderer* renderer, UManager* manager)
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* probeRes = manager->getProbeResource();
 		if (probeRes->VB) {
-			renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 		}
 	}
 
