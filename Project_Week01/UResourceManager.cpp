@@ -15,11 +15,6 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	 LoadTexture("ButtonSprite", L"res/image/ButtonSprite.png");
 
 
-	 //enum ImageName
-	 //{
-		// SUN,
-	 //};
-
 
 	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
 	 ImageLoadTexture(ImageName::SATURN, L"res/image/saturn.png");
