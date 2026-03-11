@@ -21,7 +21,7 @@ DirectX::XMMATRIX Probe::GetTransformMatrix()
     // Z축을 중심으로 회전시키면 XY 평면상에서 회전합니다.
     DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
     DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(angle);
-    DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Location.x, Location.y, 0.0f);
+    DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Velocity.x, Velocity.y, 0.0f);
 
     // 4. 최종 월드 행렬 (SRT: Scale * Rotation * Translation 순서)
     worldMatrix = scaleMat * rotationMat * translationMat;

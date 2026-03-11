@@ -136,22 +136,6 @@ void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FTextureVertex
 
 
 
-void URenderer::indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices)
-{
-    UINT offset = 0;
-
-    // 1. 사용할 정점 버퍼 세팅
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
-
-    // 2. 사용할 인덱스 버퍼 세팅 (unsigned int를 사용하므로 DXGI_FORMAT_R32_UINT 사용)
-    DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-    // 3. 그리기
-    DeviceContext->DrawIndexed(numIndices, 0, 0);
-}
-
-
-
 
 void URenderer::SwapBuffer() {
     SwapChain->Present(1, 0);
@@ -260,6 +244,22 @@ void URenderer::ReleaseConstantBuffer() {
     ConstantBuffer = nullptr;
 }
 
+
+void URenderer::indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices)
+{
+    UINT offset = 0;
+
+    // 1. 사용할 정점 버퍼 세팅
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
+
+    // 2. 사용할 인덱스 버퍼 세팅 (unsigned int를 사용하므로 DXGI_FORMAT_R32_UINT 사용)
+    DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    // 3. 그리기
+    DeviceContext->DrawIndexed(numIndices, 0, 0);
+}
+
+
 void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
     if (!vertexBuffer || !DeviceContext) return;
 
@@ -274,7 +274,6 @@ void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer*
     UINT offset = 0;
     // 투명도가 있는 물체를 그리기 직전에 호출
     DeviceContext->OMSetBlendState(AlphaBlendState, nullptr, 0xFFFFFFFF);
-
     DeviceContext->IASetInputLayout(textureInputLayout);
     DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);

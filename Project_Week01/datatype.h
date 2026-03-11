@@ -90,5 +90,6 @@ enum ImageName
 	JUPITER,
 	SATURN,
 	SUN,
+	GOAL,
 	COUNT
 };

@@ -1,5 +1,9 @@
 #pragma once
 #include "IState.h"
+#include "Probe.h"
+#include "USphere.h"
+#include "UManager.h" //FStageInfo, EStage
+#include "EndingState.h"
 
 class InGameRunState : public IState
 {

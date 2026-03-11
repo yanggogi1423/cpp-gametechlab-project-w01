@@ -11,42 +11,6 @@
 #include "LoadingState.h"
 #include "BootState.h"
 
-//	Private Functions
-
-/* Game Management */
-void UManager::CollisionDetection()
-{
-	if (!Player) return;
-
-	FVector pLoc = Player->GetLocation();
-	
-	//	Collision between Probe and Planets
-	for (const auto& p : PlanetList)
-	{
-		float dist = (p.GetLocation() - pLoc).Size();
-		if (dist < p.GetScale() + Player->GetScale())
-		{
-			Player->SetColliding(true);
-			//OnStageResult(false);
-			return;
-		}
-	}
-
-	// Collision between Probe and Exit Location
-	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
-	if (goalDist < 0.15f)
-	{
-		//OnStageResult(true);
-	}
-}
-
-//	어쩌면 Resolution이 필요없을 수도? (게임 오버)
-void UManager::CollsionResolution()
-{
-	//EndingInit(false);
-} 
-
-
 void UManager::ClearGameObjects()
 {
 	if (Player)
@@ -59,25 +23,6 @@ void UManager::ClearGameObjects()
 
 	//	Reserve size
 	PlanetList.reserve(PlanetListReservedSize);
-}
-
-void UManager::ComputePhysicsAndApply(float deltaTime)
-{
-	for (auto p : PlanetList)
-	{
-		// 1. 방향 벡터 및 거리 계산
-		FVector direction = p.GetLocation() - Player->GetLocation();
-		float dist = direction.Size();
-		if (dist < 1e-4f) continue; // 0으로 나누기 방지
-
-		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
-		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
-		FVector accVec = unitDir * accMag;
-
-		// 3. 속도 업데이트
-		Player->SetVelocity(Player->GetVelocity() + accVec * deltaTime);
-	}
 }
 
 void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceContext)
@@ -104,110 +49,6 @@ void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 
 }
 
-//	외부에서 호출해줘야 함 (혹은 UManager Destructor에서 호출됨)
-// EndingState로 이동
-//void UManager::ShutDownGame()
-//{
-//	if (CurRunState == ERunstate::ERS_Destroy) 
-//	{
-//		//	TODO : Make an error log
-//		return;
-//	}
-//
-//	SaveScore();
-//
-//
-//
-//	//	1. Heap 해제
-//	ResourceManager->Release();
-//
-//	CurRunState = ERunstate::ERS_Destroy;
-//}
-
-/* Non-game Management */
-//	DataStruct : <stage>,<nickname>,<score> (CSV-like based txt)
-//	실행 시에만 Load
-// EndingState로 이동
-//void UManager::LoadScore()
-//{
-//	ScoreList.clear();
-//
-//	std::ifstream ifs(FileName);
-//	std::string line;
-//
-//
-//	while (std::getline(ifs, line))
-//	{
-//		std::stringstream ss(line);
-//
-//		unsigned int stage;
-//		std::string name;
-//		unsigned int score;
-//
-//		char dummy;
-//
-//		//	구분자 : ,
-//		ss >> stage;
-//		ss >> dummy;	//	첫 번째 ',' 가짐
-//		std::getline(ss, name, ',');
-//		ss >> score;
-//
-//		ScoreList.push_back({ stage, name, score });
-//	}
-//
-//	ifs.close();
-//}
-
-//	Vector 정렬 후 File 형식에 맞추어 Parsing
-//	이는 Shutdown
-// 	EndingState로 이동
-//void UManager::SaveScore()
-//{
-//	std::ofstream ofs(FileName);
-//	// ScoreList 튜플 구조 <Stage, Name, Score>에 맞춰 저장합니다.
-//	for (const auto& s : ScoreList)
-//	{
-//		ofs << std::get<0>(s) << "," << std::get<1>(s) << "," << std::get<2>(s) << "\n";
-//	}
-//	ofs.close();
-//}
-
-//	File이 아닌 Runtime Vector를 통해 읽어옴
-// 
-//EndingState로 이동
-//void UManager::DisplayScore(std::string name, unsigned int score)
-//{
-//	int stage = -1;
-//	switch (CurStage)
-//	{
-//	case EStage::ES_Stage1:
-//		stage = 1;
-//		break;
-//	case EStage::ES_Stage2:
-//		stage = 2;
-//		break;
-//	case EStage::ES_Stage3:
-//		stage = 3;
-//		break;
-//	default:
-//		break;
-//	}
-//	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-//	ScoreList.push_back({ stage, name, score });
-//	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
-//		{
-//			//	다른 스테이지일 경우 Sort하지 않음
-//			//	Display 시에도 Stage로 filtering하면 됨
-//			if (std::get<0>(a) != std::get<0>(b)) return false;
-//
-//			return std::get<2>(a) < std::get<2>(b);
-//		}
-//	);
-//
-//	//	TODO : Imgui를 통해 display
-//}
-
-
 void UManager::CreateNewPlanetWorld(USphere& in)
 {
 	PlanetList.push_back(in);	//	이후에 Reference
@@ -217,35 +58,18 @@ void UManager::CreateNewPlanetWorld(USphere& in)
 void UManager::Initialize(HWND hwnd) // 사운드 초기화
 {
 	m_SoundMgr.Initialize(hwnd);
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_TitleScreen, "Sound/TitleScreen.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level1, "Sound/Level1.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level2, "Sound/Level2.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level3, "Sound/Level3.wav");
+	
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "Sound/Clear.wav", 5);
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
-	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+	m_SoundMgr.PlayBGM(EBGM::EBGM_TitleScreen);
 }
-
-//EndingState
-//void UManager::ProgressStage()
-//{
-//	switch (CurAvailableStage)
-//	{
-//	case EStage::ES_Stage1:
-//		CurAvailableStage = EStage::ES_Stage2;
-//		break;
-//
-//	case EStage::ES_Stage2:
-//		CurAvailableStage = EStage::ES_Stage3;
-//		break;
-//
-//	case EStage::ES_Stage3:
-//		//	Do nothing
-//		break;
-//	}
-//
-//	ClearGameObjects();
-//}
 
 void UManager::OnMouseClick()
 {
@@ -271,7 +95,8 @@ MeshResource* UManager::getProbeResource()
 {	
 	return &ProbeResource;
 }
-MeshResource* UManager::getSphereResource() 
+
+MeshResource* UManager::getSphereResource()
 {	
 	return &SphereResource;
 }

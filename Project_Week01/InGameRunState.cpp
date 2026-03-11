@@ -52,6 +52,12 @@ void InGameRunState::OnEnter(UManager* manager)
 		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
 		manager->GetResourceManager()->FontInfoLight);
 
+	std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
+
+	HUDFrame.AddText("Remain Time : " + timerText,
+		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
+		manager->GetResourceManager()->FontInfoLight);
+
 	//HUDFrame.AddImageButton("Planet 1",
 	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
 	//	ImVec2(WindowWidth * 3 / 4.f + 150, 220),
@@ -105,18 +111,61 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
 
-	// 2. [이사 완료] UManager::Update에 있던 물리 엔진 가동
-	// 중력 계산 및 속도 적용
-	manager->ComputePhysicsAndApply(deltaTime);
+	auto planetList = manager->GetPlanetList();
+	auto player = manager->GetProbe();
+	auto stageInfoList = manager->GetStageInfoList();
+	auto curStage = manager->GetCurStage();
 
-	// 충돌 및 승리/패배 판정
-	manager->CollisionDetection();
+	for (auto p : planetList)
+	{
+		// 1. 방향 벡터 및 거리 계산
+		FVector direction = p.GetLocation() - player->GetLocation();
+		float dist = direction.Size();
+		if (dist < 1e-4f) continue; // 0으로 나누기 방지
+
+		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+		FVector unitDir = direction / dist;
+		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
+		FVector accVec = unitDir * accMag;
+
+		// 3. 속도 업데이트
+		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
+	}
+
+	FVector pLoc = player->GetLocation();
+
+	//	Collision between Probe and Planets
+	for (const auto& p : planetList)
+	{
+		float dist = (p.GetLocation() - pLoc).Size();
+		if (dist < p.GetScale() + player->GetScale())
+		{
+			player->SetColliding(true);
+			manager->SetSuccess(false);
+			return new EndingState();
+		}
+	}
+
+	// Collision between Probe and Exit Location
+	float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
+	if (goalDist < 0.15f)
+	{
+		manager->SetSuccess(true);
+		return new EndingState();
+	}
 
 	// 3. 타이머 업데이트 (ReadyState에서 설정된 시간 소모)
-	float currentTimer = manager->GetRemainTimer(); // Getter 필요
-	manager->SetRemainTimer(currentTimer - deltaTime); // Setter 필요
+	float remainTime = manager->GetRemainTimer(); // Getter 필요
 
-	// 만약 시간이 다 되면 EndingState로 전환하는 로직을 여기서 결정할 수 있습니다.
+	remainTime = remainTime - deltaTime;
+	remainTime = max(0.f, remainTime);
+	manager->SetRemainTimer(remainTime); // Setter 필요
+
+	if (remainTime <= 0.f)
+	{
+		manager->SetSuccess(false);
+		return new EndingState();
+	}
 
 	if (bGoToMain)
 	{
@@ -150,7 +199,6 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		}
 	}
 
-	// (2) 행성(Sphere)들 렌더링 (공유 버퍼 활용)
 	MeshResource* sphereRes = manager->getSphereResource();
 	if (sphereRes->VB != nullptr)
 	{
@@ -166,7 +214,6 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 
 void InGameRunState::OnExit(UManager* manager)
 {
-	// 공정 종료 시 필요한 정리 작업
 	if (uiManager) {
 		delete uiManager;
 		uiManager = nullptr;
