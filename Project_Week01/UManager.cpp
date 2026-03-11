@@ -423,26 +423,50 @@ void UManager::setSphereResource(const MeshResource& mr)
 	this->SphereResource = mr;
 }
 
-void GenerateVertices::GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
+
+
+void UManager::Release()
 {
-	outVertices = {
+	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
+	m_SoundMgr.Dispose();
+
+	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
+	ShutDownGame();
+}
+
+
+void MeshResource::GenerateTriangle()
+{
+	Vertices = {
 		// Position          // Color (RGBA)
 		{  0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
 		{  0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
 		{ -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
 	};
 
-	outIndices = { 0, 1, 2 };
+	Indexes = { 0, 1, 2 };
 }
 
-void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
+
+void MeshResource::initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
 {
+	
+		VB = vb;
+		IB = ib;
+		VertexCount = vertexCount;
+		IndexCount = indexCount;
+		Stride = stride;
+		Scale = scale;
+	
+}
+
+void MeshResource::GenerateSphere(float radius = 1.0f){
 	// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
 	const uint32_t sliceCount = 20;
 	const uint32_t stackCount = 20;
 
-	outVertices.clear();
-	outIndices.clear();
+	Vertices.clear();
+	Indexes.clear();
 
 	// 1. 정점(Vertex) 생성
 	for (uint32_t i = 0; i <= stackCount; ++i) {
@@ -461,7 +485,7 @@ void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVer
 			v.b = (v.z / radius) * 0.5f + 0.5f;
 			v.a = 1.0f;
 
-			outVertices.push_back(v);
+			Vertices.push_back(v);
 		}
 	}
 
@@ -472,23 +496,14 @@ void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVer
 			uint32_t second = first + sliceCount + 1;
 
 			// 삼각형 1
-			outIndices.push_back(second);
-			outIndices.push_back(first + 1);
-			outIndices.push_back(first);
+			Indexes.push_back(second);
+			Indexes.push_back(first + 1);
+			Indexes.push_back(first);
 
 			// 삼각형 2
-			outIndices.push_back(second + 1);
-			outIndices.push_back(first + 1);
-			outIndices.push_back(second);
+			Indexes.push_back(second + 1);
+			Indexes.push_back(first + 1);
+			Indexes.push_back(second);
 		}
 	}
-}
-
-void UManager::Release()
-{
-	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
-	m_SoundMgr.Dispose();
-
-	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
-	ShutDownGame();
 }

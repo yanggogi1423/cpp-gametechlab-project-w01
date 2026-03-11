@@ -65,21 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	g_Manager = manager;
 	manager->Initialize(hWnd); // 사운드 여기서 시작!
 
-	// 2. GPU 버퍼 생성 및 Manager 등록
-	std::vector<FVertex> triVertices;
-	std::vector<unsigned int> triIndices;
-	GenerateVertices::GenerateTriangle(triVertices, triIndices);
-
-	ID3D11Buffer* vBuffer = nullptr;
-	D3D11_BUFFER_DESC vbd = {};
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(FVertex) * (UINT)triVertices.size();
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	D3D11_SUBRESOURCE_DATA vinitData = { triVertices.data() };
-	renderer->Device->CreateBuffer(&vbd, &vinitData, &vBuffer);
-
-	// Manager에게 이 버퍼를 쓰라고 등록합니다.
-	manager->initResource(PROBE, vBuffer, nullptr, (UINT)triVertices.size(), 0, sizeof(FVertex), 1.0f);
 
 
 	UResourceManager resourceManager;
@@ -174,7 +159,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	
-	if (vBuffer) vBuffer->Release();
 	renderer->Release();
 	delete renderer;
 
