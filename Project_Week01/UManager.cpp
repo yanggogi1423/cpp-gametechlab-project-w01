@@ -21,7 +21,7 @@ void UManager::CollisionDetection()
 		if (dist < p.GetScale() + Player->GetScale())
 		{
 			Player->SetColliding(true);
-			OnStageResult(false);
+			//OnStageResult(false);
 			return;
 		}
 	}
@@ -30,7 +30,7 @@ void UManager::CollisionDetection()
 	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
 	if (goalDist < 0.15f)
 	{
-		OnStageResult(true);
+		//OnStageResult(true);
 	}
 }
 
@@ -42,7 +42,7 @@ void UManager::CollsionResolution()
 
 void UManager::MainInit()
 {
-	ClearGameObjects();
+	//ClearGameObjects();
 	CurRunState = ERunstate::ERS_Main;
 
 	// 테스트용 행성 생성 (나중에 제거)
@@ -58,14 +58,14 @@ void UManager::MainInit()
 
 void UManager::StageSelectInit()
 {
-	ClearGameObjects();
+	//ClearGameObjects();
 	
 	CurRunState = ERunstate::ERS_StageSelect;
 }
 
 void UManager::InGameReadyInit()
 {
-	ClearGameObjects();
+	//ClearGameObjects();
 
 	CurRunState = ERunstate::ERS_InGameReady;
 
@@ -407,7 +407,7 @@ void UManager::OnStageSelected(EStage selected)
 
 /* Cons, Des */
 UManager::UManager(ID3D11Device* device)
-	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), FileName("ranking.txt"), ResourceManager(nullptr), Score(0.f)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device);
 
@@ -438,7 +438,7 @@ void UManager::Update(float deltaTime)
 		RemainTimer -= deltaTime;
 		if (RemainTimer <= 0.0f)
 		{
-			OnStageResult(false); // 시간 초과 실패
+			//OnStageResult(false); // 시간 초과 실패
 			return;
 		}
 		//	Value Input
@@ -485,7 +485,7 @@ void UManager::Release()
 	m_SoundMgr.Dispose();
 
 	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
-	ShutDownGame();
+	//ShutDownGame();
 }
 
 

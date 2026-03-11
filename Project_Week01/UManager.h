@@ -164,9 +164,9 @@ private:
 	//void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
 	
 	// Stage Progression
-	void ProgressStage();
+	//void ProgressStage();
 	void InitGameObjects();
-	void ClearGameObjects(); //InGameRunExit
+	//void ClearGameObjects(); //InGameRunExit
 
 	//	Game Logic
 
@@ -176,12 +176,12 @@ private:
 
 	/* Non-game Management */
 	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
-	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
+	//void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
-	void LoadScore();
-	void SaveScore();
-	void DisplayScore(std::string name, unsigned int score);
+	//void LoadScore();
+	//void SaveScore();
+	//void DisplayScore(std::string name, unsigned int score);
 	
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
@@ -194,7 +194,7 @@ public:
 	void OnStageSelected(EStage selected); // Stage 선택 (잠금 체크 포함)
 	void OnHomeClicked();      // -> Title
 	void OnSimulationStart();  // Ready -> Run
-	void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
+	//void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
 	void OnRestartClicked();   // Ending -> Ready
 	void OnNextStageClicked();
 
@@ -226,7 +226,7 @@ public:
 	~UManager()
 	{
 		m_SoundMgr.Dispose();
-		ShutDownGame();
+		//ShutDownGame();
 	}
 
 	void Update(float deltaTime);
