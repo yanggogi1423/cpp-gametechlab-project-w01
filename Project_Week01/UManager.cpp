@@ -32,8 +32,9 @@ void UManager::CollisionDetection()
 		}
 	}
 
+	// 목표 도달
 	// Collision between Probe and Exit Location
-	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
+	float goalDist = (StageInfoList[(int)CurStage - 1].goal.GetLocation() - pLoc).Size();
 	if (goalDist < 0.15f)
 	{
 		//OnStageResult(true);
