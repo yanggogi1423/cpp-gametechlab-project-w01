@@ -19,8 +19,8 @@ inline void createBuffer(UManager* manager, URenderer* renderer)
 	MeshResource* probe = manager->getProbeResource();
 	MeshResource* sphere = manager->getSphereResource();
 
-	renderer->CreateVertexBuffer(probe->VB, probe->Vertices.data(), probe->Vertices.size() * sizeof(FVertex));
-	renderer->CreateVertexBuffer(sphere->VB, sphere->Vertices.data(), sphere->Vertices.size() * sizeof(FVertex));
+	renderer->CreateVertexBuffer(probe->VB, probe->Vertices.data(), probe->Vertices.size() * sizeof(FTextureVertex));
+	renderer->CreateVertexBuffer(sphere->VB, sphere->Vertices.data(), sphere->Vertices.size() * sizeof(FTextureVertex));
 
 	renderer->CreateIndexBuffer(probe->IB, probe->Indexes.data(), probe->IndexCount);
 	renderer->CreateIndexBuffer(sphere->IB, sphere->Indexes.data(), sphere->IndexCount);
@@ -131,6 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			if (probeRes->VB != nullptr)
 			{
 				renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
+				renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, );
 			}
 		}
 

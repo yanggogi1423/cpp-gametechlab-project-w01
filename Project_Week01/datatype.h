@@ -2,11 +2,7 @@
 
 #include <cmath>
 
-struct FVertex
-{
-	float x, y, z;	// 좌표
-	float r, g, b, a; // 색상
-};
+
 
 struct FVector
 {

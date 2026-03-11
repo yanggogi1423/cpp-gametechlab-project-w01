@@ -238,10 +238,10 @@ void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
 void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView* srv)
 {
     UINT offset = 0;
-    DeviceContext->IASetInputLayout(SimpleInputLayout);
+    DeviceContext->IASetInputLayout(textureInputLayout);
     DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-    DeviceContext->
-
+    DeviceContext->PSSetShaderResources(0, 1, &srv);
+    DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 

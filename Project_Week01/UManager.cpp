@@ -484,69 +484,71 @@ void UManager::Release()
 
 void MeshResource::GenerateTriangle()
 {
+	// FTextureVertex 구조: { x, y, z,  r, g, b, a,  u, v }
 	Vertices = {
-		// Position          // Color (RGBA)
-		{  0.0f,  0.3f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
-		{  0.3f, -0.3f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
-		{ -0.3f, -0.3f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
+		// 위쪽 꼭짓점: 텍스처의 상단 중앙 (0.5, 0.0)
+		{  0.0f,  0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  0.5f, 0.0f },
+
+		// 오른쪽 아래: 텍스처의 우측 하단 (1.0, 1.0)
+		{  0.3f, -0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  1.0f, 1.0f },
+
+		// 왼쪽 아래: 텍스처의 좌측 하단 (0.0, 1.0)
+		{ -0.3f, -0.3f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f,  0.0f, 1.0f }
 	};
 
+	// 시계 방향(CW)으로 인덱스 설정
 	Indexes = { 0, 1, 2 };
 
-	VertexCount = Vertices.size();
-	IndexCount = Indexes.size();
-
+	VertexCount = static_cast<UINT>(Vertices.size());
+	IndexCount = static_cast<UINT>(Indexes.size());
 }
 
-void MeshResource::GenerateSphere(float radius){
-	// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
-	const uint32_t sliceCount = 20;
-	const uint32_t stackCount = 20;
+void MeshResource::GenerateSphere(float radius)
+{
+	// 원을 구성할 삼각형의 개수 (높을수록 부드러워짐)
+	const uint32_t segmentCount = 50;
 
 	Vertices.clear();
 	Indexes.clear();
 
-	// 1. 정점(Vertex) 생성
-	for (uint32_t i = 0; i <= stackCount; ++i) {
-		float phi = 3.1415926535f * i / stackCount;
-		for (uint32_t j = 0; j <= sliceCount; ++j) {
-			float theta = 2.0f * 3.1415926535f * j / sliceCount;
+	// 1. 중심 정점 생성 (UV: 0.5, 0.5)
+	FTextureVertex center;
+	center.x = 0.0f; center.y = 0.0f; center.z = 0.0f;
+	center.r = 1.0f; center.g = 1.0f; center.b = 1.0f; center.a = 1.0f;
+	center.u = 0.5f; center.v = 0.5f;
+	Vertices.push_back(center);
 
-			FVertex v;
-			v.x = radius * sinf(phi) * cosf(theta);
-			v.y = radius * cosf(phi);
-			v.z = radius * sinf(phi) * sinf(theta);
+	// 2. 테두리 정점 생성
+	for (uint32_t i = 0; i <= segmentCount; ++i)
+	{
+		float theta = 2.0f * 3.1415926535f * (float)i / segmentCount;
 
-			// 색상: 좌표 기반 (디버깅 시 구의 입체감을 확인하기 좋음)
-			v.r = (v.x / radius) * 0.5f + 0.5f;
-			v.g = (v.y / radius) * 0.5f + 0.5f;
-			v.b = (v.z / radius) * 0.5f + 0.5f;
-			v.a = 1.0f;
+		float cosT = cosf(theta);
+		float sinT = sinf(theta);
 
-			Vertices.push_back(v);
-		}
+		FTextureVertex v;
+		v.x = radius * cosT;
+		v.y = radius * sinT;
+		v.z = 0.0f;
+
+		v.r = 1.0f; v.g = 1.0f; v.b = 1.0f; v.a = 1.0f;
+
+		// UV 좌표: 중심(0.5, 0.5)을 기준으로 -1~1 범위를 0~1로 변환
+		// cosT는 -1~1이므로 0.5를 곱하고 0.5를 더함
+		v.u = cosT * 0.5f + 0.5f;
+		v.v = 1.0f - (sinT * 0.5f + 0.5f); // DirectContext 좌표계에 맞게 Y(V) 반전
+
+		Vertices.push_back(v);
 	}
 
-	// 2. 인덱스(Index) 생성
-	for (uint32_t i = 0; i < stackCount; ++i) {
-		for (uint32_t j = 0; j < sliceCount; ++j) {
-			uint32_t first = i * (sliceCount + 1) + j;
-			uint32_t second = first + sliceCount + 1;
-
-			// 삼각형 1
-			Indexes.push_back(second);
-			Indexes.push_back(first + 1);
-			Indexes.push_back(first);
-
-			// 삼각형 2
-			Indexes.push_back(second + 1);
-			Indexes.push_back(first + 1);
-			Indexes.push_back(second);
-		}
+	// 3. 인덱스 생성 (중심점을 포함한 삼각형 리스트)
+	for (uint32_t i = 1; i <= segmentCount; ++i)
+	{
+		Indexes.push_back(0);         // 중심점
+		Indexes.push_back(i + 1);     // 다음 테두리 점
+		Indexes.push_back(i);         // 현재 테두리 점
 	}
 
-	VertexCount = static_cast<unsigned int>(Vertices.size());
-	IndexCount = static_cast<unsigned int>(Indexes.size());
-
-
+	VertexCount = static_cast<UINT>(Vertices.size());
+	IndexCount = static_cast<UINT>(Indexes.size());
 }
