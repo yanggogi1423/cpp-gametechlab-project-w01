@@ -129,6 +129,9 @@
     <ClInclude Include="Goal.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Trail.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UManager.cpp">
@@ -231,6 +234,9 @@
       <Filter>헤더 파일</Filter>
     </ClCompile>
     <ClCompile Include="Goal.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Trail.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

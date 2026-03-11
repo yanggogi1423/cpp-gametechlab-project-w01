@@ -13,7 +13,7 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	 LoadTexture("InGamePanel", L"res/image/InGamePanel.png");
 	 LoadTexture("LeaderBoardPanel", L"res/image/LeaderBoardPanel.png");
 	 LoadTexture("ButtonSprite", L"res/image/ButtonSprite.png");
-
+	 LoadTexture("JustWhite", L"res/image/White.png");
 
 
 	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");

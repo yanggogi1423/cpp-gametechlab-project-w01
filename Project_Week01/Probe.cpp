@@ -1,8 +1,10 @@
 #include "Probe.h"
+#include <iostream>
 
 
-Probe::Probe() : UPrimitive()
-{}
+Probe::Probe() : UPrimitive(), trailGap(0.08f), trailInterval(5), trainIntervalCounter(0)
+{
+}
 
 Probe::~Probe()
 {}
@@ -27,4 +29,26 @@ DirectX::XMMATRIX Probe::GetTransformMatrix()
     worldMatrix = scaleMat  * rotationMat * translationMat;
     
     return DirectX::XMMatrixTranspose(worldMatrix);
+}
+
+void Probe::TryAddTrail()
+{
+    if (trails.empty()) {
+        Trail trail;
+        trail.SetLocation(Location);
+        trails.push_back(trail);
+    }
+    else
+    {
+        Trail lastTrail = trails.back();
+        auto dist = (lastTrail.GetLocation() - Location).Size();
+        if (dist < trailGap)
+        {
+            return;
+        }
+
+        Trail trail;
+        trail.SetLocation(Location);
+        trails.push_back(trail);
+    }
 }
