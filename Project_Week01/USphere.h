@@ -13,5 +13,5 @@ public:
 	USphere();
 	virtual ~USphere() {};
 
-
+	virtual DirectX::XMMATRIX GetTransformMatrix();
 };

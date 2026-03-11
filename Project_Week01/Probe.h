@@ -8,8 +8,5 @@ private:
 public:
 	Probe();
 	virtual ~Probe();
-
-
-
-	virtual DirectX::XMMATRIX GetTransformMatrix(); 
+	virtual DirectX::XMMATRIX GetTransformMatrix();
 };

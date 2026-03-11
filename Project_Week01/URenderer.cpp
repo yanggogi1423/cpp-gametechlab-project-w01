@@ -114,7 +114,7 @@ void URenderer::PrepareShader() {
 }
 
 // renderer 는 constant를 update하기만 할 것
-void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
+void URenderer::UpdateConstant(DirectX::XMMATRIX pXMMATRIX) {
     if (ConstantBuffer) {
         D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
         if (SUCCEEDED(DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR))) {

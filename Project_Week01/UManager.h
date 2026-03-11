@@ -235,7 +235,7 @@ public:
 
 	/* Getter, Setter */
 	Probe* GetProbe() const { return Player; }
-	const std::vector<USphere> & GetPlanetList() const { return PlanetList; }
+	 std::vector<USphere> & GetPlanetList()  { return PlanetList; }
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }
