@@ -54,6 +54,15 @@ struct TextInfo
 	ImVec4 color;
 };
 
+struct SpriteInfo
+{
+	ID3D11ShaderResourceView* texture;
+	ImVec2 position;
+	ImVec2 size;
+	ImVec2 uv0;
+	ImVec2 uv1;
+};
+
 struct SpriteButtonInfo
 {
 	std::string label;
@@ -98,6 +107,8 @@ private:
 	std::vector<SpriteButtonInfo> spriteButtons;
 	std::vector<SpriteButton9Info> spriteButtons9;
 	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
+	std::unordered_map<std::string, std::unique_ptr<SpriteInfo>> selectableSprite;
+
 
 
 public:
@@ -111,6 +122,7 @@ public:
 	void AddImage9(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, float border);
 	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
+	void AddSpriteManual(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& textureSize, const int spriteSize, const ImVec2& position, const ImVec2& size, int index);
 	void AddSpriteButton9(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, float border, std::function<void()> callback);
 
 	ImVec2 GetPosition() const;
@@ -124,6 +136,8 @@ public:
 	UIFrame& BorderLineTransparency(float transparency);
 
 	TextInfo* GetSelectableText(const std::string& label);
+	SpriteInfo* GetSelectableSprite(const std::string& label);
+
 
 	bool bVisibility = true;
 };

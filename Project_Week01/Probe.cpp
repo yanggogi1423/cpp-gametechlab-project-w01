@@ -1,8 +1,10 @@
 #include "Probe.h"
+#include <iostream>
 
 
-Probe::Probe() : UPrimitive()
-{}
+Probe::Probe() : UPrimitive(), trailGap(0.08f), trailInterval(5), trainIntervalCounter(0)
+{
+}
 
 Probe::~Probe()
 {}
@@ -20,11 +22,38 @@ DirectX::XMMATRIX Probe::GetTransformMatrix()
     // 3. DirectXMath를 이용한 2D 행렬 조립
     // Z축을 중심으로 회전시키면 XY 평면상에서 회전합니다.
     DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 1.0f);
-    DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(0);
+    DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(1.0f);
     DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Location.x, Location.y, 0.0f);
 
     // 4. 최종 월드 행렬 (SRT: Scale * Rotation * Translation 순서)
     worldMatrix = scaleMat  * rotationMat * translationMat;
     
     return DirectX::XMMatrixTranspose(worldMatrix);
+}
+
+void Probe::TryAddTrail()
+{
+    if (trails.empty()) {
+        Trail trail;
+        trail.SetLocation(Location);
+        trails.push_back(trail);
+    }
+    else
+    {
+        Trail lastTrail = trails.back();
+        auto lastLocation = lastTrail.GetLocation();
+        auto locationDelta = Location - lastLocation;
+        auto dist = locationDelta.Size();
+        if (dist < trailGap)
+        {
+            return;
+        }
+
+        Trail trail;
+
+        auto unitVector = locationDelta / locationDelta.Size();
+
+        trail.SetLocation(lastLocation + unitVector * trailGap);
+        trails.push_back(trail);
+    }
 }

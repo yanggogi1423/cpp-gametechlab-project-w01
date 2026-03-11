@@ -82,14 +82,24 @@ struct FTextureVertex {
 	float u, v;
 };
 
+
+
 enum ImageName
 {
 	ROCKET,
-	BLACK_SPHERE,
-	WHITE_SPHERE,
-	JUPITER,
-	SATURN,
-	SUN,
+	PLANET1,
+	PLANET2,
+	PLANET3,
+	PLANET4,
+	PLANET5,
+	PLANET6,
+	PLANET7,
+	PLANET8,
+	PLANET9,
+	PLANET10,
+	PLANET11,
+	PLANET13,
 	GOAL,
+	SUN,
 	COUNT
 };

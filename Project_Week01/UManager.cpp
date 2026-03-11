@@ -86,7 +86,7 @@ UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
 
 	ProbeResource.GenerateTriangle();
 	SphereResource.GenerateSphere(1.0f);
-	GoalResource.GenerateTriangle();
+	GoalResource.GenerateSphere(0.1f);
 
 	PlanetList.reserve(PlanetListReservedSize);
 }

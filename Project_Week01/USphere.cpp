@@ -19,7 +19,7 @@ USphere::USphere()
     imageName = static_cast<ImageName>(count);
     count++;
     if (count >= ImageName::GOAL) {
-        count = ImageName::BLACK_SPHERE;
+        count = ImageName::PLANET1;
     }
 }
 
