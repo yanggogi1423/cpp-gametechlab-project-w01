@@ -146,6 +146,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	LARGE_INTEGER startTime, endTime;
 	double elapsedTime = 0.0;
 
+	float fixedTimeScale = 0.02f;
+	float timer = 0.f;
 
 	bool bIsExit = false;
 	while (!bIsExit)
@@ -170,17 +172,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		renderer->PrepareShader();
 
-		stateMachine.Update(deltaTime, manager);
+		timer += deltaTime;
+		if (timer >= fixedTimeScale) 
+		{
+			stateMachine.Update(fixedTimeScale, manager);
+			timer -= fixedTimeScale;
+		}
+
 		stateMachine.Render(renderer, manager);
 
 		renderer->SwapBuffer();
-
-
-		do {
-			Sleep(0);
-			QueryPerformanceCounter(&endTime);
-			elapsedTime = (endTime.QuadPart - startTime.QuadPart) * 1000.0 / frequency.QuadPart;
-		} while (elapsedTime < targetFrameTime);
 	}
 
 	

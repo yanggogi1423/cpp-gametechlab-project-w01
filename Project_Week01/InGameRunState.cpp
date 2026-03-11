@@ -158,7 +158,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 
 		// 3. 속도 업데이트
-		player->SetVelocity(player->GetVelocity() + accVec);
+		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
 	}
 
 	auto pos = player->GetLocation();
