@@ -42,9 +42,9 @@ DirectX::XMMATRIX USphere::GetTransformMatrix()
     DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Location.x, Location.y, 0.0f);
 
     // 4. 최종 월드 행렬 (SRT: Scale * Rotation * Translation 순서)
-    worldMatrix = scaleMat * translationMat;
+    worldMatrix =  scaleMat * translationMat;
 
-    return worldMatrix;
+    return DirectX::XMMatrixTranspose(worldMatrix);
 }
 
 ImageName USphere::getImageName()
