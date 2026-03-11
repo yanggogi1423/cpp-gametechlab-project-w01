@@ -41,14 +41,19 @@ void Probe::TryAddTrail()
     else
     {
         Trail lastTrail = trails.back();
-        auto dist = (lastTrail.GetLocation() - Location).Size();
+        auto lastLocation = lastTrail.GetLocation();
+        auto locationDelta = Location - lastLocation;
+        auto dist = locationDelta.Size();
         if (dist < trailGap)
         {
             return;
         }
 
         Trail trail;
-        trail.SetLocation(Location);
+
+        auto unitVector = locationDelta / locationDelta.Size();
+
+        trail.SetLocation(lastLocation + unitVector * trailGap);
         trails.push_back(trail);
     }
 }
