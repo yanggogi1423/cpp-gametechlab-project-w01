@@ -11,11 +11,27 @@
 void UManager::CollisionDetection()
 {
 	if (!Player) return;
-	
-	//	1. Collision between Probe and Border
-	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
 
-	//	2. Collision between Probe and Planets
+	FVector pLoc = Player->GetLocation();
+	
+	//	Collision between Probe and Planets
+	for (const auto& p : PlanetList)
+	{
+		float dist = (p.GetLocation() - pLoc).Size();
+		if (dist < p.GetScale() + Player->GetScale())
+		{
+			Player->SetColliding(true);
+			OnStageResult(false);
+			return;
+		}
+	}
+
+	// Collision between Probe and Exit Location
+	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
+	if (goalDist < 0.15f)
+	{
+		OnStageResult(true);
+	}
 }
 
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
@@ -29,9 +45,22 @@ void UManager::MainInit()
 	ClearGameObjects();
 	CurRunState = ERunstate::ERS_Main;
 
-	// 플레이어를 미리 생성하여 nullptr 에러를 방지하고 위치를 고정합니다.
+	// 테스트용 행성 생성 (나중에 제거)
 	Player = new Probe();
 	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
+	Player->SetScale(0.1f);
+
+	PlanetList.emplace_back();
+	USphere& testP = PlanetList.back();
+	testP.SetLocation({ 0.5f, 0.0f, 0.0f });
+	testP.SetScale(0.1f);
+}
+
+void UManager::StageSelectInit()
+{
+	ClearGameObjects();
+	
+	CurRunState = ERunstate::ERS_StageSelect;
 }
 
 void UManager::InGameReadyInit()
@@ -40,17 +69,34 @@ void UManager::InGameReadyInit()
 
 	CurRunState = ERunstate::ERS_InGameReady;
 
-	// [중요] CurStage에 해당하는 정보를 StageInfoList에서 찾아와서 
-	// 장애물이나 플레이어 시작 위치를 설정하는 로직이 여기에 들어와야 합니다.
-	// FStageInfo currentInfo = StageInfoList[(int)CurStage - 1];
+	int StageIdx = (int)CurStage - 1;
+	RemainTimer = StageInfoList[StageIdx].MaxTime;
+
+	if (StageIdx < 0 || StageIdx >= StageInfoList.size()) return;
+
+	FStageInfo StageInfo = StageInfoList[StageIdx];
+
+	for (const auto& obstacle : StageInfo.ObstacleList)
+	{
+		// new를 쓰지 않고 emplace_back을 사용하여 벡터 내부에 직접 객체를 생성합니다.
+		// 이렇게 하면 메모리 관리를 벡터가 100% 책임집니다.
+		PlanetList.emplace_back();
+
+		// 방금 추가된 마지막 객체에 접근하여 데이터를 설정합니다.
+		USphere& planet = PlanetList.back();
+		planet.SetLocation(obstacle.second);
+		planet.SetMass(10.0f);
+		planet.SetScale(0.1f);
+	}
+
+	// 플레이어(Probe)는 단일 객체이므로 기존 포인터 방식을 유지하거나 
+	// 원하신다면 이 역시 객체로 바꿀 수 있습니다.
+	if (Player == nullptr) Player = new Probe();
+	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
 }
 
 void UManager::InGameRunInit()
 {
-	ClearGameObjects();
-
-	InitGameObjects();
-
 	CurRunState = ERunstate::ERS_InGameRun;
 }
 
@@ -65,11 +111,11 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 
 	if (bIsClear)
 	{
-
+		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
 	}
-	else 
+	else
 	{
-
+		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
 	}
 
 	
@@ -78,51 +124,27 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 	DisplayScore(name, score);
 }
 
-void UManager::ProgressStage()
-{
-	if (CurRunState != ERunstate::ERS_InGameReady)
-	{
-		//	TODO : Make an error log
-
-		return;
-	}
-
-	switch (CurAvailableStage)
-	{
-	case EStage::ES_Stage1:
-		CurAvailableStage = EStage::ES_Stage2;
-		break;
-
-	case EStage::ES_Stage2:
-		CurAvailableStage = EStage::ES_Stage3;
-		break;
-
-	case EStage::ES_Stage3:
-		//	Do nothing
-		break;
-	}
-
-	ClearGameObjects();
-}
-// probe sphere initialize
-
-
-
-
-// TODO 수정해야함
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
-	Player = new Probe();
+	// 1. 플레이어 생성 (Player가 포인터 유지라면 new 사용, 객체라면 emplace_back 고려)
+	if (Player == nullptr) Player = new Probe();
 	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
-	
-	USphere* TestPlanet = new USphere();
-	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
-	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
+	Player->SetVelocity({ 0.0f, 0.0f, 0.0f }); // 시작 시 속도 초기화
 
-	PlanetList.push_back(*TestPlanet);
+	// 2. 테스트 행성 생성 (emplace_back 활용)
+	// 임시 포인터를 만들지 않고 벡터 내부에 직접 공간을 할당합니다.
+	PlanetList.emplace_back();
 
-	//	TODO : 장애물 생성 로직
+	// 3. 방금 생성된 마지막 객체(TestPlanet) 설정
+	USphere& testPlanet = PlanetList.back();
+	testPlanet.SetLocation({ 0.5f, 0.8f, 0.0f });
+	testPlanet.SetVelocity({ 0.0f, -0.2f, 0.0f });
+	testPlanet.SetScale(0.1f); // 크기가 너무 크면 여기서 조절
+	testPlanet.SetMass(10.0f);
+
+	// 이제 PlanetList는 객체 리스트이므로 
+	// 이 함수가 끝나도 행성 데이터는 벡터 안에 안전하게 보존됩니다.
 }
 
 //	모든 오브젝트 삭제
@@ -130,15 +152,10 @@ void UManager::InitGameObjects()
 void UManager::ClearGameObjects()
 {
 	if (Player)
-	{
-		delete Player;
+	{ 
+		delete Player; 
+		Player = nullptr;
 	}
-	Player = nullptr;
-
-	//for (auto planet : PlanetList)
-	//{
-	//	if (planet) delete planet;
-	//}
 
 	PlanetList.clear();
 
@@ -175,7 +192,6 @@ void UManager::BootGame(ID3D11Device * device)
 	
 	//	1. Local Score 및 ResourceManager 로드
 	LoadScore();
-
 	ResourceManager = new UResourceManager();
 	ResourceManager->Initialize(device);
 
@@ -248,12 +264,11 @@ void UManager::LoadScore()
 void UManager::SaveScore()
 {
 	std::ofstream ofs(FileName);
-
-	for (auto s : ScoreList)
+	// ScoreList 튜플 구조 <Stage, Name, Score>에 맞춰 저장합니다.
+	for (const auto& s : ScoreList)
 	{
-		ofs << std::get<1>(s) << "," << std::get<1>(s) << "\n";
+		ofs << std::get<0>(s) << "," << std::get<1>(s) << "," << std::get<2>(s) << "\n";
 	}
-
 	ofs.close();
 }
 
@@ -302,9 +317,31 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.Initialize(hwnd);
 	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "Sound/Clear.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
 	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+}
+
+void UManager::ProgressStage()
+{
+	switch (CurAvailableStage)
+	{
+	case EStage::ES_Stage1:
+		CurAvailableStage = EStage::ES_Stage2;
+		break;
+
+	case EStage::ES_Stage2:
+		CurAvailableStage = EStage::ES_Stage3;
+		break;
+
+	case EStage::ES_Stage3:
+		//	Do nothing
+		break;
+	}
+
+	ClearGameObjects();
 }
 
 // 마우스 클릭 시 호출될 함수
@@ -312,11 +349,6 @@ void UManager::OnMouseClick()
 {
 	// 세부 재생 로직은 SoundManager가 알아서 합니다.
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
-}
-
-void UManager::OnPlayClicked()
-{
-	CurRunState = ERunstate::ERS_StageSelect;
 }
 
 void UManager::OnHomeClicked()
@@ -354,35 +386,29 @@ void UManager::OnStageSelected(EStage selected)
 }
 
 // 결과 화면 시 호출될 함수
-void UManager::OnStageResult(bool bSuccess) {
-	CurRunState = ERunstate::ERS_Ending;
+void UManager::OnStageResult(bool bSuccess) 
+{
+	ProgressStage();
 
-	if (bSuccess) {
-		// [해금 로직] 현재 스테이지를 깼고, 다음 스테이지가 아직 잠겨있다면 해금
-		if (CurStage == CurAvailableStage) {
-			if (CurAvailableStage == EStage::ES_Stage1) CurAvailableStage = EStage::ES_Stage2;
-			else if (CurAvailableStage == EStage::ES_Stage2) CurAvailableStage = EStage::ES_Stage3;
-		}
-	}
-	// EndingInit(bSuccess, score, name); 호출 등으로 이어짐
+	unsigned int finalScore = 0;
+	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
+	else finalScore = 0;
+
+	EndingInit(bSuccess, finalScore, RandomNameGenerator());
 }
 
 
 /* Cons, Des */
 UManager::UManager(ID3D11Device* device)
-	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),FileName("ranking.txt"),ResourceManager(nullptr),Score(0.f)
-	//,bBootDone(false), bIsAlreadyDestroy(false)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), FileName("ranking.txt"), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device);
 
-	// vertex init
+	// 정점/인덱스 데이터 시트 생성 (실제 버퍼는 main의 createBuffer에서 생성됨)
 	ProbeResource.GenerateTriangle();
-	SphereResource.GenerateSphere();
+	SphereResource.GenerateSphere(1.0f);
 
-	// planet list
-	// usphere 초기화를 해야하는데....
-	PlanetList = std::vector<USphere>(50);
-
+	PlanetList.reserve(PlanetListReservedSize);
 }
 
 void UManager::Update(float deltaTime)
@@ -398,11 +424,16 @@ void UManager::Update(float deltaTime)
 			InGameReadyInit();
 		}
 		break;
-
 	case ERunstate::ERS_InGameReady:
 		break;
 	case ERunstate::ERS_InGameRun:
-
+		// Remaining Time Update
+		RemainTimer -= deltaTime;
+		if (RemainTimer <= 0.0f)
+		{
+			OnStageResult(false); // 시간 초과 실패
+			return;
+		}
 		//	Value Input
 		ComputePhysicsAndApply(deltaTime);
 

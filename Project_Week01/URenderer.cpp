@@ -112,7 +112,8 @@ void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
     if (ConstantBuffer) {
         D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
         if (SUCCEEDED(DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR))) {
-            memcpy(constantbufferMSR.pData, &pXMMATRIX, sizeof(DirectX::XMMATRIX));
+            DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(pXMMATRIX);
+            memcpy(constantbufferMSR.pData, &transposed, sizeof(DirectX::XMMATRIX));
             DeviceContext->Unmap(ConstantBuffer, 0);
         }
     }

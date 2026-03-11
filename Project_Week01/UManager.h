@@ -156,11 +156,12 @@ private:
 
 	//	Scene Initialization
 	void MainInit();		//	Opening(시작 화면)으로 분기
+	void StageSelectInit();	//	Stage Select 화면으로 분기
 	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
 	void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
-
-	//	Stage Progress
+	
+	// Stage Progression
 	void ProgressStage();
 	void InitGameObjects();
 	void ClearGameObjects();
@@ -188,7 +189,6 @@ public:
 	void Initialize(HWND hwnd);
 	void Release();
 	void OnMouseClick();
-	void OnPlayClicked();      // Title -> StageSelect
 	void OnStageSelected(EStage selected); // Stage 선택 (잠금 체크 포함)
 	void OnHomeClicked();      // -> Title
 	void OnSimulationStart();  // Ready -> Run

@@ -44,7 +44,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_Manager) g_Manager->OnMouseClick();
 		break;
 
-
+		 
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -52,23 +52,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
-}
-
-static DirectX::XMFLOAT3 myPos = { 0.0f, 0.0f, 0.0f };
-static DirectX::XMMATRIX matScale;
-
-inline void updateConstant(URenderer* renderer, float deltaTime)
-{
-	using namespace DirectX;
-
-	myPos.x += 0.1f * deltaTime;
-	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-
-	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
-	XMMATRIX constant = matScale * matTranslate;
-	constant = XMMatrixTranspose(constant);
-
-	renderer->UpdateConstant(constant);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -129,9 +112,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// --- Rendering ---
 		renderer->Prepare();
 
+		// ImGui 프레임 시작 신호 (없으면 프리징 발생!)
+		//ImGui_ImplDX11_NewFrame();
+		//ImGui_ImplWin32_NewFrame();
+		//ImGui::NewFrame();
+
 		renderer->PrepareShader();
 		manager->Update(deltaTime);
-		updateConstant(renderer, deltaTime);
 
 		// 1. 플레이어(Probe) 렌더링
 		Probe* pPlayer = manager->GetProbe();
@@ -165,7 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		renderer->SwapBuffer();
 	}
 
-
+	
 	manager->Release(); // 사운드 해제 포함
 	delete manager;
 
