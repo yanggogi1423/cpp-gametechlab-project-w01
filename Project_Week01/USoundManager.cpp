@@ -164,16 +164,18 @@ void USoundManager::StopSFX()
 
 void USoundManager::LoadBGM(EBGM type, const std::string& path)
 {
-    if (BgmClips.find(type) != BgmClips.end()) return;
+    if (BgmClips.find(type) != BgmClips.end()) return;    // 중복 로드 방지
+    if (m_pDS == nullptr) return;
 
     SoundClip clip;
     CreateSoundClip(path, 1, clip);
 
-    // [진단] 로드 성공 여부 확인
+    // [진단] 로드 성공 여부 확인   
     if (clip.Buffers.empty())
     {
-        std::string err = "BGM 로드 실패: " + path + "\n폴더 위치를 확인하세요.";
-        MessageBoxA(NULL, err.c_str(), "Sound Error", MB_OK);
+        std::wstring wPath(path.begin(), path.end());
+        std::wstring err = L"BGM 로드 실패: " + wPath + L"\n파일 존재 여부를 확인하세요.";
+        MessageBoxW(NULL, err.c_str(), L"Sound Error", MB_OK);
         return;
     }
     BgmClips[type] = clip;
@@ -181,8 +183,8 @@ void USoundManager::LoadBGM(EBGM type, const std::string& path)
 
 void USoundManager::LoadSFX(ESFX type, const std::string& path, int poolSize)
 {
-    // 중복 로드 방지
-    if (SfxClips.find(type) != SfxClips.end()) return;
+    if (SfxClips.find(type) != SfxClips.end()) return;    // 중복 로드 방지
+    if (m_pDS == nullptr) return;
 
     SoundClip clip;
     // 효과음은 인자로 받은 poolSize만큼 버퍼를 생성합니다.

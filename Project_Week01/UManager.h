@@ -193,6 +193,7 @@ public:
 	void ClearGameObjects();
 
 	// Sound 관련
+	void PlayBGM(EBGM bgm) { m_SoundMgr.PlayBGM(bgm); }
 	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 };
 

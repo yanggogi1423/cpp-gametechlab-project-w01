@@ -16,6 +16,25 @@ void InGameReadyState::OnEnter(UManager* manager)
 	const FStageInfo& stageInfo = stageInfoList[StageIdx];
 	manager->SetRemainTimer(stageInfo.MaxTime); // 타이머 설정
 
+	// 스테이지 번호에 따른 BGM 전환
+	EStage curStage = manager->GetCurStage();
+
+	switch (curStage)
+	{
+	case EStage::ES_Stage1:
+		manager->PlayBGM(EBGM::EBGM_Level1);
+		break;
+	case EStage::ES_Stage2:
+		manager->PlayBGM(EBGM::EBGM_Level2);
+		break;
+	case EStage::ES_Stage3:
+		manager->PlayBGM(EBGM::EBGM_Level3);
+		break;
+	default:
+		manager->PlayBGM(EBGM::EBGM_TitleScreen);
+		break;
+	}
+
 	// 3. 장애물(행성) 배치 로직
 	for (auto& obstacle : stageInfo.ObstacleList)
 	{
