@@ -226,6 +226,9 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 
 	// (3) UI 렌더링 (필요 시)
 	if (uiManager) uiManager->Render();
+
+
+	renderer->UpdateConstant(manager->getGoal()->GetTransformMatrix());
 	MeshResource* goal = manager->getGoalResource();
 	if (goal != nullptr) {
 		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));

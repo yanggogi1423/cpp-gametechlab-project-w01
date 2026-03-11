@@ -26,7 +26,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 
 	if (StageIdx < 0 || StageIdx >= (int)stageInfoList.size()) return; 
 
-	const FStageInfo& stageInfo = stageInfoList[StageIdx];
+	const FStageInfo& stageInfo = (stageInfoList[StageIdx]);
 	manager->SetRemainTimer(stageInfo.MaxTime); // 타이머 설정
 
 	// 스테이지 번호에 따른 BGM 전환
@@ -67,29 +67,37 @@ void InGameReadyState::OnEnter(UManager* manager)
 		manager->SetPlayer(player); // Player 포인터 설정을 위한 Setter 추가 필요
 	}
 	// 5. Goal 생성 & 배치
-	Goal goal = stageInfo.goal;
+	Goal* goal = manager->getGoal();
+	if (goal == nullptr)
+	{
+		goal = new Goal();
+		manager->SetGoal(goal);
+
+	}
 	// 플레이어의 위치는 레벨에 따라 세팅 
+
+
 	switch (StageIdx)
 	{
 	case 0:
 		player->SetLocation({ 1.0f, -1.0f, 0.0f });
 		player->SetVelocity(FVector(0.0f, 1.0f, 0.0f) * 0.0f);
-		goal.SetLocation({ 0.0f , 0.0f , 0.0f }); 
+		goal->SetLocation({ 0.0f , 0.0f , 0.0f });
 		break;
 	case 1:
 		player->SetLocation({ 0.5f , 1.0f , 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
-		goal.SetLocation({ -1.0f ,-1.0f , 0.0f });
+		goal->SetLocation({ -1.0f ,-1.0f , 0.0f });
 		break;
 	case 2:
 		player->SetLocation({ -1.0f , 0.0f , 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
-		goal.SetLocation({ 0.5f , 0.0f , 0.0f });
+		goal->SetLocation({ 0.5f , 0.0f , 0.0f });
 		break;
 	default:
 		player->SetLocation({ 0.0f, -1.0f, 0.0f });
 		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
-		goal.SetLocation({ 0.0f , 1.0f , 0.0f });
+		goal->SetLocation({ 0.0f , 1.0f , 0.0f });
 		break;
 	}
 	player->SetScale(0.1f);
@@ -212,25 +220,21 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
 
-	MeshResource* goal = manager->getGoalResource();
-	if (goal != nullptr) {
-		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
-	}
+
+	
 	if (uiManager) 
 	{
 		uiManager->Render();
-		//std::cout << "UI Manager Rendered!" << std::endl;
 	}
-	//else std::cout << "UI Manager is null!" << std::endl;
 
 	// 1. 플레이어 렌더링
 	Probe* pPlayer = manager->GetProbe();
 
-	//if (pPlayer == nullptr) {
-	//	std::cout << "Player is null!" << std::endl;
-	//}
-
-
+	renderer->UpdateConstant(manager->getGoal()->GetTransformMatrix());
+	MeshResource* goal = manager->getGoalResource();
+	if (goal != nullptr) {
+		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
+	}
 
 	if (pPlayer) {
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());

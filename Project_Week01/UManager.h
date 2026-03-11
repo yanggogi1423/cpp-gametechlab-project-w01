@@ -132,7 +132,7 @@ private:
 	/* GameObjects */
 	Probe* Player;
 	std::vector<USphere> PlanetList;	//	이후에 template 수정할 수도 있음
-	Goal goal;
+	Goal* goal;
 
 
 	/* Game Data */
@@ -183,6 +183,9 @@ public:
     
 	Probe* GetProbe() const { return Player; }
 	void SetPlayer(Probe* p) { Player = p; }
+
+	Goal* getGoal() { return goal; };
+	void SetGoal(Goal* g) { goal = g; };
 
 	MeshResource* getSphereResource();
 	void setSphereResource(MeshResource& mr);
