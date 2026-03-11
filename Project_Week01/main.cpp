@@ -10,6 +10,8 @@
 #include "UImanager.h"
 #include "UResourceManager.h"
 
+#include "ExampleStateManager.h"
+
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
@@ -26,7 +28,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if (g_Manager) g_Manager->OnMouseClick();
 		break;
 
-		 
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
@@ -34,6 +36,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+static DirectX::XMFLOAT3 myPos = { 0.0f, 0.0f, 0.0f };
+static DirectX::XMMATRIX matScale;
+
+inline void updateConstant(URenderer* renderer, float deltaTime)
+{
+	using namespace DirectX;
+
+	myPos.x += 0.1f * deltaTime;
+	matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+
+	XMMATRIX matTranslate = XMMatrixTranslation(myPos.x, myPos.y, myPos.z);
+	XMMATRIX constant = matScale * matTranslate;
+	constant = XMMatrixTranspose(constant);
+
+	renderer->UpdateConstant(constant);
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -55,11 +74,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	renderer->CreateShader();
 	renderer->CreateConstantBuffer();
 
-	// UI 초기화
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplWin32_Init((void*)hWnd);
-	ImGui_ImplDX11_Init(renderer->Device, renderer->DeviceContext);
+	//////////////////////1.Imgui 초기화//////////////////////
+	UIManager::InitImGui(hWnd, renderer);
+	///////////////////////////////////////////////////////
+
+
+	ExampleStateManager temp = ExampleStateManager();
 
 	UManager* manager = new UManager(renderer->Device);
 	g_Manager = manager;
@@ -81,18 +101,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// Manager에게 이 버퍼를 쓰라고 등록합니다.
 	manager->initResource(PROBE, vBuffer, nullptr, (UINT)triVertices.size(), 0, sizeof(FVertex), 1.0f);
 
-
-	UResourceManager resourceManager;
-	resourceManager.Initialize(renderer->Device);
-
-	UIManager uiManager;
-	UIFrame& testFrame = uiManager.CreateFrame("Test Frame")
-		.Position(ImVec2(10.f, 30.f))
-		.Size(ImVec2(300.f, 200.f));
-
-	testFrame.AddText("Hello, ImGui!", ImVec2(10.f, 30.f), resourceManager.FontDefault);
-	testFrame.AddImage(resourceManager.SRVBackground, ImVec2(10.f, 40.f), ImVec2(100.f, 100.f));
-
+	
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
 	QueryPerformanceFrequency(&freq);
@@ -118,62 +127,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		// --- Rendering ---
 		renderer->Prepare();
 
-		// ImGui 프레임 시작 신호 (없으면 프리징 발생!)
-		ImGui_ImplDX11_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
-
 		renderer->PrepareShader();
 		manager->Update(deltaTime);
+		updateConstant(renderer, deltaTime);
 
-		// 1. 플레이어(Probe) 렌더링
-		Probe* pPlayer = manager->GetProbe();
-		if (pPlayer != nullptr)
+		// Manager로부터 버퍼를 받아와 렌더링
+		MeshResource probeRes = manager->getProbeResource();
+		if (probeRes.VB != nullptr)
 		{
-			// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
-			renderer->UpdateConstant(pPlayer->GetTransformMatrix());
-
-			MeshResource probeRes = manager->getProbeResource();
-			if (probeRes.VB != nullptr)
-			{
-				renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount); 
-			}
+			renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount);
 		}
 
-		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
-		for (auto planet : manager->GetPlanetList())
-		{
-			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
-			renderer->UpdateConstant(planet->GetTransformMatrix());
-
-			MeshResource sphereRes = manager->getSphereResource();
-			if (sphereRes.VB != nullptr)
-			{
-				renderer->RenderPrimitive(sphereRes.VB, sphereRes.VertexCount);
-			}
-		}
-
-		ImGui::Begin("title.c_str(), nullptr, flags");
-
-		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
-		ImGui::End();
-
-		// ImGui 실제 렌더링
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		//uiManager.Render();
+		//////////////////////////uiManager.Render() 호출///////////////////////
+		//uiManager를 여러개를 동신에 Render하면 안됩니다. 여러 프레임을 그리고 싶다면 uiManager 하나를 만들고 그 안에서 여러 프레임을 만들어야 합니다.
+		//꼭 uiManager만 고집할 필요는 없고 다른 씬을 구성하는 클래스의 멤버로 uiManager를 만들어서 호출해도 됩니다.
+		temp.Update(renderer);
+		////////////////////////////////////////////////////////////////////////
 
 		renderer->SwapBuffer();
 	}
 
-	
+
 	manager->Release(); // 사운드 해제 포함
 	delete manager;
 
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-	
+	/////////////////////////ui.Maanger 종료////////////////////////
+	//종료시 imGui를 해제합니다.
+	UIManager::ShutdownImGui();
+	////////////////////////////////////////////////////////////////
+
 	if (vBuffer) vBuffer->Release();
 	renderer->Release();
 	delete renderer;
