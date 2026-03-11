@@ -24,6 +24,8 @@ USphere* UPlanetPlacementManager::GetSelectedPlanet() const
 	return SelectedPlanet;
 }
 
+
+// true면
 bool UPlanetPlacementManager::IsPlacable()
 {
 	return (CurState == EPlacementState::EPS_Select) && !(Manager->GetInputManager()->IsMouseHoveringUI());

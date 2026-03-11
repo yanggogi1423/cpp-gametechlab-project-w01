@@ -20,7 +20,6 @@
       <UniqueIdentifier>{42636267-b352-4e2f-841e-c902c3063a0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-
   <ItemGroup>
     <ClInclude Include="UManager.h">
       <Filter>헤더 파일</Filter>
@@ -52,7 +51,6 @@
     <ClInclude Include="UIFrame.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-
     <ClInclude Include="BootState.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -83,17 +81,12 @@
     <ClInclude Include="StateMachine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="IState.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-
     <ClInclude Include="UResourceManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UPlanetPlacementManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-
     <ClInclude Include="ImGui\imconfig.h">
       <Filter>ImGui</Filter>
     </ClInclude>
@@ -118,7 +111,6 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>ImGui</Filter>
     </ClInclude>
-
     <ClInclude Include="WICTextureLoader\DirectXHelpers.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -134,8 +126,10 @@
     <ClInclude Include="WICTextureLoader\WICTextureLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
-
   <ItemGroup>
     <ClCompile Include="UManager.cpp">
       <Filter>소스 파일</Filter>
@@ -167,7 +161,6 @@
     <ClCompile Include="UIFrame.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-
     <ClCompile Include="BootState.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -198,14 +191,12 @@
     <ClCompile Include="StateMachine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-
     <ClCompile Include="UResourceManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UPlanetPlacementManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -227,7 +218,6 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-
     <ClCompile Include="WICTextureLoader\DirectXHelpers.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -237,8 +227,13 @@
     <ClCompile Include="WICTextureLoader\WICTextureLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="IState.h">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
-
   <ItemGroup>
     <FxCompile Include="ShaderW0.hlsl">
       <Filter>Shaders</Filter>

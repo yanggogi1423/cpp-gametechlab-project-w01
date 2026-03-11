@@ -36,7 +36,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 	}
 
 	// 3. 장애물(행성) 배치 로직
-	for (const auto& obstacle : stageInfo.ObstacleList)
+	for (auto& obstacle : stageInfo.ObstacleList)
 	{
 		USphere planet;
 		planet.SetLocation(obstacle.second);
@@ -53,7 +53,32 @@ void InGameReadyState::OnEnter(UManager* manager)
 		player = new Probe();
 		manager->SetPlayer(player); // Player 포인터 설정을 위한 Setter 추가 필요
 	}
-	player->SetLocation({ 0.0f, -0.8f, 0.0f });
+	// 5. Goal 생성 & 배치
+	Goal goal = stageInfo.goal;
+	// 플레이어의 위치는 레벨에 따라 세팅 
+	switch (StageIdx)
+	{
+	case 0:
+		player->SetLocation({ 0.0f, -1.0f, 0.0f });
+		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.0f , 1.0f , 0.0f }); 
+		break;
+	case 1:
+		player->SetLocation({ 0.5f , 1.0f , 0.0f });
+		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ -1.0f ,-1.0f , 0.0f });
+		break;
+	case 2:
+		player->SetLocation({ -1.0f , 0.0f , 0.0f });
+		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.5f , 0.0f , 0.0f });
+		break;
+	default:
+		player->SetLocation({ 0.0f, -1.0f, 0.0f });
+		player->SetVelocity({ 0.0f , 1.0f , 0.0f });
+		goal.SetLocation({ 0.0f , 1.0f , 0.0f });
+		break;
+	}
 	player->SetScale(0.1f);
 
 	// 5. UI 초기화 (기존 로직 유지)
@@ -70,6 +95,8 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 	return nextState;
 }
 
+
+// texture 렌더링
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
 
@@ -79,13 +106,15 @@ void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 		MeshResource* res = manager->getProbeResource();
 		renderer->indexRenderPrimitive(res->VB, res->IB, res->IndexCount);
+		renderer->textureRenderPrimitive(res->VB, res->IB, res->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
 	}
 
 	// 2. 행성들 렌더링
 	MeshResource* sphereRes = manager->getSphereResource();
 	for (auto& planet : manager->GetPlanetList()) {
 		renderer->UpdateConstant(planet.GetTransformMatrix());
-		renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
+		renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+
 	}
 
 	if (uiManager) uiManager->Render();

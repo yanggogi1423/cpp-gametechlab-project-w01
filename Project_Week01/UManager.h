@@ -19,6 +19,7 @@
 #include "PlayerInput.h"
 #include "UPlanetPlacementManager.h"
 #include "IState.h"
+#include "Goal.h"
 
 
 //	Constants
@@ -70,7 +71,8 @@ struct FStageInfo
 	std::vector<std::pair<int, FVector>> ObstacleList; //인덱스와 위치 정보
 
 	//	3. 탈출구 객체 위치
-	FVector ExitLocation;
+	Goal goal;
+
 };
 
 #pragma endregion
@@ -125,13 +127,8 @@ private:
 	float Score;
 	std::string PlayerName;
 
-	//	Boot and Destroy - 반복 호출을 막기 위한 flag -> Flag 말고 Enum으로 변경
-	//bool bBootDone;
-	//bool bIsAlreadyDestroy;
-
-private:
-	//const std::string FileName; EndingState로 이동
-	//std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList; EndingState로 이동
+	//  Sound
+	USoundManager m_SoundMgr;
 
 	/* GameObjects */
 	Probe* Player;
@@ -147,100 +144,57 @@ private:
 	/* Player Inputs */
 	PlayerInput* InputManager;
 
-private:
-	// Stage Progression
+	//MeshResource
+	MeshResource ProbeResource;
+	MeshResource SphereResource;
 
-
-	/* Non-game Management */
-	//void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
+	bool success; // 엔딩으로 넘어갈때 성공 여부
 
 public:
-	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
-	void CreateNewPlanetWorld(USphere& in);
-
-	// StageInfo 관련
-	EStage GetCurStage() const { return CurStage; }
-	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
-	
-	// Remain Timer 관련
-	float GetRemainTimer() const { return RemainTimer; }
-	void SetRemainTimer(float time) { RemainTimer = time; }
-    
-	void SetPlayer(Probe* p) { Player = p; }
-	void ClearGameObjects();
-	void ComputePhysicsAndApply(float deltaTime);
-
-	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-
-	
-	//	Collision 관련
-	void CollisionDetection();
-	void CollsionResolution();
-
-	void Initialize(HWND hwnd);
-	void Release();
-	void OnMouseClick();
-
-	// Sound 관련
-	//  Sound
-	USoundManager m_SoundMgr;
-	void PlayBGM(EBGM bgm) { m_SoundMgr.PlayBGM(bgm); }
-	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
-
-	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
-	// 
-	// EndingState
-	//static std::string RandomNameGenerator()
-	//{
-	//	const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	//	const int appendLength = 8;
-
-	//	std::random_device rd;
-	//	std::mt19937 mt(rd());
-	//	std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
-
-	//	std::string name = "User_";
-
-	//	for (int i = 0; i < appendLength; i++)
-	//	{
-	//		name += charSet[dist(mt)];
-	//	}
-
-	//	return name;
-	//}
-
-	/* Cons, Des */
-	UManager(ID3D11Device * device , ID3D11DeviceContext * );
+	UManager(ID3D11Device* device, ID3D11DeviceContext*);
 
 	~UManager()
 	{
 		m_SoundMgr.Dispose();
 		//ShutDownGame();
 	}
+	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	void Initialize(HWND hwnd);
+	void Release();
+	void OnMouseClick();
 
-	/* Getter, Setter */
+	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
+	void CreateNewPlanetWorld(USphere& in);
+	std::vector<USphere>& GetPlanetList() { return PlanetList; }
+
+	bool GetSuccess() { return success; }
+	void SetSuccess(int _success) { success = _success; }
+
+	// StageInfo 관련
+	EStage GetCurStage() const { return CurStage; }
+	int GetCurStageInt() const { return (int)CurStage + 1; }
+	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
+	
+	// Remain Timer 관련
+	float GetRemainTimer() const { return RemainTimer; }
+	void SetRemainTimer(float time) { RemainTimer = time; }
+    
 	Probe* GetProbe() const { return Player; }
-	 std::vector<USphere> & GetPlanetList()  { return PlanetList; }
+	void SetPlayer(Probe* p) { Player = p; }
+
+	MeshResource* getSphereResource();
+	void setSphereResource(MeshResource& mr);
+	MeshResource* getProbeResource();
+	void setProbeResource(MeshResource& mr);
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }
 
-	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
+	void ClearGameObjects();
 
-	// mesh info
-private:
-	MeshResource ProbeResource;
-	MeshResource SphereResource;
-
-public:
-
-	MeshResource* getSphereResource() ;
-	MeshResource* getProbeResource() ;
-	void setProbeResource( MeshResource& mr);
-	void setSphereResource( MeshResource& mr);
-
-	
-
+	// Sound 관련
+	void PlayBGM(EBGM bgm) { m_SoundMgr.PlayBGM(bgm); }
+	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 };
 
 
