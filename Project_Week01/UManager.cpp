@@ -468,7 +468,6 @@ MeshResource* UManager::getSphereResource()
 {	
 	return &SphereResource;
 }
-
 void UManager::setProbeResource( MeshResource& mr)
 {
 	this->ProbeResource = mr;

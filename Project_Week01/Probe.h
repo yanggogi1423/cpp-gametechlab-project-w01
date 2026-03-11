@@ -9,4 +9,7 @@ public:
 	Probe();
 	virtual ~Probe();
 
+
+
+	virtual DirectX::XMMATRIX GetTransformMatrix(); 
 };
