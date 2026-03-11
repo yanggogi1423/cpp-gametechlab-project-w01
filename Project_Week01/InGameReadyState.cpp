@@ -3,6 +3,7 @@
 
 #include "MainState.h"
 #include "InGameRunState.h"
+#include "LoadingState.h"
 
 #pragma region __DEBUG_CONSOLE__
 #include <iostream>
@@ -195,7 +196,7 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 	}
 	else if (bGoToRetry)
 	{
-		nextState = new InGameReadyState();
+		nextState = new LoadingState();
 	}
 	else if (bGoToStart)
 	{

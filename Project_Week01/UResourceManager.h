@@ -54,6 +54,7 @@ public:
 	ImFont* FontLogo;
 	ImFont* FontDefault;
 	ImFont* FontInfoBold;
+	ImFont* FontInfoBoldSmall;
 	ImFont* FontInfoRegular;
 	ImFont* FontInfoLight;
 	

@@ -171,6 +171,7 @@ public:
 
 	// StageInfo 관련
 	EStage GetCurStage() const { return CurStage; }
+	void SetCurStage(EStage stage) { CurStage = stage; }
 	int GetCurStageInt() const { return (int)CurStage + 1; }
 	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
 	

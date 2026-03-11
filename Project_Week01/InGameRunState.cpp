@@ -3,6 +3,7 @@
 
 #include "MainState.h"
 #include "InGameReadyState.h"
+#include "LoadingState.h"
 
 #include<iostream>
 
@@ -213,7 +214,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	else if (bGoToRetry)
 	{
 		std::cout << "bGoToRetry" << std::endl;
-		nextState = new InGameReadyState();
+		nextState = new LoadingState();
 	}
 
 
