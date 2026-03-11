@@ -1,9 +1,12 @@
 #pragma once
 
+#include "datatype.h"
 #include <unordered_map>
 #include <string>
 #include <vector>
 #include <random>
+#include <map>
+
 
 #include "WICTextureLoader/WICTextureLoader.h"
 
@@ -12,10 +15,18 @@
 #include "ImGui/imgui_impl_dx11.h"
 #include "ImGui/imgui_impl_win32.h"
 
+
+
+
 class UResourceManager
 {
 private:
 	ID3D11Device* Device;
+	
+	//youngseo
+	ID3D11DeviceContext* DeviceContext;
+	ID3D11ShaderResourceView* TextureResources[ImageName::COUNT] = {nullptr,};
+
 
 	bool bIsInitialzed;
 
@@ -50,15 +61,25 @@ public:
 	UResourceManager() : SRVBackground(nullptr), SRVInGamePanel(nullptr), SRVLeaderBoardPanel(nullptr), SRVButtonSprite(nullptr),
 		FontLogo(nullptr), FontDefault(nullptr),
 		bIsInitialzed(false),
-		Device(nullptr)
-	{}
+		Device(nullptr) , DeviceContext(nullptr)
+	{
+		for (int i = 0; i < ImageName::COUNT; i++)
+		{
+			TextureResources[i] = nullptr;
+		}
+	}
 
-	void Initialize(ID3D11Device* device);
+	void Initialize(ID3D11Device* device , ID3D11DeviceContext * deviceContext);
 	void Release();
 	bool LoadTexture(const std::string& key, const wchar_t* filePath);
 	ID3D11ShaderResourceView* GetTexture(const std::string& key) const;
 	bool IsInitialize() { return bIsInitialzed; }
 
 	std::string GetRandomTips() const;
+
+	//youngseo
+	HRESULT ImageLoadTexture(ImageName type, std::wstring filePath);
+	ID3D11ShaderResourceView* GetTexture(ImageName type);
+
 };
 

@@ -71,8 +71,13 @@ void URenderer::CreateShader() {
     };
 
     Device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &SimpleInputLayout);
+    D3D11_INPUT_ELEMENT_DESC texLayout[] = {
+        {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0}
+    };
 
-    Stride = sizeof(FVertex);
+    Device->CreateInputLayout(texLayout, ARRAYSIZE(texLayout), vertexshaderCSO->GetBufferPointer(), vertexshaderCSO->GetBufferSize(), &textureInputLayout);
 
     if (vertexshaderCSO) vertexshaderCSO->Release();
     if (pixelshaderCSO) pixelshaderCSO->Release();
@@ -100,9 +105,8 @@ void URenderer::Prepare() {
 void URenderer::PrepareShader() {
     DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
     DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
-    DeviceContext->IASetInputLayout(SimpleInputLayout);
 
-    
+    createSamplerState();
 
     if (ConstantBuffer) {
         DeviceContext->VSSetConstantBuffers(0, 1, &ConstantBuffer);
@@ -110,7 +114,7 @@ void URenderer::PrepareShader() {
 }
 
 // renderer 는 constant를 update하기만 할 것
-void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
+void URenderer::UpdateConstant(DirectX::XMMATRIX pXMMATRIX) {
     if (ConstantBuffer) {
         D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
         if (SUCCEEDED(DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR))) {
@@ -121,7 +125,7 @@ void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
     }
 }
 
-void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FVertex* vertices, UINT bytewidth) {
+void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FTextureVertex* vertices, UINT bytewidth) {
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = bytewidth;
     vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -137,7 +141,7 @@ void URenderer::indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* i
     UINT offset = 0;
 
     // 1. 사용할 정점 버퍼 세팅
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
 
     // 2. 사용할 인덱스 버퍼 세팅 (unsigned int를 사용하므로 DXGI_FORMAT_R32_UINT 사용)
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -197,6 +201,38 @@ void URenderer::ReleaseRasterizerState() {
     RasterizerState = nullptr;
 }
 
+void URenderer::createSamplerState()
+{
+    D3D11_SAMPLER_DESC samplerDesc = {};
+    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR; // 선형 필터링 (부드럽게)
+    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;    // UV가 1을 넘어가면 반복
+    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    samplerDesc.MinLOD = 0;
+    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    Device->CreateSamplerState(&samplerDesc, &samplerState);
+}
+
+void URenderer::CreateBlendState() {
+    D3D11_BLEND_DESC blendDesc = {};
+    blendDesc.AlphaToCoverageEnable = FALSE;
+    blendDesc.IndependentBlendEnable = FALSE;
+
+    // PNG 투명도(알파) 혼합 공식 설정
+    blendDesc.RenderTarget[0].BlendEnable = TRUE;
+    blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+    blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+    blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+    blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+    blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+    blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+    Device->CreateBlendState(&blendDesc, &AlphaBlendState);
+}
+
 
 
 void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
@@ -229,6 +265,21 @@ void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
 
     UINT offset = 0;
     // 버퍼를 장치에 연결하고 그립니다.
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->Draw(vertexCount, 0);
 }
+
+void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView* srv)
+{
+    UINT offset = 0;
+    // 투명도가 있는 물체를 그리기 직전에 호출
+    DeviceContext->OMSetBlendState(AlphaBlendState, nullptr, 0xFFFFFFFF);
+
+    DeviceContext->IASetInputLayout(textureInputLayout);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
+    DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    DeviceContext->PSSetShaderResources(0, 1, &srv);
+    DeviceContext->PSSetSamplers(0, 1, &samplerState);
+    DeviceContext->DrawIndexed(numIndices, 0, 0);
+}
+

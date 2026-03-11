@@ -2,11 +2,7 @@
 
 #include <cmath>
 
-struct FVertex
-{
-	float x, y, z;	// 좌표
-	float r, g, b, a; // 색상
-};
+
 
 struct FVector
 {
@@ -76,4 +72,23 @@ struct FConstants
 		:fVector(_fVector), scale(1.0f) {
 	}
 
+};
+
+
+struct FTextureVertex {
+
+	float x, y, z;
+	float r, g, b, a;
+	float u, v;
+};
+
+enum ImageName
+{
+	ROCKET,
+	BLACK_SPHERE,
+	WHITE_SPHERE,
+	JUPITER,
+	SATURN,
+	SUN,
+	COUNT
 };

@@ -14,6 +14,7 @@ protected:
     float Scale;
     float Mass;
     bool bIsColliding;
+    DirectX::XMMATRIX worldMatrix;
 
 public:
     UPrimitive()
@@ -42,6 +43,6 @@ public:
     bool GetColliding() const;
 
     // 2. 변환 행렬 생성
-    DirectX::XMMATRIX GetTransformMatrix() const;
+    virtual DirectX::XMMATRIX GetTransformMatrix() = 0;
 
 };
