@@ -16,6 +16,8 @@
 #include "UPrimitive.h"
 #include "USphere.h"
 #include "UResourceManager.h"
+#include "PlayerInput.h"
+#include "UPlanetPlacementManager.h"
 
 
 //	Constants
@@ -141,6 +143,10 @@ private:
 	
 	/* Other Managers */
 	UResourceManager* ResourceManager;
+	UPlanetPlacementManager* PlanetPlacementManager;
+
+	/* Player Inputs */
+	PlayerInput* InputManager;
 
 	/* Game Management */
 private:
@@ -160,9 +166,10 @@ private:
 	void ClearGameObjects();
 
 	//	Game Logic
-	//	행성 배치
 
 	void ComputePhysicsAndApply(float deltaTime);
+
+
 
 	/* Non-game Management */
 	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
@@ -173,6 +180,9 @@ private:
 	void SaveScore();
 	void DisplayScore(std::string name, unsigned int score);
 	
+public:
+	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
+	void CreateNewPlanetWorld(USphere& in);
 
 public:
 	void Initialize(HWND hwnd);
@@ -200,7 +210,7 @@ public:
 
 		for (int i = 0; i < appendLength; i++)
 		{
-			name += charSet[i];
+			name += charSet[dist(mt)];
 		}
 
 		return name;
@@ -221,6 +231,9 @@ public:
 	/* Getter, Setter */
 	Probe* GetProbe() const { return Player; }
 	const std::vector<USphere> & GetPlanetList() const { return PlanetList; }
+
+	UResourceManager* GetResourceManager() { return ResourceManager; }
+	PlayerInput* GetInputManager() { return InputManager; }
 
 	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
 

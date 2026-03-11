@@ -152,6 +152,7 @@
     <ClInclude Include="UIFrame.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UManager.h" />
+    <ClInclude Include="UPlanetPlacementManager.h" />
     <ClInclude Include="UPrimitive.h" />
     <ClInclude Include="URenderer.h" />
     <ClInclude Include="UResourceManager.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="UIFrame.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UManager.cpp" />
+    <ClCompile Include="UPlanetPlacementManager.cpp" />
     <ClCompile Include="UPrimitive.cpp" />
     <ClCompile Include="URenderer.cpp" />
     <ClCompile Include="UResourceManager.cpp" />
