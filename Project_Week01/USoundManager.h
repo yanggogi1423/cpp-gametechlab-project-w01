@@ -15,16 +15,16 @@
 // 배경음악 카테고리
 enum class EBGM
 {
-    EBGM_Main,
-    EBGM_InGameReady,
-    EBGM_InGameRun,
+    EBGM_TitleScreen,
+    EBGM_Level1,
+    EBGM_Level2,
+    EBGM_Level3
 };
 
 // 효과음 카테고리
 enum class ESFX
 {
     ESFX_MouseClick,
-    ESFX_InGameStart,
     ESFX_Clear,
     ESFX_Fail
 };
