@@ -1,6 +1,6 @@
 #include "BootState.h"
 
-void BootState::OnEnter()
+void BootState::OnEnter(UManager * manager)
 {
 
 }

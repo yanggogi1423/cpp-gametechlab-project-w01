@@ -1,6 +1,6 @@
 #include "EndingState.h"
 
-void EndingState::OnEnter()
+void EndingState::OnEnter(UManager * manager)
 {
 
 }

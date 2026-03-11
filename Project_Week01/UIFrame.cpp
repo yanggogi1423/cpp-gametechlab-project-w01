@@ -24,12 +24,14 @@ void UIFrame::AddButton(const std::string& label, const ImVec2& position, const 
 	buttons.push_back(button);
 }
 
-void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* font)
+void UIFrame::AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color)
 {
 	TextInfo textInfo;
 	textInfo.text = text;
 	textInfo.position = position;
 	textInfo.font = font;
+	textInfo.color = color;
+
 	texts.push_back(textInfo);
 }
 
@@ -137,6 +139,13 @@ void UIFrame::Render()
 
 	ImGui::Begin(title.c_str(),	nullptr,flags);
 
+
+	for (const auto& image : images) 
+	{
+		ImGui::SetCursorPos(image.position);
+		ImGui::Image((ImTextureID)image.texture, image.size);
+	}
+
 	for (const auto& button : buttons)
 	{
 		ImGui::SetCursorPos(button.position);
@@ -145,20 +154,6 @@ void UIFrame::Render()
 		{
 			button.callback();
 		}
-	}
-
-	for (const auto& text : texts)
-	{
-		ImGui::SetCursorPos(text.position);
-		ImGui::PushFont(text.font);
-		ImGui::Text("%s", text.text.c_str());
-		ImGui::PopFont();
-	}
-
-	for (const auto& image : images) 
-	{
-		ImGui::SetCursorPos(image.position);
-		ImGui::Image((ImTextureID)image.texture, image.size);
 	}
 
 	for (const auto& imageButton : imageButtons)
@@ -189,6 +184,26 @@ void UIFrame::Render()
 		}
 
 		ImGui::PopStyleColor(3);
+	}
+
+	for (const auto& text : texts)
+	{
+		ImGui::PushFont(text.font);
+
+		ImVec2 textSize = ImGui::CalcTextSize(text.text.c_str());
+
+		ImVec2 pos = {
+			text.position.x - textSize.x * 0.5f,
+			text.position.y - textSize.y * 0.5f
+		};
+
+		ImGui::SetCursorPos(pos);
+
+		ImGui::PushStyleColor(ImGuiCol_Text, text.color);
+		ImGui::Text("%s", text.text.c_str());
+		ImGui::PopStyleColor();
+
+		ImGui::PopFont();
 	}
 
 	ImGui::End();

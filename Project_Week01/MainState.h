@@ -6,7 +6,7 @@ class MainState : public IState
 public:
 	MainState() = default;
 	~MainState() = default;
-	void OnEnter() override;
+	void OnEnter(UManager * manager) override;
 	IState* Update(URenderer* renderer) override;
 	void OnExit() override;
 

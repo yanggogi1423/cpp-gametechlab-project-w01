@@ -6,7 +6,7 @@ class ExampleState : public IState
 public:
 	ExampleState() = default;
 	virtual ~ExampleState() = default;
-	void OnEnter() override;
+	void OnEnter(UManager* manager) override;
 	IState* Update(URenderer* renderer) override;
 	void OnExit() override;
 

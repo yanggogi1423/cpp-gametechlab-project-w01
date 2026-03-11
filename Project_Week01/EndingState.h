@@ -4,7 +4,7 @@ class EndingState : public IState
 {
 	EndingState() = default;
 	virtual ~EndingState() = default;
-	void OnEnter() override;
+	void OnEnter(UManager* manager) override;
 	IState* Update(URenderer* renderer) override;
 	void OnExit() override;
 };

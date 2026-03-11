@@ -5,9 +5,10 @@ class ExampleStateManager
 {
 private:
 	StateMachine* stateMachine;
+	UManager* Manager;
 
 public:
-	ExampleStateManager();
+	ExampleStateManager(UManager * manager);
 	~ExampleStateManager();
 	void Update(URenderer* renderer);
 };
