@@ -169,7 +169,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
 
 	auto curLocation = player->GetLocation();
-	player->SetLocation((curLocation + player->GetVelocity()) * deltaTime);
+	player->SetLocation(curLocation+ player->GetVelocity() * deltaTime);
 
 
 
@@ -228,6 +228,12 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 	// (3) UI 렌더링 (필요 시)
 	if (uiManager) uiManager->Render();
 
+
+	renderer->UpdateConstant(manager->getGoal()->GetTransformMatrix());
+	MeshResource* goal = manager->getGoalResource();
+	if (goal != nullptr) {
+		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
+	}
 	// (1) 플레이어(Probe) 렌더링
 	Probe* pPlayer = manager->GetProbe();
 	if (pPlayer != nullptr)
@@ -252,6 +258,7 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		}
 	}
 
+	
 	
 }
 

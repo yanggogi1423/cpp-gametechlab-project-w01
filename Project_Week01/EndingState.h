@@ -24,6 +24,10 @@ private:
 	//void ClearGameObjects();
 	//void ProgressStage();
 
+	bool goToMain = false;
+	bool retry = false;
+	bool stageSelect = false;
+
 public:
 	EndingState();
 	virtual ~EndingState() = default;
