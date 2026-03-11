@@ -11,11 +11,27 @@
 void UManager::CollisionDetection()
 {
 	if (!Player) return;
-	
-	//	1. Collision between Probe and Border
-	//	Probe가 triangle이면 각 vertex의 정보를 담고 있어야 Detection이 가능
 
-	//	2. Collision between Probe and Planets
+	FVector pLoc = Player->GetLocation();
+	
+	//	Collision between Probe and Planets
+	for (auto p : PlanetList)
+	{
+		float dist = (p->GetLocation() - pLoc).Size();
+		if (dist < p->GetScale() + Player->GetScale())
+		{
+			Player->SetColliding(true);
+			OnStageResult(true);
+			return;
+		}
+	}
+
+	// Collision between Probe and Exit Location
+	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
+	if (goalDist < 0.15f)
+	{
+		OnStageResult(true);
+	}
 }
 
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
@@ -34,15 +50,37 @@ void UManager::MainInit()
 	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
 }
 
+void UManager::StageSelectInit()
+{
+	ClearGameObjects();
+	
+	CurRunState = ERunstate::ERS_StageSelect;
+}
+
 void UManager::InGameReadyInit()
 {
 	ClearGameObjects();
 
 	CurRunState = ERunstate::ERS_InGameReady;
 
-	// [중요] CurStage에 해당하는 정보를 StageInfoList에서 찾아와서 
-	// 장애물이나 플레이어 시작 위치를 설정하는 로직이 여기에 들어와야 합니다.
-	// FStageInfo currentInfo = StageInfoList[(int)CurStage - 1];
+	int StageIdx = (int)CurStage - 1;
+	RemainTimer = StageInfoList[StageIdx].MaxTime;
+
+	if (StageIdx < 0 || StageIdx >= StageInfoList.size()) return;
+
+	FStageInfo StageInfo = StageInfoList[StageIdx];
+
+	for (const auto& obstacle : StageInfo.ObstacleList)
+	{
+		USphere* planet = new USphere();
+		planet->SetLocation(obstacle.second); // ObstacleList의 FVector 위치 적용
+		// 인덱스(obstacle.first)에 따라 질량이나 크기 조절 가능
+		planet->SetMass(10.0f);
+		PlanetList.push_back(planet);
+	}
+
+	Player = new Probe();
+	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
 }
 
 void UManager::InGameRunInit()
@@ -62,52 +100,20 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 	CurRunState = ERunstate::ERS_Ending;
 
 	ClearGameObjects();
-
+	
 	if (bIsClear)
 	{
-
+		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
 	}
-	else 
+	else
 	{
+		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
 
+		//	Score Display
+		DisplayScore(name, score);
 	}
-
-	//	Score Display
-	DisplayScore(name, score);
 }
 
-void UManager::ProgressStage()
-{
-	if (CurRunState != ERunstate::ERS_InGameReady)
-	{
-		//	TODO : Make an error log
-
-		return;
-	}
-
-	switch (CurAvailableStage)
-	{
-	case EStage::ES_Stage1:
-		CurAvailableStage = EStage::ES_Stage2;
-		break;
-
-	case EStage::ES_Stage2:
-		CurAvailableStage = EStage::ES_Stage3;
-		break;
-
-	case EStage::ES_Stage3:
-		//	Do nothing
-		break;
-	}
-
-	ClearGameObjects();
-}
-// probe sphere initialize
-
-
-
-
-// TODO 수정해야함
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
@@ -267,9 +273,31 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.Initialize(hwnd);
 	m_SoundMgr.LoadBGM(EBGM::EBGM_Main, "Sound/Level1.wav");
 	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "Sound/Clear.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
 	m_SoundMgr.PlayBGM(EBGM::EBGM_Main);
+}
+
+void UManager::ProgressStage()
+{
+	switch (CurAvailableStage)
+	{
+	case EStage::ES_Stage1:
+		CurAvailableStage = EStage::ES_Stage2;
+		break;
+
+	case EStage::ES_Stage2:
+		CurAvailableStage = EStage::ES_Stage3;
+		break;
+
+	case EStage::ES_Stage3:
+		//	Do nothing
+		break;
+	}
+
+	ClearGameObjects();
 }
 
 // 마우스 클릭 시 호출될 함수
@@ -277,11 +305,6 @@ void UManager::OnMouseClick()
 {
 	// 세부 재생 로직은 SoundManager가 알아서 합니다.
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
-}
-
-void UManager::OnPlayClicked()
-{
-	CurRunState = ERunstate::ERS_StageSelect;
 }
 
 void UManager::OnHomeClicked()
@@ -319,17 +342,15 @@ void UManager::OnStageSelected(EStage selected)
 }
 
 // 결과 화면 시 호출될 함수
-void UManager::OnStageResult(bool bSuccess) {
-	CurRunState = ERunstate::ERS_Ending;
+void UManager::OnStageResult(bool bSuccess) 
+{
+	ProgressStage();
 
-	if (bSuccess) {
-		// [해금 로직] 현재 스테이지를 깼고, 다음 스테이지가 아직 잠겨있다면 해금
-		if (CurStage == CurAvailableStage) {
-			if (CurAvailableStage == EStage::ES_Stage1) CurAvailableStage = EStage::ES_Stage2;
-			else if (CurAvailableStage == EStage::ES_Stage2) CurAvailableStage = EStage::ES_Stage3;
-		}
-	}
-	// EndingInit(bSuccess, score, name); 호출 등으로 이어짐
+	unsigned int finalScore = 0;
+	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
+	else finalScore = 0;
+
+	EndingInit(bSuccess, finalScore, RandomNameGenerator());
 }
 
 void UManager::Update(float deltaTime)
@@ -345,10 +366,16 @@ void UManager::Update(float deltaTime)
 			InGameReadyInit();
 		}
 		break;
-
 	case ERunstate::ERS_InGameReady:
 		break;
 	case ERunstate::ERS_InGameRun:
+		// Remaining Time Update
+		RemainTimer -= deltaTime;
+		if (RemainTimer <= 0.0f)
+		{
+			OnStageResult(false); // 시간 초과 실패
+			return;
+		}
 		//	Value Input
 		ComputePhysicsAndApply(deltaTime);
 		//	Physics Update
