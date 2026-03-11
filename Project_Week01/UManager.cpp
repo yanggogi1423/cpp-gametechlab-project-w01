@@ -14,38 +14,39 @@
 //	Private Functions
 
 /* Game Management */
-void UManager::CollisionDetection()
-{
-	if (!Player) return;
-
-	FVector pLoc = Player->GetLocation();
-	
-	//	Collision between Probe and Planets
-	for (const auto& p : PlanetList)
-	{
-		float dist = (p.GetLocation() - pLoc).Size();
-		if (dist < p.GetScale() + Player->GetScale())
-		{
-			Player->SetColliding(true);
-			//OnStageResult(false);
-			return;
-		}
-	}
-
-	// 목표 도달
-	// Collision between Probe and Exit Location
-	float goalDist = (StageInfoList[(int)CurStage - 1].goal.GetLocation() - pLoc).Size();
-	if (goalDist < 0.15f)
-	{
-		//OnStageResult(true);
-	}
-}
+//void UManager::CollisionDetection()
+//{
+//	if (!Player) return;
+//
+//	FVector pLoc = Player->GetLocation();
+//	
+//	//	Collision between Probe and Planets
+//	for (const auto& p : PlanetList)
+//	{
+//		float dist = (p.GetLocation() - pLoc).Size();
+//		if (dist < p.GetScale() + Player->GetScale())
+//		{
+//			Player->SetColliding(true);
+//			//OnStageResult(false);
+//			return;
+//		}
+//	}
+//
+//	// Collision between Probe and Exit Location
+//	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
+//	if (goalDist < 0.15f)
+//	{
+//		//OnStageResult(true);
+//	}
+//}
 
 //	어쩌면 Resolution이 필요없을 수도? (게임 오버)
 void UManager::CollsionResolution()
 {
 	//EndingInit(false);
 } 
+
+
 
 
 void UManager::ClearGameObjects()
@@ -62,24 +63,24 @@ void UManager::ClearGameObjects()
 	PlanetList.reserve(PlanetListReservedSize);
 }
 
-void UManager::ComputePhysicsAndApply(float deltaTime)
-{
-	for (auto p : PlanetList)
-	{
-		// 1. 방향 벡터 및 거리 계산
-		FVector direction = p.GetLocation() - Player->GetLocation();
-		float dist = direction.Size();
-		if (dist < 1e-4f) continue; // 0으로 나누기 방지
-
-		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
-		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
-		FVector accVec = unitDir * accMag;
-
-		// 3. 속도 업데이트
-		Player->SetVelocity(Player->GetVelocity() + accVec * deltaTime);
-	}
-}
+//void UManager::ComputePhysicsAndApply(float deltaTime)
+//{
+//	for (auto p : PlanetList)
+//	{
+//		// 1. 방향 벡터 및 거리 계산
+//		FVector direction = p.GetLocation() - Player->GetLocation();
+//		float dist = direction.Size();
+//		if (dist < 1e-4f) continue; // 0으로 나누기 방지
+//
+//		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+//		FVector unitDir = direction / dist;
+//		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
+//		FVector accVec = unitDir * accMag;
+//
+//		// 3. 속도 업데이트
+//		Player->SetVelocity(Player->GetVelocity() + accVec * deltaTime);
+//	}
+//}
 
 void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceContext)
 {
