@@ -373,10 +373,13 @@ void UManager::Update(float deltaTime)
 	case ERunstate::ERS_InGameReady:
 		break;
 	case ERunstate::ERS_InGameRun:
+
 		//	Value Input
 		ComputePhysicsAndApply(deltaTime);
+
 		//	Physics Update
 		Player->SetLocation(Player->GetLocation() + Player->GetVelocity() * deltaTime);
+
 		//  Renderer에서 Player의 Location과 PlanetList의 Location을 참조하여 그려줌
 		CollisionDetection();	//	필요하다면 반복
 		break;
@@ -388,37 +391,21 @@ void UManager::Update(float deltaTime)
 
 }
 
-void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
-{
 
-	switch (rt)
-	{
-	case PROBE:
-		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride ,scale);
-		break;
-	case SPHERE:
-		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride,scale);
-		break;
-	default:
-		break;
-	}
-
-}
-
-MeshResource UManager::getProbeResource() const
+MeshResource* UManager::getProbeResource() 
 {	
-	return ProbeResource;
+	return &ProbeResource;
 }
-MeshResource UManager::getSphereResource() const
+MeshResource* UManager::getSphereResource() 
 {	
-	return SphereResource;
+	return &SphereResource;
 }
 
-void UManager::setProbeResource(const MeshResource& mr)
+void UManager::setProbeResource( MeshResource& mr)
 {
 	this->ProbeResource = mr;
 }
-void UManager::setSphereResource(const MeshResource& mr)
+void UManager::setSphereResource( MeshResource& mr)
 {
 	this->SphereResource = mr;
 }
@@ -439,28 +426,19 @@ void MeshResource::GenerateTriangle()
 {
 	Vertices = {
 		// Position          // Color (RGBA)
-		{  0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
-		{  0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
-		{ -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
+		{  0.0f,  0.3f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
+		{  0.3f, -0.3f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
+		{ -0.3f, -0.3f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
 	};
 
 	Indexes = { 0, 1, 2 };
+
+	VertexCount = Vertices.size();
+	IndexCount = Indexes.size();
+
 }
 
-
-void MeshResource::initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
-{
-	
-		VB = vb;
-		IB = ib;
-		VertexCount = vertexCount;
-		IndexCount = indexCount;
-		Stride = stride;
-		Scale = scale;
-	
-}
-
-void MeshResource::GenerateSphere(float radius = 1.0f){
+void MeshResource::GenerateSphere(float radius){
 	// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
 	const uint32_t sliceCount = 20;
 	const uint32_t stackCount = 20;
@@ -506,4 +484,9 @@ void MeshResource::GenerateSphere(float radius = 1.0f){
 			Indexes.push_back(second);
 		}
 	}
+
+	VertexCount = static_cast<unsigned int>(Vertices.size());
+	IndexCount = static_cast<unsigned int>(Indexes.size());
+
+
 }

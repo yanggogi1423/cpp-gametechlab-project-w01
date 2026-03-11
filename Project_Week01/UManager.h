@@ -73,8 +73,37 @@ struct FStageInfo
 #pragma endregion
 
 
+enum RESOURCE_TYPE
+{
+	PROBE,
+	SPHERE
+};
 
-struct MeshResource;
+struct MeshResource {
+	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
+	ID3D11Buffer* IB = nullptr;      // Index Buffer 
+	std::vector<FVertex> Vertices;
+	std::vector<unsigned int> Indexes;
+	unsigned int VertexCount = 0;    // 정점 개수
+	unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
+	unsigned int Stride = sizeof(FVertex);         // 정점 1개의 크기 (sizeof(FVertex))
+	float Scale = 0;
+
+	MeshResource& operator=(const MeshResource& mr)
+	{
+		VB = mr.VB;
+		IB = mr.IB;
+		VertexCount = mr.VertexCount;
+		IndexCount = mr.IndexCount;
+		Stride = mr.Stride;
+		Vertices = mr.Vertices;
+		return *this;
+	}
+	void GenerateSphere(float radius = 1.0f);
+	void GenerateTriangle();
+
+
+};
 
 class UManager
 {
@@ -187,6 +216,9 @@ public:
 		//,bBootDone(false), bIsAlreadyDestroy(false)
 	{
 		BootGame(device);
+		ProbeResource.GenerateTriangle();
+		SphereResource.GenerateSphere();
+
 	}
 	~UManager()
 	{
@@ -210,110 +242,14 @@ private:
 
 public:
 
-	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale);
-	MeshResource getSphereResource() const;
-	MeshResource getProbeResource() const;
-	void setProbeResource(const MeshResource& mr);
-	void setSphereResource(const MeshResource& mr);
+	MeshResource* getSphereResource() ;
+	MeshResource* getProbeResource() ;
+	void setProbeResource( MeshResource& mr);
+	void setSphereResource( MeshResource& mr);
+
 	
 
 };
 
 
 
-enum RESOURCE_TYPE
-{
-	PROBE,
-	SPHERE
-};
-
-struct MeshResource {
-	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
-	ID3D11Buffer* IB = nullptr;      // Index Buffer 
-	std::vector<FVertex> Vertices;
-	std::vector<unsigned int> Indexes;
-	unsigned int VertexCount = 0;    // 정점 개수
-	unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
-	unsigned int Stride = sizeof(FVertex);         // 정점 1개의 크기 (sizeof(FVertex))
-	float Scale = 0;
-
-	void operator=(MeshResource mr)
-	{
-		VB = mr.VB;
-		IB = mr.IB;
-		VertexCount = mr.VertexCount;
-		IndexCount = mr.IndexCount;
-		Stride = mr.Stride;
-		Vertices = mr.Vertices;
-	}
-
-	void initResource(ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale) {
-		VB = vb;
-		IB = ib;
-		VertexCount = vertexCount;
-		IndexCount = indexCount;
-		Stride = stride;
-		Scale = scale;
-	}
-	void GenerateSphere(float radius)
-	{
-		// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
-		const uint32_t sliceCount = 20;
-		const uint32_t stackCount = 20;
-
-		Vertices.clear();
-		Indexes.clear();
-
-		// 1. 정점(Vertex) 생성
-		for (uint32_t i = 0; i <= stackCount; ++i) {
-			float phi = 3.1415926535f * i / stackCount;
-			for (uint32_t j = 0; j <= sliceCount; ++j) {
-				float theta = 2.0f * 3.1415926535f * j / sliceCount;
-
-				FVertex v;
-				v.x = radius * sinf(phi) * cosf(theta);
-				v.y = radius * cosf(phi);
-				v.z = radius * sinf(phi) * sinf(theta);
-
-				// 색상: 좌표 기반 (디버깅 시 구의 입체감을 확인하기 좋음)
-				v.r = (v.x / radius) * 0.5f + 0.5f;
-				v.g = (v.y / radius) * 0.5f + 0.5f;
-				v.b = (v.z / radius) * 0.5f + 0.5f;
-				v.a = 1.0f;
-
-				Vertices.push_back(v);
-			}
-		}
-
-		// 2. 인덱스(Index) 생성
-		for (uint32_t i = 0; i < stackCount; ++i) {
-			for (uint32_t j = 0; j < sliceCount; ++j) {
-				uint32_t first = i * (sliceCount + 1) + j;
-				uint32_t second = first + sliceCount + 1;
-
-				// 삼각형 1
-				Indexes.push_back(second);
-				Indexes.push_back(first + 1);
-				Indexes.push_back(first);
-
-				// 삼각형 2
-				Indexes.push_back(second + 1);
-				Indexes.push_back(first + 1);
-				Indexes.push_back(second);
-			}
-		}
-	}
-
-	void GenerateTriangle()
-	{
-		Vertices = {
-			// Position          // Color (RGBA)
-			{  0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
-			{  0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
-			{ -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
-		};
-
-		Indexes = { 0, 1, 2 };
-	}
-
-};
