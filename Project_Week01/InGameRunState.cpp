@@ -1,6 +1,6 @@
 #include "InGameRunState.h"
 
-void InGameRunState::OnEnter()
+void InGameRunState::OnEnter(UManager * manager)
 {
 
 }

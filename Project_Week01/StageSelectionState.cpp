@@ -1,6 +1,6 @@
 #include "StageSelectionState.h"
 
-void StageSelectionState::OnEnter()
+void StageSelectionState::OnEnter(UManager * manager)
 {
 
 }

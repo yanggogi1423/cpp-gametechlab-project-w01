@@ -1,10 +1,12 @@
 #include "StateMachine.h"
 
+#include "UManager.h"
 
-StateMachine::StateMachine()
+StateMachine::StateMachine(UManager * manager)
 {
+	Manager = manager;
 	currentState = new MainState();
-	currentState->OnEnter();
+	currentState->OnEnter(Manager);
 }
 
 StateMachine::~StateMachine()
@@ -27,7 +29,7 @@ void StateMachine::Update(URenderer* renderer)
 			currentState->OnExit();
 			delete currentState;
 			currentState = nextState;
-			currentState->OnEnter();
+			currentState->OnEnter(Manager);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 #include "LoadingState.h"
 
-void LoadingState::OnEnter()
+void LoadingState::OnEnter(UManager * manager)
 {
 
 }

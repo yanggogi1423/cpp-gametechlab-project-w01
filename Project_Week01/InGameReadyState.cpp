@@ -1,6 +1,6 @@
 #include "InGameReadyState.h"
 
-void InGameReadyState::OnEnter()
+void InGameReadyState::OnEnter(UManager * manager)
 {
 
 }

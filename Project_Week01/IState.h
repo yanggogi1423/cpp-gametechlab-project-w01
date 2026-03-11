@@ -2,14 +2,17 @@
 #include "UIManager.h"
 #include "URenderer.h"
 
+class UManager;
+
 class IState
 {
 protected:
 	UIManager* uiManager = nullptr;
 	IState* nextState = nullptr;
+
 public:
 	virtual ~IState() = default;
-	virtual void OnEnter() = 0;
+	virtual void OnEnter(UManager * manager) = 0;
 	virtual IState* Update(URenderer* renderer) = 0;
 	virtual void OnExit() = 0;
 };

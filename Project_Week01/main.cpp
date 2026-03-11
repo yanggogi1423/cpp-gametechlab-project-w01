@@ -62,8 +62,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	WNDCLASSW wndclass = { 0, WndProc, 0, 0, 0, 0, 0, 0, 0, WindowClass };
 	RegisterClassW(&wndclass);
 
+	//	4 * 3 (1400 * 1050)
 	HWND hWnd = CreateWindowExW(0, WindowClass, Title, WS_OVERLAPPEDWINDOW | WS_VISIBLE,
-		CW_USEDEFAULT, CW_USEDEFAULT, 1024, 1024,
+		CW_USEDEFAULT, CW_USEDEFAULT, WindowWidth, WindowHeight,
 		nullptr, nullptr, hInstance, nullptr);
 
 	// 1. 매니저 및 렌더러 생성
@@ -78,14 +79,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	///////////////////////////////////////////////////////
 
 
-	ExampleStateManager temp = ExampleStateManager();
-
 	UManager* manager = new UManager(renderer->Device);
 	g_Manager = manager;
 	manager->Initialize(hWnd); // 사운드 여기서 시작!
 	
 	createBuffer(manager, renderer);
 
+	ExampleStateManager temp = ExampleStateManager(manager);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
