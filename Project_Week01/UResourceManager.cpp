@@ -1,9 +1,10 @@
 #include "UResourceManager.h"
 
 //	Manager의 Boot에서 Call
-void UResourceManager::Initialize(ID3D11Device* device)
+void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * deviceContext)
 {
 	this->Device = device;
+	this->DeviceContext = deviceContext;
 
 	/* Image Setting */
 
@@ -12,6 +13,10 @@ void UResourceManager::Initialize(ID3D11Device* device)
 	 LoadTexture("InGamePanel", L"res/image/InGamePanel.png");
 	 LoadTexture("LeaderBoardPanel", L"res/image/LeaderBoardPanel.png");
 	 LoadTexture("ButtonSprite", L"res/image/ButtonSprite.png");
+
+
+	 ImageLoadTexture(ImageName::ROCKET, L"res/image/rocket.png");
+	 ImageLoadTexture(ImageName::SATURN, L"res/image/saturn.png");
 
 	SRVBackground = GetTexture("Background");
 	SRVInGamePanel = GetTexture("InGamePanel");
@@ -56,7 +61,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 
 	/* How To Play List Setting */
 	howToPlayList.push_back("[How To Play]");
-	//	TODO : Make a list
+	//	TODO : Make how to play
 
 	bIsInitialzed = true;
 }
@@ -73,6 +78,15 @@ void UResourceManager::Release()
 
 	//	Font는 ImGui Release 시 자동으로 정리됨.
 	//	따로 nullptr 초기화 안함.
+
+	for (int i = 0; i < ImageName::COUNT; i++)
+	{
+		if (TextureResources[i]) {
+			TextureResources[i] = nullptr;
+			TextureResources[i] -> Release();
+		}
+	}
+
 }
 
 bool UResourceManager::LoadTexture(const std::string& key, const wchar_t* filePath)
@@ -111,4 +125,24 @@ std::string UResourceManager::GetRandomTips() const
 	std::uniform_int_distribution<int> dist(0, tipList.size() - 1);
 
 	return tipList[dist(mt)];
+}
+
+// texture 읽기
+HRESULT UResourceManager::ImageLoadTexture(ImageName type, std::wstring filePath)
+{
+	ID3D11ShaderResourceView* srv = nullptr;
+	HRESULT hr = DirectX::CreateWICTextureFromFile(Device, DeviceContext, filePath.c_str(), nullptr, &srv);
+
+	if (SUCCEEDED(hr))
+	{
+		if (TextureResources[type]) TextureResources[type]->Release();
+		TextureResources[type] = srv;
+	}
+
+	return hr;
+}
+
+ID3D11ShaderResourceView* UResourceManager::GetTexture(ImageName type)
+{
+	return TextureResources[type];
 }

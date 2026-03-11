@@ -182,7 +182,7 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 	}
 }
 
-void UManager::BootGame(ID3D11Device * device)
+void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceContext)
 {
 	if (CurRunState != ERunstate::ERS_Boot)
 	{
@@ -193,7 +193,7 @@ void UManager::BootGame(ID3D11Device * device)
 	//	1. Local Score 및 ResourceManager 로드
 	LoadScore();
 	ResourceManager = new UResourceManager();
-	ResourceManager->Initialize(device);
+	ResourceManager->Initialize(device, deviceContext);
 
 	InputManager = new PlayerInput();
 
@@ -399,10 +399,10 @@ void UManager::OnStageResult(bool bSuccess)
 
 
 /* Cons, Des */
-UManager::UManager(ID3D11Device* device)
+UManager::UManager(ID3D11Device* device , ID3D11DeviceContext* deviceContext)
 	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), FileName("ranking.txt"), ResourceManager(nullptr), Score(0.f)
 {
-	BootGame(device);
+	BootGame(device , deviceContext);
 
 	// 정점/인덱스 데이터 시트 생성 (실제 버퍼는 main의 createBuffer에서 생성됨)
 	ProbeResource.GenerateTriangle();

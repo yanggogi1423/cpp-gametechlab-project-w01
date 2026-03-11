@@ -80,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	ExampleStateManager temp = ExampleStateManager();
 
-	UManager* manager = new UManager(renderer->Device);
+	UManager* manager = new UManager(renderer->Device , renderer->DeviceContext);
 	g_Manager = manager;
 	manager->Initialize(hWnd); // 사운드 여기서 시작!
 	

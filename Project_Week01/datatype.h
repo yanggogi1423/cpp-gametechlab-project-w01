@@ -77,3 +77,22 @@ struct FConstants
 	}
 
 };
+
+
+struct FTextureVertex {
+
+	float x, y, z;
+	float r, g, b, a;
+	float u, v;
+};
+
+enum ImageName
+{
+	ROCKET,
+	BLACK_SPHERE,
+	WHITE_SPHERE,
+	JUPITER,
+	SATURN,
+	SUN,
+	COUNT
+};

@@ -173,7 +173,7 @@ private:
 
 
 	/* Non-game Management */
-	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
+	void BootGame(ID3D11Device * device , ID3D11DeviceContext * deviceContext);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
 	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
@@ -217,7 +217,7 @@ public:
 	}
 
 	/* Cons, Des */
-	UManager(ID3D11Device * device);
+	UManager(ID3D11Device * device , ID3D11DeviceContext * );
 
 	~UManager()
 	{

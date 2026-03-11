@@ -65,10 +65,13 @@ public:
     ID3D11VertexShader* SimpleVertexShader = nullptr;
     ID3D11PixelShader* SimplePixelShader = nullptr;
     ID3D11InputLayout* SimpleInputLayout = nullptr;
+    ID3D11InputLayout* textureInputLayout = nullptr;
 
     // 렌더링 상태 데이터
     FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     unsigned int Stride = static_cast<unsigned int>(sizeof(FVertex));
+
+    unsigned int texureStride = static_cast<unsigned int>(sizeof(FTextureVertex));
 
 };
