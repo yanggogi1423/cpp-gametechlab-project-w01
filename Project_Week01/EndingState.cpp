@@ -1,18 +1,14 @@
 #include "EndingState.h"
 #include "UManager.h"
 
-EndingState::EndingState(int stage, bool bSuccess, float remainTimer) :
-	curStage(stage),
-	FileName("ranking.txt"),
-	isSuccess(bSuccess),
-	RemainTimer(remainTimer)
+EndingState::EndingState() : FileName("ranking.txt")
 {
 }
 
 void EndingState::OnEnter(UManager* manager)
 {
 	ResourceManager = manager->GetResourceManager();
-	OnStageResult(isSuccess);
+	OnStageResult(manager->GetSuccess(), manager->GetRemainTimer(), manager->GetCurStageInt());
 
 	UIFrame& scoreFrame = uiManager->CreateFrame("Score")
 		.Position(ImVec2(100, 100))
@@ -108,18 +104,21 @@ std::string EndingState::RandomNameGenerator()
 //}
 
 // 결과 화면 시 호출될 함수
-void EndingState::OnStageResult(bool bSuccess)
+void EndingState::OnStageResult(bool bSuccess, float remainTime, int currentStage)
 {
 	//ProgressStage();
 
 	unsigned int finalScore = 0;
-	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
-	else finalScore = 0;
 
-	EndingInit(bSuccess, finalScore, RandomNameGenerator());
+	if (bSuccess) 
+		finalScore = (unsigned int)(remainTime * remainTime);
+	else 
+		finalScore = 0;
+
+	EndingInit(bSuccess, finalScore, RandomNameGenerator(), currentStage);
 }
 
-void EndingState::EndingInit(bool bIsClear, unsigned int score, std::string name)
+void EndingState::EndingInit(bool bIsClear, unsigned int score, std::string name, int currentStage)
 {
 	//ClearGameObjects(); InGameRunOnExit에서
 
@@ -135,13 +134,13 @@ void EndingState::EndingInit(bool bIsClear, unsigned int score, std::string name
 
 
 	//	Score Display
-	DisplayScore(name, score);
+	DisplayScore(name, score, currentStage);
 }
 
-void EndingState::DisplayScore(std::string name, unsigned int score)
+void EndingState::DisplayScore(std::string name, unsigned int score, int currentStage)
 {
 	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-	ScoreList.push_back({ curStage, name, score });
+	ScoreList.push_back({ currentStage, name, score });
 	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
 		{
 			//	다른 스테이지일 경우 Sort하지 않음

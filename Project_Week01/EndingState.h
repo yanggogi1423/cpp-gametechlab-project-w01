@@ -10,25 +10,22 @@
 class EndingState : public IState
 {
 private:
-	int curStage;
 	const std::string FileName;
 	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
 	UResourceManager* ResourceManager;
-	bool isSuccess;
-	float RemainTimer;
 
 	std::string RandomNameGenerator();
-	void EndingInit(bool bIsClear, unsigned int score, std::string name);
-	void DisplayScore(std::string name, unsigned int score);
+	void EndingInit(bool bIsClear, unsigned int score, std::string name, int);
+	void DisplayScore(std::string name, unsigned int score, int);
 	void LoadScore();
 	void SaveScore();
 	void ShutDownGame();
-	void OnStageResult(bool bSuccess);
+	void OnStageResult(bool bSuccess, float, int);
 	//void ClearGameObjects();
 	//void ProgressStage();
 
 public:
-	EndingState(int stage, bool bSuccess, float remainTimer);
+	EndingState();
 	virtual ~EndingState() = default;
 	void OnEnter(UManager* manager) override;
 	IState* Update(float deltaTime, UManager* manager) override;
