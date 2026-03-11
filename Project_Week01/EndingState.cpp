@@ -9,7 +9,7 @@ EndingState::EndingState(int stage, UResourceManager* resourceManager, bool bSuc
 {
 }
 
-void EndingState::OnEnter()
+void EndingState::OnEnter(UManager* manager)
 {
 	OnStageResult(isSuccess);
 

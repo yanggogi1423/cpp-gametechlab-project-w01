@@ -4,7 +4,7 @@ class InGameRunState : public IState
 {
 	InGameRunState() = default;
 	virtual ~InGameRunState() = default;
-	void OnEnter() override;
+	void OnEnter(UManager* manager) override;
 	IState* Update(URenderer* renderer) override;
 	void OnExit() override;
 };

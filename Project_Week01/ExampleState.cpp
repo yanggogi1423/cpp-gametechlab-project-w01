@@ -1,7 +1,7 @@
 #include "ExampleState.h"
 #include "MainState.h"
 
-void ExampleState::OnEnter()
+void ExampleState::OnEnter(UManager * manager)
 {
 	uiManager = new UIManager();
 

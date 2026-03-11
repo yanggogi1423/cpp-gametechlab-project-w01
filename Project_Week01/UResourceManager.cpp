@@ -25,7 +25,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 	FontLogo = io.Fonts->AddFontFromFileTTF
 	(
 		"res\\fonts\\ExtraBold.ttf",
-		16.f,
+		108.f,
 		nullptr,
 		io.Fonts->GetGlyphRangesDefault()
 	);
@@ -34,7 +34,7 @@ void UResourceManager::Initialize(ID3D11Device* device)
 	FontDefault = io.Fonts->AddFontFromFileTTF
 	(
 		"res\\fonts\\Medium.ttf",
-		16.f,
+		32.f,
 		nullptr,
 		io.Fonts->GetGlyphRangesDefault()
 	);

@@ -30,7 +30,7 @@ private:
 public:
 	EndingState(int stage, UResourceManager* resourceManager, bool bSuccess, float remainTimer);
 	virtual ~EndingState() = default;
-	void OnEnter() override;
+	void OnEnter(UManager* manager) override;
 	IState* Update(URenderer* renderer) override;
 	void OnExit() override;
 };
