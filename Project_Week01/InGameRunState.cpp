@@ -142,23 +142,31 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto stageInfoList = manager->GetStageInfoList();
 	auto curStage = manager->GetCurStage();
 
+	// 0. 완화 상수 설정
+	const float epsilon = 0.1f;
+	const float epsilonSq = epsilon * epsilon;
+
 	for (auto p : planetList)
 	{
-		// 1. 방향 벡터 및 거리 계산
+		// 1. 방향 벡터 계산
 		FVector direction = p.GetLocation() - player->GetLocation();
-		float dist = direction.Size();
-		if (dist < 1e-4f) continue; // 0으로 나누기 방지
 
-		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+		// 2. SizeSquared 직접 계산 (x*x + y*y + z*z)
+		// sqrt 연산을 거치지 않으므로 훨씬 빠르고 정밀합니다.
+		float distSq = (direction.x * direction.x) + (direction.y * direction.y) + (direction.z * direction.z);
+
+		// 0으로 나누기 방지 가드
+		if (distSq < 1e-6f) continue;
+
+		// 3. 가속도 계산 (소프닝 팩터 적용)
+		float accMag = (GravititationalConstant * p.GetMass()) / (distSq + epsilonSq);
+
+		// 4. 방향 벡터 적용을 위해 실제 거리 계산 (여기서만 sqrt 사용)
+		float dist = sqrtf(distSq);
 		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
-		FVector accVec = unitDir * accMag;
 
-		std::cout << "x: " << unitDir.x << " y: " << unitDir.y <<std::endl;
-
-
-		// 3. 속도 업데이트
-		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
+		// 5. 속도 업데이트
+		player->SetVelocity(player->GetVelocity() + (unitDir * accMag) * deltaTime);
 	}
 
 	auto pos = player->GetLocation();
