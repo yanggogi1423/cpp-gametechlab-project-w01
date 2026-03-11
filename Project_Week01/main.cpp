@@ -141,7 +141,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		ImGui::NewFrame();
 
 		renderer->PrepareShader();
-		manager->Update(deltaTime);
+		//manager->Update(deltaTime);
 		updateConstant(renderer, deltaTime);
 
 		// Manager로부터 버퍼를 받아와 렌더링

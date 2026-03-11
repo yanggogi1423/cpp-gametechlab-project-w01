@@ -69,8 +69,6 @@ struct FStageInfo
 	FVector ExitLocation;
 };
 
-
-
 #pragma endregion
 
 
@@ -86,6 +84,7 @@ namespace GenerateVertices {
 }
 
 struct ID3D11Buffer;
+
 
 struct MeshResource {
 	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
@@ -143,6 +142,10 @@ private:
 
 	//	Time
 	float RemainTimer;
+	
+	//	Player Runtime Data
+	float Score;
+	std::string PlayerName;
 
 	//  Sound
 	USoundManager m_SoundMgr;
@@ -153,7 +156,7 @@ private:
 
 private:
 	const std::string FileName;
-	std::vector<std::pair<std::string, unsigned int>> ScoreList;
+	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
 
 	/* GameObjects */
 	Probe* Player;
@@ -187,7 +190,6 @@ private:
 
 	void ComputePhysicsAndApply(float deltaTime);
 
-
 	/* Non-game Management */
 	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
 	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
@@ -197,8 +199,6 @@ private:
 	void SaveScore();
 	void DisplayScore(std::string name, unsigned int score);
 	
-
-
 
 public:
 	void Initialize(HWND hwnd);
@@ -230,7 +230,8 @@ public:
 		: CurRunState(ERunstate::ERS_Boot), 
 		CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1),
 		FileName("ranking.txt"),
-		ResourceManager(nullptr)
+		ResourceManager(nullptr),
+		Score(0.f)
 		//,bBootDone(false), bIsAlreadyDestroy(false)
 	{
 		BootGame(device);
@@ -252,9 +253,9 @@ public:
 
 	// mesh info
 private:
-
 	MeshResource ProbeResource;
 	MeshResource SphereResource;
+
 public:
 
 	void initResource(RESOURCE_TYPE rt,ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale);
