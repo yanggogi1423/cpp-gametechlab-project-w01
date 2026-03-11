@@ -6,6 +6,8 @@
 
 void MainState::OnEnter(UManager* manager)
 {
+	manager->PlayBGM(EBGM::EBGM_TitleScreen);
+	
 	uiManager = new UIManager();
 
 	UIFrame& bgFrame = uiManager->CreateFrame("MainState")

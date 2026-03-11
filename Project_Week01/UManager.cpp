@@ -68,7 +68,6 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
-	m_SoundMgr.PlayBGM(EBGM::EBGM_TitleScreen);
 }
 
 void UManager::OnMouseClick()

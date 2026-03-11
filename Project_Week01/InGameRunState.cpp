@@ -191,7 +191,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 			std::cout << dist << std::endl;
 
-			manager->PlaySFX(ESFX::ESFX_Clear);
+			manager->PlaySFX(ESFX::ESFX_Fail);
 			return new EndingState();
 		}
 	}
@@ -210,8 +210,6 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	{
 		std::cout << "bGoToMain" << std::endl;
 		nextState = new MainState();
-		manager->SetSuccess(true);
-		manager->PlaySFX(ESFX::ESFX_Fail);
 		return new EndingState();
 	}
 	else if (bGoToRetry)
@@ -219,7 +217,6 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		std::cout << "bGoToRetry" << std::endl;
 		nextState = new InGameReadyState();
 	}
-
 
 	return nextState;
 }

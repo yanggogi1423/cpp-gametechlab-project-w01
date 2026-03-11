@@ -18,7 +18,7 @@ protected:
 
 public:
     UPrimitive()
-        : Location(1.0f, -1.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Radius(0.001f), Scale(1.0f), Mass(1.0f), bIsColliding(false)
+        : Location(1.0f, -1.0f, 0.0f), Velocity(0.0f, 0.0f, 0.0f), Radius(0.1f), Scale(0.01f), Mass(1.0f), bIsColliding(false)        
     {
     }
 

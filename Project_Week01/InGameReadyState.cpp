@@ -31,7 +31,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 
 	// 스테이지 번호에 따른 BGM 전환
 	EStage curStage = manager->GetCurStage();
-
+	
 	switch (curStage)
 	{
 	case EStage::ES_Stage1:
@@ -47,6 +47,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 		manager->PlayBGM(EBGM::EBGM_TitleScreen);
 		break;
 	}
+
 
 	// 3. 장애물(행성) 배치 로직
 	for (auto& obstacle : stageInfo.ObstacleList)
@@ -72,8 +73,8 @@ void InGameReadyState::OnEnter(UManager* manager)
 	switch (StageIdx)
 	{
 	case 0:
-		player->SetLocation({ 1.0f, -1.0f, 0.0f });
-		player->SetVelocity(FVector(0.0f, 1.0f, 0.0f) * 0.0f);
+		player->SetLocation({ -0.8f, -0.8f, 0.0f });
+		player->SetVelocity({ 0.35f, 0.35f, 0.0f });
 		goal.SetLocation({ 1.0f , 1.0f , 0.0f }); 
 		break;
 	case 1:
