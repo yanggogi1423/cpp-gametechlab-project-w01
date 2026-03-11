@@ -120,7 +120,7 @@ void UManager::InitGameObjects()
 	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
 	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
 
-	PlanetList.push_back(TestPlanet);
+	PlanetList.push_back(*TestPlanet);
 
 	//	TODO : 장애물 생성 로직
 }
@@ -135,10 +135,10 @@ void UManager::ClearGameObjects()
 	}
 	Player = nullptr;
 
-	for (auto planet : PlanetList)
-	{
-		if (planet) delete planet;
-	}
+	//for (auto planet : PlanetList)
+	//{
+	//	if (planet) delete planet;
+	//}
 
 	PlanetList.clear();
 
@@ -151,13 +151,13 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 	for (auto p : PlanetList)
 	{
 		// 1. 방향 벡터 및 거리 계산
-		FVector direction = p->GetLocation() - Player->GetLocation();
+		FVector direction = p.GetLocation() - Player->GetLocation();
 		float dist = direction.Size();
 		if (dist < 1e-4f) continue; // 0으로 나누기 방지
 
 		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
 		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p->GetMass()) / (float)pow(dist, 2);
+		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
 		// 3. 속도 업데이트

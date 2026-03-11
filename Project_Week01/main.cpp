@@ -103,16 +103,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	createBuffer(manager, renderer);
 
-	UResourceManager resourceManager;
-	resourceManager.Initialize(renderer->Device);
-
-	UIManager uiManager;
-	UIFrame& testFrame = uiManager.CreateFrame("Test Frame")
-		.Position(ImVec2(10.f, 30.f))
-		.Size(ImVec2(300.f, 200.f));
-
-	testFrame.AddText("Hello, ImGui!", ImVec2(10.f, 30.f), resourceManager.FontDefault);
-	testFrame.AddImage(resourceManager.SRVBackground, ImVec2(10.f, 40.f), ImVec2(100.f, 100.f));
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;
@@ -161,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		for (auto& planet : manager->GetPlanetList())
 		{
 			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
-			renderer->UpdateConstant(planet->GetTransformMatrix());
+			renderer->UpdateConstant(planet.GetTransformMatrix());
 
 			MeshResource* sphereRes = manager->getSphereResource();
 			if (sphereRes->VB != nullptr)
@@ -170,15 +160,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 		}
 
-		ImGui::Begin("title.c_str(), nullptr, flags");
-
-		ImGui::Image((ImTextureID)resourceManager.SRVBackground, ImVec2(100.f, 100.f));
-		ImGui::End();
-
-		// ImGui 실제 렌더링
-		ImGui::Render();
-		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		//uiManager.Render();
+		temp.Update(renderer);
 
 		renderer->SwapBuffer();
 	}
