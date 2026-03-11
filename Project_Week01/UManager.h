@@ -130,13 +130,9 @@ private:
 	//  Sound
 	USoundManager m_SoundMgr;
 
-private:
-
 	/* GameObjects */
 	Probe* Player;
 	std::vector<USphere> PlanetList;	//	이후에 template 수정할 수도 있음
-	Goal goal;
-
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
@@ -148,19 +144,29 @@ private:
 	/* Player Inputs */
 	PlayerInput* InputManager;
 
+	//MeshResource
+	MeshResource ProbeResource;
+	MeshResource SphereResource;
 
 	bool success; // 엔딩으로 넘어갈때 성공 여부
 
-private:
-	// Stage Progression
-
-
-	/* Non-game Management */
-	//void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
-
 public:
+	UManager(ID3D11Device* device, ID3D11DeviceContext*);
+
+	~UManager()
+	{
+		m_SoundMgr.Dispose();
+		//ShutDownGame();
+	}
+	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	void Initialize(HWND hwnd);
+	void Release();
+	void OnMouseClick();
+
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
 	void CreateNewPlanetWorld(USphere& in);
+	std::vector<USphere>& GetPlanetList() { return PlanetList; }
+
 	bool GetSuccess() { return success; }
 	void SetSuccess(int _success) { success = _success; }
 
@@ -173,81 +179,21 @@ public:
 	float GetRemainTimer() const { return RemainTimer; }
 	void SetRemainTimer(float time) { RemainTimer = time; }
     
-	void SetPlayer(Probe* p) { Player = p; }
-	void ClearGameObjects();
-	//void ComputePhysicsAndApply(float deltaTime);
-
-	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
-
-	
-	//	Collision 관련
-	//void CollisionDetection();
-	void CollsionResolution();
-
-	void Initialize(HWND hwnd);
-	void Release();
-	void OnMouseClick();
-
-	// Sound 관련
-	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
-
-	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
-	// 
-	// EndingState
-	//static std::string RandomNameGenerator()
-	//{
-	//	const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	//	const int appendLength = 8;
-
-	//	std::random_device rd;
-	//	std::mt19937 mt(rd());
-	//	std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
-
-	//	std::string name = "User_";
-
-	//	for (int i = 0; i < appendLength; i++)
-	//	{
-	//		name += charSet[dist(mt)];
-	//	}
-
-	//	return name;
-	//}
-
-	/* Cons, Des */
-	UManager(ID3D11Device * device , ID3D11DeviceContext * );
-
-	~UManager()
-	{
-		m_SoundMgr.Dispose();
-		//ShutDownGame();
-	}
-
-	/* Getter, Setter */
 	Probe* GetProbe() const { return Player; }
-	 std::vector<USphere> & GetPlanetList()  { return PlanetList; }
+	void SetPlayer(Probe* p) { Player = p; }
+
+	MeshResource* getSphereResource();
+	void setSphereResource(MeshResource& mr);
+	MeshResource* getProbeResource();
+	void setProbeResource(MeshResource& mr);
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }
 
-	Goal getGoal(); 
+	void ClearGameObjects();
 
-
-	bool Startable() const { return CurRunState != ERunstate::ERS_Boot; }
-
-	// mesh info
-private:
-	MeshResource ProbeResource;
-	MeshResource SphereResource;
-
-public:
-
-	MeshResource* getSphereResource() ;
-	MeshResource* getProbeResource() ;
-	void setProbeResource( MeshResource& mr);
-	void setSphereResource( MeshResource& mr);
-
-	
-
+	// Sound 관련
+	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 };
 
 

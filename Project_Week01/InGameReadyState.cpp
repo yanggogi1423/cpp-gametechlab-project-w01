@@ -35,7 +35,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 		manager->SetPlayer(player); // Player 포인터 설정을 위한 Setter 추가 필요
 	}
 	// 5. Goal 생성 & 배치
-	Goal goal = manager->getGoal();
+	Goal goal = stageInfo.goal;
 	// 플레이어의 위치는 레벨에 따라 세팅 
 	switch (StageIdx)
 	{
