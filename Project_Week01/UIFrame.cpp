@@ -156,6 +156,27 @@ void UIFrame::AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position
 	images.push_back(imageInfo);
 }
 
+void UIFrame::AddImage9(
+	ID3D11ShaderResourceView* texture,
+	const ImVec2& position,
+	const ImVec2& size,
+	float border)
+{
+	if (texture == nullptr)
+		return;
+
+	Image9Info imageInfo;
+	imageInfo.texture = texture;
+	imageInfo.position = position;
+	imageInfo.size = size;
+	imageInfo.borderLeft = border;
+	imageInfo.borderRight = border;
+	imageInfo.borderTop = border;
+	imageInfo.borderBottom = border;
+
+	images9.push_back(imageInfo);
+}
+
 void UIFrame::AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback) {
 	ImageButtonInfo imageButtonInfo;
 	imageButtonInfo.label = text;
@@ -287,6 +308,32 @@ void UIFrame::Render()
 	{
 		ImGui::SetCursorPos(image.position);
 		ImGui::Image((ImTextureID)image.texture, image.size);
+	}
+
+	for (const auto& image9 : images9)
+	{
+		ImVec2 pos = {
+			image9.position.x - image9.size.x * 0.5f,
+			image9.position.y - image9.size.y * 0.5f
+		};
+
+		ImGui::SetCursorPos(pos);
+
+		ImVec2 screenPos = ImGui::GetCursorScreenPos();
+
+		DrawNineSliceImage(
+			image9.texture,
+			screenPos,
+			image9.size,
+			ImVec2(0.0f, 0.0f),
+			ImVec2(1.0f, 1.0f),
+			image9.borderLeft,
+			image9.borderRight,
+			image9.borderTop,
+			image9.borderBottom
+		);
+
+		ImGui::Dummy(image9.size);
 	}
 
 	for (const auto& button : buttons)

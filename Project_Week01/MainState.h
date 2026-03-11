@@ -22,5 +22,8 @@ public:
 	//	Contributors
 	UIFrame* InfoFrame;
 	//bool bInfoVisible = false;
+
+	//	Game Start Flag
+	bool bIsGameStart = false;
 };
 

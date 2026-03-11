@@ -257,7 +257,7 @@ void UManager::OnMouseClick()
 }
 
 UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
-	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_Stage1), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device , deviceContext);
 

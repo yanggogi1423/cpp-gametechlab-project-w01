@@ -2,6 +2,8 @@
 #include "ExampleState.h"
 #include "UManager.h"
 
+#include "LoadingState.h"
+
 void MainState::OnEnter(UManager* manager)
 {
 	uiManager = new UIManager();
@@ -13,7 +15,7 @@ void MainState::OnEnter(UManager* manager)
 		.BackgroundColor(ImVec4(0, 0, 0, 0));
 
 
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	//	Background
 	const int tileSize = 350;
 	const int segX = WindowWidth / tileSize;   // 20
@@ -33,7 +35,7 @@ void MainState::OnEnter(UManager* manager)
 
 	bgFrame.AddText("v.1.0.0 by GameTechLab Team 3", ImVec2(133, WindowHeight - 17), manager->GetResourceManager()->FontInfoLight);
 
-	ImGui::PopStyleVar();
+	//ImGui::PopStyleVar();
 	
 	UIFrame & logoFrame = uiManager->CreateFrame("MainState")
 		.Position(ImVec2(0, 0))
@@ -65,7 +67,9 @@ void MainState::OnEnter(UManager* manager)
 		ImVec2(400, 90),
 		2,
 		6.0f,
-		nullptr
+		[&]() {
+			bIsGameStart = true;
+		}
 		);
 
 	btnFrame.AddText("Game Start",
@@ -79,7 +83,10 @@ void MainState::OnEnter(UManager* manager)
 		ImVec2(400, 90),
 		2,
 		6.0f,
-		nullptr
+		[]()
+		{
+			PostQuitMessage(0);
+		}
 	);
 
 	btnFrame.AddText("Exit",
@@ -148,6 +155,11 @@ IState* MainState::Update(float deltaTime, UManager* manager)
 
 	// 메인 화면에서는 별다른 물리 로직이 필요 없으므로 업데이트를 생략하거나
 	// 필요한 애니메이션 로직만 넣습니다.
+
+	if (bIsGameStart) 
+	{
+		nextState = new LoadingState();
+	}
 
 	return nextState;
 }
