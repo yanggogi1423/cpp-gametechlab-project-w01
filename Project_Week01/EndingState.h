@@ -1,23 +1,37 @@
 #pragma once
-#include "IState.h"
+#include <fstream>
 #include <string>
+#include <sstream>
 
+
+#include "IState.h"
+#include "InGameReadyState.h"
+#include "StageSelectionState.h"
 class EndingState : public IState
 {
 private:
-	// 공정 결과 데이터를 보관할 멤버 변수
-	bool m_bIsClear;
-	unsigned int m_score;
-	std::string m_name;
+	int curStage;
+	const std::string FileName;
+	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
+	UResourceManager* ResourceManager;
+	bool isSuccess;
+	float RemainTimer;
+
+	std::string RandomNameGenerator();
+	void EndingInit(bool bIsClear, unsigned int score, std::string name);
+	void DisplayScore(std::string name, unsigned int score);
+	void LoadScore();
+	void SaveScore();
+	void ShutDownGame();
+	void OnStageResult(bool bSuccess);
+	//void ClearGameObjects();
+	//void ProgressStage();
 
 public:
-	// 생성자를 통해 결과를 전달받습니다.
-	EndingState(bool bIsClear, unsigned int score, std::string name);
+	EndingState(int stage, bool bSuccess, float remainTimer);
 	virtual ~EndingState() = default;
-
-	void OnEnter(class UManager* manager) override;
-	IState* Update(float deltaTime, class UManager* manager) override;
-	void Render(class URenderer* renderer, class UManager* manager) override;
-	void OnExit(class UManager* manager) override;
+	void OnEnter(UManager* manager) override;
+	IState* Update(float deltaTime, UManager* manager) override;
+	void Render(URenderer* renderer, UManager* manager) override;
+	void OnExit(UManager* manager) override;
 };
-

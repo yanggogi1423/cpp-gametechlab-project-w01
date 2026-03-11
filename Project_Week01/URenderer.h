@@ -6,6 +6,11 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
+constexpr float WindowWidth = 1400.f;
+constexpr float WindowHeight = 1050.f;
+constexpr float GameWidth = 1050.f;
+constexpr float GameHeight = 1050.f;
+
 // 사용하는 구조체들에 대한 가정 (사용자 정의 구조체)
 class URenderer {
     
@@ -67,6 +72,7 @@ public:
     ID3D11InputLayout* SimpleInputLayout = nullptr;
 
     // 렌더링 상태 데이터
+    //FLOAT ClearColor[4] = { 1.f, 1.f, 1.f, 1.f };
     FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     unsigned int Stride = static_cast<unsigned int>(sizeof(FVertex));

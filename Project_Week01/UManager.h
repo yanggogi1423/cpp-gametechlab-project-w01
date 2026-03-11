@@ -133,8 +133,8 @@ private:
 	//bool bIsAlreadyDestroy;
 
 private:
-	const std::string FileName;
-	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
+	//const std::string FileName; EndingState로 이동
+	//std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList; EndingState로 이동
 
 	/* GameObjects */
 	Probe* Player;
@@ -152,20 +152,14 @@ private:
 
 private:
 	// Stage Progression
-	void ProgressStage();
+
 
 	/* Non-game Management */
 	void BootGame(ID3D11Device * device);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
-	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
-	
+
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
 	void CreateNewPlanetWorld(USphere& in);
-	void ClearGameObjects();
-
-	//	File Load
-	void LoadScore();
-	void SaveScore();
 
 	// StageInfo 관련
 	EStage GetCurStage() const { return CurStage; }
@@ -176,6 +170,7 @@ public:
 	void SetRemainTimer(float time) { RemainTimer = time; }
     
 	void SetPlayer(Probe* p) { Player = p; }
+	void ClearGameObjects();
 	void ComputePhysicsAndApply(float deltaTime);
 
 	// Score 관련
@@ -193,24 +188,26 @@ public:
 	void PlaySFX(ESFX sfx) { m_SoundMgr.PlaySFX(sfx); }
 
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
-	static std::string RandomNameGenerator()
-	{
-		const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		const int appendLength = 8;
+	// 
+	// EndingState
+	//static std::string RandomNameGenerator()
+	//{
+	//	const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	//	const int appendLength = 8;
 
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
+	//	std::random_device rd;
+	//	std::mt19937 mt(rd());
+	//	std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
 
-		std::string name = "User_";
+	//	std::string name = "User_";
 
-		for (int i = 0; i < appendLength; i++)
-		{
-			name += charSet[dist(mt)];
-		}
+	//	for (int i = 0; i < appendLength; i++)
+	//	{
+	//		name += charSet[dist(mt)];
+	//	}
 
-		return name;
-	}
+	//	return name;
+	//}
 
 	/* Cons, Des */
 	UManager(ID3D11Device * device);
@@ -218,7 +215,7 @@ public:
 	~UManager()
 	{
 		m_SoundMgr.Dispose();
-		ShutDownGame();
+		//ShutDownGame();
 	}
 
 	/* Getter, Setter */

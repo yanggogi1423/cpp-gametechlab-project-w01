@@ -4,8 +4,6 @@
 
 void BootState::OnEnter(UManager* manager)
 {
-	manager->LoadScore();
-
 	// 스테이지 정보 생성
 	auto& stageList = const_cast<std::vector<FStageInfo>&>(manager->GetStageInfoList());
 	if (stageList.empty()) {
