@@ -28,7 +28,7 @@ private:
 	//void ProgressStage();
 
 public:
-	EndingState(int stage, UResourceManager* resourceManager, bool bSuccess, float remainTimer);
+	EndingState(int stage, bool bSuccess, float remainTimer);
 	virtual ~EndingState() = default;
 	void OnEnter(UManager* manager) override;
 	IState* Update(URenderer* renderer) override;

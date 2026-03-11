@@ -1,8 +1,7 @@
 #pragma once
 #include "UIManager.h"
 #include "URenderer.h"
-
-class UManager;
+#include "UManager.h"
 
 class IState
 {

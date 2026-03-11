@@ -1,8 +1,7 @@
 #include "EndingState.h"
 
-EndingState::EndingState(int stage, UResourceManager* resourceManager, bool bSuccess, float remainTimer) :
+EndingState::EndingState(int stage, bool bSuccess, float remainTimer) :
 	curStage(stage),
-	ResourceManager(resourceManager),
 	FileName("ranking.txt"),
 	isSuccess(bSuccess),
 	RemainTimer(remainTimer)
@@ -11,6 +10,7 @@ EndingState::EndingState(int stage, UResourceManager* resourceManager, bool bSuc
 
 void EndingState::OnEnter(UManager* manager)
 {
+	ResourceManager = manager->GetResourceManager();
 	OnStageResult(isSuccess);
 
 	UIFrame& scoreFrame = uiManager->CreateFrame("Score")
