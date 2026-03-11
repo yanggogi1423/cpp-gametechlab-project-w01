@@ -42,15 +42,43 @@ void UIFrame::AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position
 	images.push_back(imageInfo);
 }
 
-void UIFrame::AddImageButton(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback) {
+void UIFrame::AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback) {
 	ImageButtonInfo imageButtonInfo;
-	imageButtonInfo.label = "ImageButton";
+	imageButtonInfo.label = text;
 	imageButtonInfo.texture = texture;
 	imageButtonInfo.position = position;
 	imageButtonInfo.size = size;
 	imageButtonInfo.callback = callback;
 	imageButtons.push_back(imageButtonInfo);
 }
+
+
+void UIFrame::AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback) {
+	SpriteButtonInfo spriteInfo;
+	spriteInfo.label = text;
+	spriteInfo.texture = texture;
+	spriteInfo.position = position;
+	spriteInfo.size = size;
+	spriteInfo.callback = callback;
+	
+	//80 * 128 이미지
+	int columns = 80 / 16;
+	int x = index % columns;
+	int	y = index / columns;
+
+	float u0 = (float)(x * 16) / 80;
+	float v0 = (float)(y * 16) / 128;
+
+	float u1 = (float)((x + 1) * 16) / 80;
+	float v1 = (float)((y + 1) * 16) / 128;
+
+	spriteInfo.uv0 = ImVec2(u0, v0);
+	spriteInfo.uv1 = ImVec2(u1, v1);
+
+
+	spriteButtons.push_back(spriteInfo);
+}
+
 
 UIFrame& UIFrame::Position(ImVec2 newPosition)
 {
@@ -109,8 +137,6 @@ void UIFrame::Render()
 
 	ImGui::Begin(title.c_str(),	nullptr,flags);
 
-	//ImGui::Begin(title.c_str());
-
 	for (const auto& button : buttons)
 	{
 		ImGui::SetCursorPos(button.position);
@@ -137,11 +163,32 @@ void UIFrame::Render()
 
 	for (const auto& imageButton : imageButtons)
 	{
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 1, 1, 0.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.3f));
+
 		ImGui::SetCursorPos(imageButton.position);
 		if (ImGui::ImageButton(imageButton.label.c_str(), (ImTextureID)(imageButton.texture), imageButton.size))
 		{
 			imageButton.callback();
 		}
+
+		ImGui::PopStyleColor(3);
+	}
+
+	for (const auto& spriteButton : spriteButtons)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 1, 1, 0.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.3f));
+
+		ImGui::SetCursorPos(spriteButton.position);
+		if (ImGui::ImageButton(spriteButton.label.c_str(), (ImTextureID)(spriteButton.texture), spriteButton.size, spriteButton.uv0, spriteButton.uv1))
+		{
+			spriteButton.callback();
+		}
+
+		ImGui::PopStyleColor(3);
 	}
 
 	ImGui::End();
