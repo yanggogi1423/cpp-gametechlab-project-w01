@@ -132,6 +132,8 @@ private:
 	/* GameObjects */
 	Probe* Player;
 	std::vector<USphere> PlanetList;	//	이후에 template 수정할 수도 있음
+	Goal* goal;
+
 
 	/* Game Data */
 	std::vector<FStageInfo> StageInfoList;
@@ -146,6 +148,7 @@ private:
 	//MeshResource
 	MeshResource ProbeResource;
 	MeshResource SphereResource;
+	MeshResource GoalResource;
 
 	bool success; // 엔딩으로 넘어갈때 성공 여부
 
@@ -181,10 +184,16 @@ public:
 	Probe* GetProbe() const { return Player; }
 	void SetPlayer(Probe* p) { Player = p; }
 
+	Goal* getGoal() { return goal; };
+	void SetGoal(Goal* g) { goal = g; };
+
 	MeshResource* getSphereResource();
 	void setSphereResource(MeshResource& mr);
 	MeshResource* getProbeResource();
 	void setProbeResource(MeshResource& mr);
+	MeshResource* getGoalResource();
+	void setGoalResource(MeshResource& mr);
+
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }

@@ -13,9 +13,9 @@ void BootState::OnEnter(UManager* manager)
 	}
 
 	// 기하 구조 생성 (삼각형, 구체 정점 데이터 준비)
-	manager->getProbeResource()->GenerateTriangle();
-	manager->getSphereResource()->GenerateSphere(1.0f);
-
+	//manager->getProbeResource()->GenerateTriangle();
+	//manager->getSphereResource()->GenerateSphere(1.0f);
+	//manager->getGoalResource()->GenerateTriangle();
 	// 4. 메모리 예약 (행성 리스트 공간 확보)
 	// manager->ReservePlanetList(50); // 필요 시 추가
 }

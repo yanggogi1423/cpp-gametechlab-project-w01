@@ -3,5 +3,9 @@
 
 DirectX::XMMATRIX Goal::GetTransformMatrix()
 {
-	return DirectX::XMMATRIX();
+
+	DirectX::XMMATRIX ret = DirectX::XMMatrixTranslation(Location.x, Location.y, 0);
+	
+	return 	DirectX::XMMatrixTranspose(ret);
+	;
 }

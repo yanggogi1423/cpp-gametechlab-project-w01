@@ -38,15 +38,21 @@ inline void createBuffer(UManager* manager, URenderer* renderer)
 {
 	MeshResource* probe = manager->getProbeResource();
 	MeshResource* sphere = manager->getSphereResource();
+	MeshResource* goal = manager->getGoalResource();
 
 	renderer->CreateVertexBuffer(probe->VB, probe->Vertices.data(), probe->Vertices.size() * sizeof(FTextureVertex));
 	renderer->CreateVertexBuffer(sphere->VB, sphere->Vertices.data(), sphere->Vertices.size() * sizeof(FTextureVertex));
+	renderer->CreateVertexBuffer(goal->VB, goal->Vertices.data(), goal->Vertices.size() * sizeof(FTextureVertex));
+
 
 	renderer->CreateIndexBuffer(probe->IB, probe->Indexes.data(), probe->IndexCount);
 	renderer->CreateIndexBuffer(sphere->IB, sphere->Indexes.data(), sphere->IndexCount);
+	renderer->CreateIndexBuffer(goal->IB, goal->Indexes.data(), goal->IndexCount);
+
 
 	manager->setProbeResource(*probe);
 	manager->setSphereResource(*sphere);
+	manager->setGoalResource(*goal);
 }
 
 
