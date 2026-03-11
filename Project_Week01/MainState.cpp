@@ -41,10 +41,10 @@ void MainState::OnEnter(UManager * manager)
 		);
 	
 	//	Button Set
-	logoFrame.AddSpriteButton("Game Start",
-		manager->GetResourceManager()->SRVButtonSprite,
-		ImVec2(Window)
-		);
+	//logoFrame.AddSpriteButton("Game Start",
+	//	manager->GetResourceManager()->SRVButtonSprite,
+	//	ImVec2(Window)
+	//	);
 
 
 	//여기서부터 init코드 작성
