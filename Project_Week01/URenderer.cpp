@@ -112,30 +112,36 @@ void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
     if (ConstantBuffer) {
         D3D11_MAPPED_SUBRESOURCE constantbufferMSR;
         if (SUCCEEDED(DeviceContext->Map(ConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &constantbufferMSR))) {
-            memcpy(constantbufferMSR.pData, &pXMMATRIX, sizeof(DirectX::XMMATRIX));
+            DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(pXMMATRIX);
+            memcpy(constantbufferMSR.pData, &transposed, sizeof(DirectX::XMMATRIX));
             DeviceContext->Unmap(ConstantBuffer, 0);
         }
     }
 }
 
-//ID3D11Buffer* URenderer::CreateVertexBuffer(FVertex* vertices, UINT bytewidth) {
-//    D3D11_BUFFER_DESC vertexbufferdesc = {};
-//    vertexbufferdesc.ByteWidth = bytewidth;
-//    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
-//    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-//
-//    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
-//    ID3D11Buffer* vertexBuffer = nullptr;
-//
-//    Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexBuffer);
-//    return vertexBuffer;
-//}
+void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FVertex* vertices, UINT bytewidth) {
+    D3D11_BUFFER_DESC vertexbufferdesc = {};
+    vertexbufferdesc.ByteWidth = bytewidth;
+    vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
+    vertexbufferdesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    D3D11_SUBRESOURCE_DATA vertexbufferSRD = { vertices };
+    Device->CreateBuffer(&vertexbufferdesc, &vertexbufferSRD, &vertexbuffer);
+}
 
 
 
-void URenderer::indexRenderPrimitive(UINT numIndices)
+void URenderer::indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices)
 {
-    DeviceContext->DrawIndexed(numIndices,0,0);
+    UINT offset = 0;
+
+    // 1. 사용할 정점 버퍼 세팅
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+
+    // 2. 사용할 인덱스 버퍼 세팅 (unsigned int를 사용하므로 DXGI_FORMAT_R32_UINT 사용)
+    DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+    // 3. 그리기
+    DeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
 
@@ -195,13 +201,14 @@ void URenderer::ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer) {
     if (vertexBuffer) vertexBuffer->Release();
 }
 
-void URenderer::CreateIndexBuffer(ID3D11Buffer* indexBuffer, UINT* indices, UINT count)
+void URenderer::CreateIndexBuffer(ID3D11Buffer*& indexBuffer, UINT* indices, UINT count)
 {
     D3D11_BUFFER_DESC indexBufferDesc = {};
     indexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
     indexBufferDesc.ByteWidth = sizeof(UINT) * count;
     indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
     indexBufferDesc.CPUAccessFlags = 0;
+
 
     D3D11_SUBRESOURCE_DATA initData = {};
     initData.pSysMem = indices;

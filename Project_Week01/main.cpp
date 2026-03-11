@@ -12,6 +12,22 @@
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
+inline void createBuffer(UManager* manager, URenderer* renderer)
+{
+	MeshResource* probe = manager->getProbeResource();
+	MeshResource* sphere = manager->getSphereResource();
+
+	renderer->CreateVertexBuffer(probe->VB, probe->Vertices.data(), probe->Vertices.size() * sizeof(FVertex));
+	renderer->CreateVertexBuffer(sphere->VB, sphere->Vertices.data(), sphere->Vertices.size() * sizeof(FVertex));
+
+	renderer->CreateIndexBuffer(probe->IB, probe->Indexes.data(), probe->IndexCount);
+	renderer->CreateIndexBuffer(sphere->IB, sphere->Indexes.data(), sphere->IndexCount);
+
+	manager->setProbeResource(*probe);
+	manager->setSphereResource(*sphere);
+}
+
+
 
 static UManager* g_Manager = nullptr;
 
@@ -64,23 +80,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UManager* manager = new UManager(renderer->Device);
 	g_Manager = manager;
 	manager->Initialize(hWnd); // 사운드 여기서 시작!
-
-	// 2. GPU 버퍼 생성 및 Manager 등록
-	std::vector<FVertex> triVertices;
-	std::vector<unsigned int> triIndices;
-	GenerateVertices::GenerateTriangle(triVertices, triIndices);
-
-	ID3D11Buffer* vBuffer = nullptr;
-	D3D11_BUFFER_DESC vbd = {};
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(FVertex) * (UINT)triVertices.size();
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	D3D11_SUBRESOURCE_DATA vinitData = { triVertices.data() };
-	renderer->Device->CreateBuffer(&vbd, &vinitData, &vBuffer);
-
-	// Manager에게 이 버퍼를 쓰라고 등록합니다.
-	manager->initResource(PROBE, vBuffer, nullptr, (UINT)triVertices.size(), 0, sizeof(FVertex), 1.0f);
-
+	
+	createBuffer(manager, renderer);
 
 	UResourceManager resourceManager;
 	resourceManager.Initialize(renderer->Device);
@@ -133,23 +134,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			// 객체 스스로 계산한 행렬을 렌더러의 상수 버퍼에 직접 전송합니다.
 			renderer->UpdateConstant(pPlayer->GetTransformMatrix());
 
-			MeshResource probeRes = manager->getProbeResource();
-			if (probeRes.VB != nullptr)
+			MeshResource* probeRes = manager->getProbeResource();
+			if (probeRes->VB != nullptr)
 			{
-				renderer->RenderPrimitive(probeRes.VB, probeRes.VertexCount); 
+				renderer->indexRenderPrimitive(probeRes->VB ,probeRes->IB,probeRes->IndexCount);
 			}
 		}
 
-		// 2. 행성(Sphere)들 렌더링 (추후 확장을 위해)
-		for (auto planet : manager->GetPlanetList())
+		// 2. 행성(Sphere)들 렌더링
+		MeshResource* sphereRes = manager->getSphereResource();
+		if (sphereRes->VB != nullptr)
 		{
-			// 각 행성도 자신만의 Scale과 Location이 담긴 행렬을 보냅니다.
-			renderer->UpdateConstant(planet->GetTransformMatrix());
-
-			MeshResource sphereRes = manager->getSphereResource();
-			if (sphereRes.VB != nullptr)
+			for (const auto& planet : manager->GetPlanetList())
 			{
-				renderer->RenderPrimitive(sphereRes.VB, sphereRes.VertexCount);
+				// 동일한 Sphere VB를 쓰면서 행렬만 바꿔서 GPU로 전달
+				renderer->UpdateConstant(planet.GetTransformMatrix());
+				renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
 			}
 		}
 
@@ -174,7 +174,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	
-	if (vBuffer) vBuffer->Release();
 	renderer->Release();
 	delete renderer;
 

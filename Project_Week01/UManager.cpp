@@ -15,13 +15,13 @@ void UManager::CollisionDetection()
 	FVector pLoc = Player->GetLocation();
 	
 	//	Collision between Probe and Planets
-	for (auto p : PlanetList)
+	for (const auto& p : PlanetList)
 	{
-		float dist = (p->GetLocation() - pLoc).Size();
-		if (dist < p->GetScale() + Player->GetScale())
+		float dist = (p.GetLocation() - pLoc).Size();
+		if (dist < p.GetScale() + Player->GetScale())
 		{
 			Player->SetColliding(true);
-			OnStageResult(true);
+			OnStageResult(false);
 			return;
 		}
 	}
@@ -45,9 +45,15 @@ void UManager::MainInit()
 	ClearGameObjects();
 	CurRunState = ERunstate::ERS_Main;
 
-	// 플레이어를 미리 생성하여 nullptr 에러를 방지하고 위치를 고정합니다.
 	Player = new Probe();
 	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
+	Player->SetScale(0.1f);
+
+	// 테스트용 행성 생성 (나중에 제거)
+	PlanetList.emplace_back();
+	USphere& testP = PlanetList.back();
+	testP.SetLocation({ 0.5f, 0.0f, 0.0f });
+	testP.SetScale(0.1f);
 }
 
 void UManager::StageSelectInit()
@@ -72,23 +78,25 @@ void UManager::InGameReadyInit()
 
 	for (const auto& obstacle : StageInfo.ObstacleList)
 	{
-		USphere* planet = new USphere();
-		planet->SetLocation(obstacle.second); // ObstacleList의 FVector 위치 적용
-		// 인덱스(obstacle.first)에 따라 질량이나 크기 조절 가능
-		planet->SetMass(10.0f);
-		PlanetList.push_back(planet);
+		// new를 쓰지 않고 emplace_back을 사용하여 벡터 내부에 직접 객체를 생성합니다.
+		// 이렇게 하면 메모리 관리를 벡터가 100% 책임집니다.
+		PlanetList.emplace_back();
+
+		// 방금 추가된 마지막 객체에 접근하여 데이터를 설정합니다.
+		USphere& planet = PlanetList.back();
+		planet.SetLocation(obstacle.second);
+		planet.SetMass(10.0f);
+		planet.SetScale(0.1f);
 	}
 
-	Player = new Probe();
+	// 플레이어(Probe)는 단일 객체이므로 기존 포인터 방식을 유지하거나 
+	// 원하신다면 이 역시 객체로 바꿀 수 있습니다.
+	if (Player == nullptr) Player = new Probe();
 	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
 }
 
 void UManager::InGameRunInit()
 {
-	ClearGameObjects();
-
-	InitGameObjects();
-
 	CurRunState = ERunstate::ERS_InGameRun;
 }
 
@@ -108,25 +116,35 @@ void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
 	else
 	{
 		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
-
-		//	Score Display
-		DisplayScore(name, score);
 	}
+
+	
+
+	//	Score Display
+	DisplayScore(name, score);
 }
 
 //	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
 void UManager::InitGameObjects()
 {
-	Player = new Probe();
+	// 1. 플레이어 생성 (Player가 포인터 유지라면 new 사용, 객체라면 emplace_back 고려)
+	if (Player == nullptr) Player = new Probe();
 	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
-	
-	USphere* TestPlanet = new USphere();
-	TestPlanet->SetLocation({ 0.5f, 0.8f, 0.0f });
-	TestPlanet->SetVelocity({ 0.0f, -0.2f, 0.0f });
+	Player->SetVelocity({ 0.0f, 0.0f, 0.0f }); // 시작 시 속도 초기화
 
-	PlanetList.push_back(TestPlanet);
+	// 2. 테스트 행성 생성 (emplace_back 활용)
+	// 임시 포인터를 만들지 않고 벡터 내부에 직접 공간을 할당합니다.
+	PlanetList.emplace_back();
 
-	//	TODO : 장애물 생성 로직
+	// 3. 방금 생성된 마지막 객체(TestPlanet) 설정
+	USphere& testPlanet = PlanetList.back();
+	testPlanet.SetLocation({ 0.5f, 0.8f, 0.0f });
+	testPlanet.SetVelocity({ 0.0f, -0.2f, 0.0f });
+	testPlanet.SetScale(0.1f); // 크기가 너무 크면 여기서 조절
+	testPlanet.SetMass(10.0f);
+
+	// 이제 PlanetList는 객체 리스트이므로 
+	// 이 함수가 끝나도 행성 데이터는 벡터 안에 안전하게 보존됩니다.
 }
 
 //	모든 오브젝트 삭제
@@ -134,14 +152,9 @@ void UManager::InitGameObjects()
 void UManager::ClearGameObjects()
 {
 	if (Player)
-	{
-		delete Player;
-	}
-	Player = nullptr;
-
-	for (auto planet : PlanetList)
-	{
-		if (planet) delete planet;
+	{ 
+		delete Player; 
+		Player = nullptr;
 	}
 
 	PlanetList.clear();
@@ -155,13 +168,13 @@ void UManager::ComputePhysicsAndApply(float deltaTime)
 	for (auto p : PlanetList)
 	{
 		// 1. 방향 벡터 및 거리 계산
-		FVector direction = p->GetLocation() - Player->GetLocation();
+		FVector direction = p.GetLocation() - Player->GetLocation();
 		float dist = direction.Size();
 		if (dist < 1e-4f) continue; // 0으로 나누기 방지
 
 		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
 		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p->GetMass()) / (float)pow(dist, 2);
+		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
 		// 3. 속도 업데이트
@@ -213,7 +226,7 @@ void UManager::ShutDownGame()
 }
 
 /* Non-game Management */
-//	DataStruct : <nickname>,<score> (CSV-like based txt)
+//	DataStruct : <stage>,<nickname>,<score> (CSV-like based txt)
 //	실행 시에만 Load
 void UManager::LoadScore()
 {
@@ -222,44 +235,65 @@ void UManager::LoadScore()
 	std::ifstream ifs(FileName);
 	std::string line;
 
+
 	while (std::getline(ifs, line))
 	{
 		std::stringstream ss(line);
 
+		unsigned int stage;
 		std::string name;
 		unsigned int score;
 
+		char dummy;
+
 		//	구분자 : ,
+		ss >> stage;
+		ss >> dummy;	//	첫 번째 ',' 가짐
 		std::getline(ss, name, ',');
 		ss >> score;
 
-		ScoreList.push_back({ name, score });
+		ScoreList.push_back({ stage, name, score });
 	}
 
 	ifs.close();
 }
 
 //	Vector 정렬 후 File 형식에 맞추어 Parsing
+//	이는 Shutdown
 void UManager::SaveScore()
 {
 	std::ofstream ofs(FileName);
-
-	for (auto s : ScoreList)
+	// ScoreList 튜플 구조 <Stage, Name, Score>에 맞춰 저장합니다.
+	for (const auto& s : ScoreList)
 	{
-		ofs << s.first << "," << s.second << "\n";
+		ofs << std::get<0>(s) << "," << std::get<1>(s) << "," << std::get<2>(s) << "\n";
 	}
-
 	ofs.close();
 }
 
 //	File이 아닌 Runtime Vector를 통해 읽어옴
 void UManager::DisplayScore(std::string name, unsigned int score)
 {
+	int stage = -1;
+	switch (CurStage)
+	{
+	case EStage::ES_Stage1:
+		stage = 1;
+		break;
+	case EStage::ES_Stage2:
+		stage = 2;
+		break;
+	case EStage::ES_Stage3:
+		stage = 3;
+		break;
+	default:
+		break;
+	}
 	//	List에 포함해서 보여주기 (포함 후 정렬 -> 보여주기)
-	ScoreList.push_back({ name, score });
-	std::sort(ScoreList.begin(), ScoreList.end(), [](const std::pair<std::string, unsigned int>& a, const std::pair<std::string, unsigned int>& b)
+	ScoreList.push_back({ stage, name, score });
+	std::sort(ScoreList.begin(), ScoreList.end(), [](const auto& a, const auto& b)
 		{
-			return a.second < b.second;
+			return std::get<2>(a) < std::get<2>(b);
 		}
 	);
 
@@ -353,6 +387,20 @@ void UManager::OnStageResult(bool bSuccess)
 	EndingInit(bSuccess, finalScore, RandomNameGenerator());
 }
 
+
+/* Cons, Des */
+UManager::UManager(ID3D11Device* device)
+	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), FileName("ranking.txt"), ResourceManager(nullptr), Score(0.f)
+{
+	BootGame(device);
+
+	// 정점/인덱스 데이터 시트 생성 (실제 버퍼는 main의 createBuffer에서 생성됨)
+	ProbeResource.GenerateTriangle();
+	SphereResource.GenerateSphere(1.0f);
+
+	PlanetList.reserve(PlanetListReservedSize);
+}
+
 void UManager::Update(float deltaTime)
 {
 	switch (CurRunState)
@@ -378,8 +426,10 @@ void UManager::Update(float deltaTime)
 		}
 		//	Value Input
 		ComputePhysicsAndApply(deltaTime);
+
 		//	Physics Update
 		Player->SetLocation(Player->GetLocation() + Player->GetVelocity() * deltaTime);
+
 		//  Renderer에서 Player의 Location과 PlanetList의 Location을 참조하여 그려줌
 		CollisionDetection();	//	필요하다면 반복
 		break;
@@ -391,61 +441,60 @@ void UManager::Update(float deltaTime)
 
 }
 
-void UManager::initResource(RESOURCE_TYPE rt, ID3D11Buffer* vb, ID3D11Buffer* ib, unsigned int vertexCount, unsigned int indexCount, unsigned int stride, float scale)
-{
 
-	switch (rt)
-	{
-	case PROBE:
-		ProbeResource.initResource(vb, ib, vertexCount, indexCount, stride ,scale);
-		break;
-	case SPHERE:
-		SphereResource.initResource(vb, ib, vertexCount, indexCount, stride,scale);
-		break;
-	default:
-		break;
-	}
-
-}
-
-MeshResource UManager::getProbeResource() const
+MeshResource* UManager::getProbeResource() 
 {	
-	return ProbeResource;
+	return &ProbeResource;
 }
-MeshResource UManager::getSphereResource() const
+MeshResource* UManager::getSphereResource() 
 {	
-	return SphereResource;
+	return &SphereResource;
 }
 
-void UManager::setProbeResource(const MeshResource& mr)
+void UManager::setProbeResource( MeshResource& mr)
 {
 	this->ProbeResource = mr;
 }
-void UManager::setSphereResource(const MeshResource& mr)
+void UManager::setSphereResource( MeshResource& mr)
 {
 	this->SphereResource = mr;
 }
 
-void GenerateVertices::GenerateTriangle(std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
-{
-	outVertices = {
-		// Position          // Color (RGBA)
-		{  0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
-		{  0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
-		{ -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
-	};
 
-	outIndices = { 0, 1, 2 };
+
+void UManager::Release()
+{
+	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
+	m_SoundMgr.Dispose();
+
+	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
+	ShutDownGame();
 }
 
-void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVertices, std::vector<unsigned int>& outIndices)
+
+void MeshResource::GenerateTriangle()
 {
+	Vertices = {
+		// Position          // Color (RGBA)
+		{  0.0f,  0.3f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f }, // 위 (빨강)
+		{  0.3f, -0.3f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f }, // 오른쪽 아래 (초록)
+		{ -0.3f, -0.3f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f }  // 왼쪽 아래 (파랑)
+	};
+
+	Indexes = { 0, 1, 2 };
+
+	VertexCount = Vertices.size();
+	IndexCount = Indexes.size();
+
+}
+
+void MeshResource::GenerateSphere(float radius){
 	// 적절한 정밀도 설정 (값이 클수록 매끄럽지만 계산량이 늘어남)
 	const uint32_t sliceCount = 20;
 	const uint32_t stackCount = 20;
 
-	outVertices.clear();
-	outIndices.clear();
+	Vertices.clear();
+	Indexes.clear();
 
 	// 1. 정점(Vertex) 생성
 	for (uint32_t i = 0; i <= stackCount; ++i) {
@@ -464,7 +513,7 @@ void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVer
 			v.b = (v.z / radius) * 0.5f + 0.5f;
 			v.a = 1.0f;
 
-			outVertices.push_back(v);
+			Vertices.push_back(v);
 		}
 	}
 
@@ -475,23 +524,19 @@ void GenerateVertices::GenerateSphere(float radius, std::vector<FVertex>& outVer
 			uint32_t second = first + sliceCount + 1;
 
 			// 삼각형 1
-			outIndices.push_back(second);
-			outIndices.push_back(first + 1);
-			outIndices.push_back(first);
+			Indexes.push_back(second);
+			Indexes.push_back(first + 1);
+			Indexes.push_back(first);
 
 			// 삼각형 2
-			outIndices.push_back(second + 1);
-			outIndices.push_back(first + 1);
-			outIndices.push_back(second);
+			Indexes.push_back(second + 1);
+			Indexes.push_back(first + 1);
+			Indexes.push_back(second);
 		}
 	}
-}
 
-void UManager::Release()
-{
-	// 1. 사운드 자원 해제 (DirectSound 인터페이스 및 버퍼 정리)
-	m_SoundMgr.Dispose();
+	VertexCount = static_cast<unsigned int>(Vertices.size());
+	IndexCount = static_cast<unsigned int>(Indexes.size());
 
-	// 2. 게임 데이터 정리 및 저장 (점수 저장 등 기존 로직)
-	ShutDownGame();
+
 }

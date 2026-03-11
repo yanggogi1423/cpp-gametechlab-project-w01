@@ -31,7 +31,7 @@ float UPrimitive::GetMass() const
     return Mass;
 }
 
-void UPrimitive::SetColliding(bool bInColliding)  
+void UPrimitive::SetColliding(bool bInColliding)
 {
     bIsColliding = bInColliding;
 }
@@ -46,5 +46,6 @@ DirectX::XMMATRIX UPrimitive::GetTransformMatrix() const
     using namespace DirectX;
     XMMATRIX matScale = XMMatrixScaling(Scale, Scale, Scale);
     XMMATRIX matTranslate = XMMatrixTranslation(Location.x, Location.y, Location.z);
-    return XMMatrixTranspose(matScale * matTranslate);
+
+    return matScale * matTranslate;
 }
