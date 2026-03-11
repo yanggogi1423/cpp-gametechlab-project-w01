@@ -133,6 +133,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	if (remainTime <= 0.f)
 	{
 		manager->SetSuccess(false);
+		std::cout << "Time out" << std::endl;
 		return new EndingState();
 	}
 
@@ -153,9 +154,24 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
+		std::cout << "x: " << unitDir.x << " y: " << unitDir.y <<std::endl;
+
+
 		// 3. 속도 업데이트
 		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
 	}
+
+	auto pos = player->GetLocation();
+	auto vel = player->GetVelocity();
+
+	std::cout << "Location: ( " << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+	std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
+
+	auto curLocation = player->GetLocation();
+	player->SetLocation((curLocation + player->GetVelocity()) * deltaTime);
+
+
+
 
 	FVector pLoc = player->GetLocation();
 
@@ -163,29 +179,40 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	for (const auto& p : planetList)
 	{
 		float dist = (p.GetLocation() - pLoc).Size();
-		if (dist < p.GetScale() + player->GetScale())
+		if (dist < p.GetRadius() + player->GetRadius())
 		{
 			player->SetColliding(true);
 			manager->SetSuccess(false);
+			std::cout << "Planet Collide" << std::endl;
+
+			std::cout << "Planet radius: " << p.GetRadius() <<std::endl;
+			std::cout << "Player radius: " << player->GetRadius() << std::endl;
+
+
+			std::cout << dist << std::endl;
+
 			return new EndingState();
 		}
 	}
 
 	// Collision between Probe and Exit Location
-	float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
-	if (goalDist < 0.15f)
-	{
-		manager->SetSuccess(true);
-		return new EndingState();
-	}
+	//float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
+	//if (goalDist < 0.15f)
+	//{
+	//	manager->SetSuccess(true);
+	//	std::cout << "Gaol Collide" << std::endl;
+	//	return new EndingState();
+	//}
 
 
 	if (bGoToMain)
 	{
+		std::cout << "bGoToMain" << std::endl;
 		nextState = new MainState();
 	}
 	else if (bGoToRetry)
 	{
+		std::cout << "bGoToRetry" << std::endl;
 		nextState = new InGameReadyState();
 	}
 

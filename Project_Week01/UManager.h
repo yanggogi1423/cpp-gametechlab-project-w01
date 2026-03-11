@@ -28,7 +28,7 @@ constexpr float GameLeftBorder = -1.f;
 constexpr float GameRightBorder = 0.75f;
 
 constexpr size_t PlanetListReservedSize = 50;
-constexpr float GravititationalConstant = 9.8f;
+constexpr float GravititationalConstant = 0.098f;
 
 #pragma region __GAME_STATE__
 
