@@ -119,11 +119,11 @@ void MainState::OnEnter(UManager * manager)
 		manager->GetResourceManager()->FontInfoBold
 	);
 
-	infoFrame.AddText("Kim KiHoon (PM)",
+	infoFrame.AddText("KIM KiHoon (PM)",
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 190),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	infoFrame.AddText("PARK SangHyuk",
+	infoFrame.AddText("PARK SangHyeok",
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 110),
 		manager->GetResourceManager()->FontInfoRegular);
 
@@ -131,7 +131,7 @@ void MainState::OnEnter(UManager * manager)
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 30),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	infoFrame.AddText("HAN YounSeo",
+	infoFrame.AddText("HAN YoungSeo",
 		ImVec2(WindowWidth / 2, WindowHeight / 2 + 50),
 		manager->GetResourceManager()->FontInfoRegular);
 
