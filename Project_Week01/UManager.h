@@ -128,13 +128,7 @@ private:
 	//  Sound
 	USoundManager m_SoundMgr;
 
-	//	Boot and Destroy - 반복 호출을 막기 위한 flag -> Flag 말고 Enum으로 변경
-	//bool bBootDone;
-	//bool bIsAlreadyDestroy;
-
 private:
-	//const std::string FileName; EndingState로 이동
-	//std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList; EndingState로 이동
 
 	/* GameObjects */
 	Probe* Player;
@@ -150,6 +144,9 @@ private:
 	/* Player Inputs */
 	PlayerInput* InputManager;
 
+
+	bool success; // 엔딩으로 넘어갈때 성공 여부
+
 private:
 	// Stage Progression
 
@@ -160,9 +157,12 @@ private:
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
 	void CreateNewPlanetWorld(USphere& in);
+	bool GetSuccess() { return success; }
+	void SetSuccess(int _success) { success = _success; }
 
 	// StageInfo 관련
 	EStage GetCurStage() const { return CurStage; }
+	int GetCurStageInt() const { return (int)CurStage + 1; }
 	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
 	
 	// Remain Timer 관련
@@ -171,13 +171,13 @@ public:
     
 	void SetPlayer(Probe* p) { Player = p; }
 	void ClearGameObjects();
-	void ComputePhysicsAndApply(float deltaTime);
+	//void ComputePhysicsAndApply(float deltaTime);
 
 	void BootGame(ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
 	
 	//	Collision 관련
-	void CollisionDetection();
+	//void CollisionDetection();
 	void CollsionResolution();
 
 	void Initialize(HWND hwnd);

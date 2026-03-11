@@ -13,10 +13,14 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 	// 2. [이사 완료] UManager::Update에 있던 물리 엔진 가동
 	// 중력 계산 및 속도 적용
-	manager->ComputePhysicsAndApply(deltaTime);
+	//manager->ComputePhysicsAndApply(deltaTime);
+
+	ComputePhysicsAndApply(deltaTime, manager->GetPlanetList(), manager->GetProbe());
 
 	// 충돌 및 승리/패배 판정
-	manager->CollisionDetection();
+	//manager->CollisionDetection();
+
+	CollisionDetection(manager->GetPlanetList(), manager->GetProbe(), manager->GetStageInfoList(), manager->GetCurStage());
 
 	// 3. 타이머 업데이트 (ReadyState에서 설정된 시간 소모)
 	float currentTimer = manager->GetRemainTimer(); // Getter 필요
@@ -64,5 +68,50 @@ void InGameRunState::OnExit(UManager* manager)
 	if (uiManager) {
 		delete uiManager;
 		uiManager = nullptr;
+	}
+}
+
+void InGameRunState::ComputePhysicsAndApply(float deltaTime, std::vector<USphere> PlanetList, Probe* Player)
+{
+	for (auto p : PlanetList)
+	{
+		// 1. 방향 벡터 및 거리 계산
+		FVector direction = p.GetLocation() - Player->GetLocation();
+		float dist = direction.Size();
+		if (dist < 1e-4f) continue; // 0으로 나누기 방지
+
+		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+		FVector unitDir = direction / dist;
+		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
+		FVector accVec = unitDir * accMag;
+
+		// 3. 속도 업데이트
+		Player->SetVelocity(Player->GetVelocity() + accVec * deltaTime);
+	}
+}
+
+void InGameRunState::CollisionDetection(std::vector<USphere> PlanetList, Probe* Player, std::vector<FStageInfo> StageInfoList, EStage CurStage)
+{
+	if (!Player) return;
+
+	FVector pLoc = Player->GetLocation();
+
+	//	Collision between Probe and Planets
+	for (const auto& p : PlanetList)
+	{
+		float dist = (p.GetLocation() - pLoc).Size();
+		if (dist < p.GetScale() + Player->GetScale())
+		{
+			Player->SetColliding(true);
+			//OnStageResult(false);
+			return;
+		}
+	}
+
+	// Collision between Probe and Exit Location
+	float goalDist = (StageInfoList[(int)CurStage - 1].ExitLocation - pLoc).Size();
+	if (goalDist < 0.15f)
+	{
+		//OnStageResult(true);
 	}
 }
