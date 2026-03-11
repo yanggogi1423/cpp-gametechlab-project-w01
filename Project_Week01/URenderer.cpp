@@ -103,7 +103,6 @@ void URenderer::Prepare() {
 void URenderer::PrepareShader() {
     DeviceContext->VSSetShader(SimpleVertexShader, nullptr, 0);
     DeviceContext->PSSetShader(SimplePixelShader, nullptr, 0);
-    DeviceContext->IASetInputLayout(SimpleInputLayout);
 
     
 
@@ -124,7 +123,7 @@ void URenderer::UpdateConstant(const DirectX::XMMATRIX pXMMATRIX) {
     }
 }
 
-void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FVertex* vertices, UINT bytewidth) {
+void URenderer::CreateVertexBuffer(ID3D11Buffer *& vertexbuffer , FTextureVertex* vertices, UINT bytewidth) {
     D3D11_BUFFER_DESC vertexbufferdesc = {};
     vertexbufferdesc.ByteWidth = bytewidth;
     vertexbufferdesc.Usage = D3D11_USAGE_IMMUTABLE;
@@ -140,7 +139,7 @@ void URenderer::indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* i
     UINT offset = 0;
 
     // 1. 사용할 정점 버퍼 세팅
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
 
     // 2. 사용할 인덱스 버퍼 세팅 (unsigned int를 사용하므로 DXGI_FORMAT_R32_UINT 사용)
     DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -232,6 +231,17 @@ void URenderer::RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount) {
 
     UINT offset = 0;
     // 버퍼를 장치에 연결하고 그립니다.
-    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &Stride, &offset);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
     DeviceContext->Draw(vertexCount, 0);
 }
+
+void URenderer::textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView* srv)
+{
+    UINT offset = 0;
+    DeviceContext->IASetInputLayout(SimpleInputLayout);
+    DeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &textureStride, &offset);
+    DeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+    DeviceContext->
+
+}
+

@@ -84,11 +84,11 @@ enum RESOURCE_TYPE
 struct MeshResource {
 	ID3D11Buffer* VB = nullptr;      // Vertex Buffer
 	ID3D11Buffer* IB = nullptr;      // Index Buffer 
-	std::vector<FVertex> Vertices;
+	std::vector<FTextureVertex> Vertices;
 	std::vector<unsigned int> Indexes;
 	unsigned int VertexCount = 0;    // 정점 개수
 	unsigned int IndexCount = 0;     // 인덱스 개수 (Draw 호출 시 필수)
-	unsigned int Stride = sizeof(FVertex);         // 정점 1개의 크기 (sizeof(FVertex))
+	unsigned int Stride = sizeof(FTextureVertex);         // 정점 1개의 크기 (sizeof(FVertex))
 	float Scale = 0;
 
 	MeshResource& operator=(const MeshResource& mr)

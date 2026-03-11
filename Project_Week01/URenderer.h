@@ -31,13 +31,20 @@ public:
     void UpdateConstant(const DirectX::XMMATRIX pXMMATRIX);
     void ReleaseConstantBuffer();
 
-    // 버퍼 생성 및 렌더링
+    // 버퍼 생성
+    void CreateVertexBuffer(ID3D11Buffer*& vertexbuffer, FTextureVertex* vertices, UINT bytewidth);
+    void CreateIndexBuffer(ID3D11Buffer*& indexBuffer, UINT* indices, UINT count);
+
+    // 렌더링
     void indexRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices);
     void ReleaseVertexBuffer(ID3D11Buffer* vertexBuffer);
     void RenderPrimitive(ID3D11Buffer* vertexBuffer, UINT vertexCount);
+    
+    void textureRenderPrimitive(ID3D11Buffer* vertexBuffer, ID3D11Buffer* indexBuffer, UINT numIndices, ID3D11ShaderResourceView * srv);
 
-    void CreateVertexBuffer(ID3D11Buffer*& vertexbuffer, FVertex* vertices, UINT bytewidth);
-    void CreateIndexBuffer(ID3D11Buffer*& indexBuffer, UINT* indices, UINT count);
+
+
+
 
 private:
     // 내부 초기화 메서드
@@ -70,8 +77,7 @@ public:
     // 렌더링 상태 데이터
     FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
-    unsigned int Stride = static_cast<unsigned int>(sizeof(FVertex));
-
-    unsigned int texureStride = static_cast<unsigned int>(sizeof(FTextureVertex));
+    
+    unsigned int textureStride = static_cast<unsigned int>(sizeof(FTextureVertex));
 
 };
