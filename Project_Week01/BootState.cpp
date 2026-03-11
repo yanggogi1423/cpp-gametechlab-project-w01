@@ -1,21 +1,34 @@
 #include "BootState.h"
+#include "MainState.h"
+#include "UManager.h"
 
-void BootState::OnEnter(UManager * manager)
+void BootState::OnEnter(UManager* manager)
 {
+	// 스테이지 정보 생성
+	auto& stageList = const_cast<std::vector<FStageInfo>&>(manager->GetStageInfoList());
+	if (stageList.empty()) {
+		stageList.push_back({ EStage::ES_Stage1, 30.f });
+		stageList.push_back({ EStage::ES_Stage2, 30.f });
+		stageList.push_back({ EStage::ES_Stage3, 30.f });
+	}
 
+	// 기하 구조 생성 (삼각형, 구체 정점 데이터 준비)
+	manager->getProbeResource()->GenerateTriangle();
+	manager->getSphereResource()->GenerateSphere(1.0f);
+
+	// 4. 메모리 예약 (행성 리스트 공간 확보)
+	// manager->ReservePlanetList(50); // 필요 시 추가
 }
 
-IState* BootState::Update(URenderer* renderer)
+IState* BootState::Update(float deltaTime, UManager* manager)
 {
-	nextState = this;
-
-	if (uiManager)
-		uiManager->Render();
-	return nextState;
-
+	return new MainState();
 }
 
-void BootState::OnExit()
+void BootState::Render(URenderer* renderer, UManager* manager)
 {
-	delete uiManager;
+}
+
+void BootState::OnExit(UManager* manager)
+{
 }

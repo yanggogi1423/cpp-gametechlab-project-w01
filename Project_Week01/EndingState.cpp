@@ -1,4 +1,5 @@
 #include "EndingState.h"
+#include "UManager.h"
 
 EndingState::EndingState(int stage, bool bSuccess, float remainTimer) :
 	curStage(stage),
@@ -35,17 +36,19 @@ void EndingState::OnEnter(UManager* manager)
 	buttonFrame.AddButton("StageSelect", ImVec2(50, 250), ImVec2(50, 50), [&] {nextState = new StageSelectionState(); });
 }
 
-IState* EndingState::Update(URenderer* renderer)
+IState* EndingState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
-
-	if (uiManager)
-		uiManager->Render();
 	return nextState;
-
 }
 
-void EndingState::OnExit()
+void EndingState::Render(URenderer* renderer, UManager* manager)
+{
+	// 엔딩 화면 UI 출력
+	if (uiManager) uiManager->Render();
+}
+
+void EndingState::OnExit(UManager* manager)
 {
 	delete uiManager;
 }

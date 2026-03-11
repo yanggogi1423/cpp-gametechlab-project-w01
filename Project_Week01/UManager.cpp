@@ -4,6 +4,12 @@
 #include "USphere.h"
 #include "datatype.h"
 #include "USoundManager.h"
+#include "MainState.h"
+#include "InGameReadyState.h"
+#include "InGameRunState.h"
+#include "EndingState.h"
+#include "LoadingState.h"
+#include "BootState.h"
 
 //	Private Functions
 
@@ -38,130 +44,22 @@ void UManager::CollisionDetection()
 void UManager::CollsionResolution()
 {
 	//EndingInit(false);
-}
+} 
 
-void UManager::MainInit()
+
+void UManager::ClearGameObjects()
 {
-	//ClearGameObjects();
-	CurRunState = ERunstate::ERS_Main;
-
-	// 테스트용 행성 생성 (나중에 제거)
-	Player = new Probe();
-	Player->SetLocation({ 0.0f, 0.0f, 0.0f });
-	Player->SetScale(0.1f);
-
-	PlanetList.emplace_back();
-	USphere& testP = PlanetList.back();
-	testP.SetLocation({ 0.5f, 0.0f, 0.0f });
-	testP.SetScale(0.1f);
-}
-
-void UManager::StageSelectInit()
-{
-	//ClearGameObjects();
-	
-	CurRunState = ERunstate::ERS_StageSelect;
-}
-
-void UManager::InGameReadyInit()
-{
-	//ClearGameObjects();
-
-	CurRunState = ERunstate::ERS_InGameReady;
-
-	int StageIdx = (int)CurStage - 1;
-	RemainTimer = StageInfoList[StageIdx].MaxTime;
-
-	if (StageIdx < 0 || StageIdx >= StageInfoList.size()) return;
-
-	FStageInfo StageInfo = StageInfoList[StageIdx];
-
-	for (const auto& obstacle : StageInfo.ObstacleList)
-	{
-		// new를 쓰지 않고 emplace_back을 사용하여 벡터 내부에 직접 객체를 생성합니다.
-		// 이렇게 하면 메모리 관리를 벡터가 100% 책임집니다.
-		PlanetList.emplace_back();
-
-		// 방금 추가된 마지막 객체에 접근하여 데이터를 설정합니다.
-		USphere& planet = PlanetList.back();
-		planet.SetLocation(obstacle.second);
-		planet.SetMass(10.0f);
-		planet.SetScale(0.1f);
+	if (Player)
+	{ 
+		delete Player; 
+		Player = nullptr;
 	}
 
-	// 플레이어(Probe)는 단일 객체이므로 기존 포인터 방식을 유지하거나 
-	// 원하신다면 이 역시 객체로 바꿀 수 있습니다.
-	if (Player == nullptr) Player = new Probe();
-	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
+	PlanetList.clear();
+
+	//	Reserve size
+	PlanetList.reserve(PlanetListReservedSize);
 }
-
-void UManager::InGameRunInit()
-{
-	CurRunState = ERunstate::ERS_InGameRun;
-}
-
-//	Stage를 클리어하거나, 플레이어가 사망했을 때 호출
-//	bIsClear는 클리어 여부를 담음. (main에서 호출됨) -> default parameter를 고려하여 설계
-//	name은 사용자에게 직접 입력 받습니다.
-//void UManager::EndingInit(bool bIsClear, unsigned int score, std::string name)
-//{
-//	CurRunState = ERunstate::ERS_Ending;
-//
-//	ClearGameObjects();
-//
-//	if (bIsClear)
-//	{
-//		m_SoundMgr.PlaySFX(ESFX::ESFX_Clear); 
-//	}
-//	else
-//	{
-//		m_SoundMgr.PlaySFX(ESFX::ESFX_Fail);
-//	}
-//
-//	
-//
-//	//	Score Display
-//	DisplayScore(name, score);
-//}
-
-//	InGameReady 상태로 분기 시 플레이어 및 장애물 생성
-void UManager::InitGameObjects()
-{
-	// 1. 플레이어 생성 (Player가 포인터 유지라면 new 사용, 객체라면 emplace_back 고려)
-	if (Player == nullptr) Player = new Probe();
-	Player->SetLocation({ 0.0f, -0.8f, 0.0f });
-	Player->SetVelocity({ 0.0f, 0.0f, 0.0f }); // 시작 시 속도 초기화
-
-	// 2. 테스트 행성 생성 (emplace_back 활용)
-	// 임시 포인터를 만들지 않고 벡터 내부에 직접 공간을 할당합니다.
-	PlanetList.emplace_back();
-
-	// 3. 방금 생성된 마지막 객체(TestPlanet) 설정
-	USphere& testPlanet = PlanetList.back();
-	testPlanet.SetLocation({ 0.5f, 0.8f, 0.0f });
-	testPlanet.SetVelocity({ 0.0f, -0.2f, 0.0f });
-	testPlanet.SetScale(0.1f); // 크기가 너무 크면 여기서 조절
-	testPlanet.SetMass(10.0f);
-
-	// 이제 PlanetList는 객체 리스트이므로 
-	// 이 함수가 끝나도 행성 데이터는 벡터 안에 안전하게 보존됩니다.
-}
-
-//	모든 오브젝트 삭제
-//	RunState와 Stage 상태 변동시 항상 적용
-//void UManager::ClearGameObjects()
-//{
-//	if (Player)
-//	{ 
-//		delete Player; 
-//		Player = nullptr;
-//	}
-//
-//	PlanetList.clear();
-//
-//	//	Reserve size
-//	PlanetList.reserve(PlanetListReservedSize);
-//}
 
 void UManager::ComputePhysicsAndApply(float deltaTime)
 {
@@ -203,7 +101,6 @@ void UManager::BootGame(ID3D11Device * device)
 	StageInfoList.push_back({ EStage::ES_Stage3,30.f });
 
 	//	3. 메인 State로 분기
-	MainInit();
 
 }
 
@@ -350,114 +247,25 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 //	ClearGameObjects();
 //}
 
-// 마우스 클릭 시 호출될 함수
 void UManager::OnMouseClick()
 {
-	// 세부 재생 로직은 SoundManager가 알아서 합니다.
+	// 1. 현재 상태에게 클릭 이벤트를 먼저 알립니다.
+	if (m_pCurrentState) m_pCurrentState->OnMouseClick(this);
+
+	// 2. 공통 효과음 재생
 	m_SoundMgr.PlaySFX(ESFX::ESFX_MouseClick);
 }
 
-void UManager::OnHomeClicked()
-{
-	MainInit();
-}
-
-void UManager::OnSimulationStart()
-{
-	// 배치 완료 후 시뮬레이션 시작
-	InGameRunInit();
-}
-
-void UManager::OnRestartClicked()
-{
-	// 현재 스테이지를 다시 준비 상태로
-	InGameReadyInit();
-}
-
-void UManager::OnNextStageClicked()
-{
-	// 다음 스테이지를 자동으로 선택
-	EStage nextStage = (EStage)((int)CurStage + 1);
-	OnStageSelected(nextStage);
-}
-
-// 스테이지 선택 시 호출될 함수
-void UManager::OnStageSelected(EStage selected)
-{
-	if ((int)selected > (int)CurAvailableStage) return;
-	
-	CurStage = selected;
-	LoadingTimer = 2.0f; // 로딩 시간 설정
-	CurRunState = ERunstate::ERS_Loading;
-}
-
-// 결과 화면 시 호출될 함수
-// EndingState로 이동 
-//void UManager::OnStageResult(bool bSuccess) 
-//{
-//	ProgressStage();
-//
-//	unsigned int finalScore = 0;
-//	if (bSuccess) finalScore = (unsigned int)(RemainTimer * RemainTimer);
-//	else finalScore = 0;
-//
-//	EndingInit(bSuccess, finalScore, RandomNameGenerator());
-//}
-
-
-/* Cons, Des */
 UManager::UManager(ID3D11Device* device)
 	: CurRunState(ERunstate::ERS_Boot), CurStage(EStage::ES_None), CurAvailableStage(EStage::ES_Stage1), ResourceManager(nullptr), Score(0.f)
 {
 	BootGame(device);
 
-	// 정점/인덱스 데이터 시트 생성 (실제 버퍼는 main의 createBuffer에서 생성됨)
 	ProbeResource.GenerateTriangle();
 	SphereResource.GenerateSphere(1.0f);
 
 	PlanetList.reserve(PlanetListReservedSize);
 }
-
-void UManager::Update(float deltaTime)
-{
-	switch (CurRunState)
-	{
-	case ERunstate::ERS_Main:
-		break;
-	case ERunstate::ERS_Loading:
-		LoadingTimer -= deltaTime;
-		if (LoadingTimer <= 0.0f)
-		{
-			InGameReadyInit();
-		}
-		break;
-	case ERunstate::ERS_InGameReady:
-		break;
-	case ERunstate::ERS_InGameRun:
-		// Remaining Time Update
-		RemainTimer -= deltaTime;
-		if (RemainTimer <= 0.0f)
-		{
-			//OnStageResult(false); // 시간 초과 실패
-			return;
-		}
-		//	Value Input
-		ComputePhysicsAndApply(deltaTime);
-
-		//	Physics Update
-		Player->SetLocation(Player->GetLocation() + Player->GetVelocity() * deltaTime);
-
-		//  Renderer에서 Player의 Location과 PlanetList의 Location을 참조하여 그려줌
-		CollisionDetection();	//	필요하다면 반복
-		break;
-	case ERunstate::ERS_Ending:
-		break;
-	default:
-		break;
-	}
-
-}
-
 
 MeshResource* UManager::getProbeResource() 
 {	

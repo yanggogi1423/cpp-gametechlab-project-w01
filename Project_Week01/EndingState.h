@@ -31,6 +31,7 @@ public:
 	EndingState(int stage, bool bSuccess, float remainTimer);
 	virtual ~EndingState() = default;
 	void OnEnter(UManager* manager) override;
-	IState* Update(URenderer* renderer) override;
-	void OnExit() override;
+	IState* Update(float deltaTime, UManager* manager) override;
+	void Render(URenderer* renderer, UManager* manager) override;
+	void OnExit(UManager* manager) override;
 };
