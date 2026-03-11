@@ -32,14 +32,16 @@ void URenderer::CreateDeviceAndSwapChain(HWND hWindow) {
     );
 
     SwapChain->GetDesc(&swapchaindesc);
-    ViewportInfo = { 0.0f, 0.0f, (float)swapchaindesc.BufferDesc.Width, (float)swapchaindesc.BufferDesc.Height, 0.0f, 1.0f };
+
+    ViewportInfo = { 0.0f, 0.0f, (float)swapchaindesc.BufferDesc.Width * 0.75f, (float)swapchaindesc.BufferDesc.Height, 0.0f, 1.0f };
 }
 
 void URenderer::CreateFrameBuffer() {
     SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&FrameBuffer);
 
     D3D11_RENDER_TARGET_VIEW_DESC framebufferRTVdesc = {};
-    framebufferRTVdesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+    //framebufferRTVdesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM_SRGB;
+    framebufferRTVdesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     framebufferRTVdesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
     Device->CreateRenderTargetView(FrameBuffer, &framebufferRTVdesc, &FrameBufferRTV);

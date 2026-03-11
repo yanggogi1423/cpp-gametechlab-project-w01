@@ -1,18 +1,50 @@
 #include "MainState.h"
 #include "ExampleState.h"
 
-void MainState::OnEnter()
+#include "UManager.h"
+
+void MainState::OnEnter(UManager * manager)
 {
 	uiManager = new UIManager();
 
-	UIFrame& frame1 = uiManager->CreateFrame("MainState")
-		.Position(ImVec2(10, 10))
-		.Size(ImVec2(200, 300));
+	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0));
 
-	frame1.AddButton("GoToExample", ImVec2(20, 20), ImVec2(20, 20), [&] {
-		nextState = this->GoToExampleState();
-		});
+	//	Background
+	const int seg = 3;
+	const int dx = WindowWidth / seg;
+	
+	for (int y = 0; y < seg; y++)
+	{
+		for (int x = 0; x < seg; x++)
+		{
+			bgFrame.AddImage(manager->GetResourceManager()->GetTexture("Background"),
+				ImVec2(dx * x, dx * y),
+				ImVec2(dx, dx));
+		}
+	}
+	
+	UIFrame & logoFrame = uiManager->CreateFrame("MainState")
+		.Position(ImVec2(0, 0))
+		.Size(ImVec2(1400, 1050))
+		.NoTitleBar(true)
+		.BackgroundColor(ImVec4(0, 0, 0, 0)
+		);
 
+	//	Logo
+	logoFrame.AddText("SWING BY ME",
+		ImVec2(WindowWidth / 2, WindowHeight / 3),
+		manager->GetResourceManager()->FontLogo
+		);
+	
+	//	Button Set
+	//logoFrame.AddSpriteButton("Game Start",
+	//	manager->GetResourceManager()->SRVButtonSprite,
+	//	ImVec2(Window)
+	//	);
 
 
 	//여기서부터 init코드 작성

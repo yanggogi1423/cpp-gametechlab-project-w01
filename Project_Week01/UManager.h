@@ -131,8 +131,8 @@ private:
 	//bool bIsAlreadyDestroy;
 
 private:
-	const std::string FileName;
-	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
+	//const std::string FileName; EndingState로 이동
+	//std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList; EndingState로 이동
 
 	/* GameObjects */
 	Probe* Player;
@@ -159,12 +159,14 @@ private:
 	void StageSelectInit();	//	Stage Select 화면으로 분기
 	void InGameReadyInit();	//	행성 배치 가능 상태로 분기
 	void InGameRunInit();	//	사실상 Simulation Start
-	void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
+
+	//EndingState
+	//void EndingInit(bool bIsClear, unsigned int score, std::string name = RandomNameGenerator());
 	
 	// Stage Progression
-	void ProgressStage();
+	//void ProgressStage();
 	void InitGameObjects();
-	void ClearGameObjects();
+	//void ClearGameObjects(); //InGameRunExit
 
 	//	Game Logic
 
@@ -173,13 +175,14 @@ private:
 
 
 	/* Non-game Management */
-	void BootGame(ID3D11Device * device , ID3D11DeviceContext * deviceContext);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
-	void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
+
+	void BootGame(ID3D11Device * device, ID3D11DeviceContext* deviceContext);	//	Application 실행 시 호출 (게임 데이터 준비) -> Renderer 생성 후 생성
+	//void ShutDownGame();	//	Application 종료 시 호출 (게임 데이터 정리 및 저장)
 
 	//	File Load
-	void LoadScore();
-	void SaveScore();
-	void DisplayScore(std::string name, unsigned int score);
+	//void LoadScore();
+	//void SaveScore();
+	//void DisplayScore(std::string name, unsigned int score);
 	
 public:
 	//	새로운 행성 생성 (Invoke from PlanetPlacementManager)	  
@@ -192,29 +195,31 @@ public:
 	void OnStageSelected(EStage selected); // Stage 선택 (잠금 체크 포함)
 	void OnHomeClicked();      // -> Title
 	void OnSimulationStart();  // Ready -> Run
-	void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
+	//void OnStageResult(bool bSuccess); // Run -> Ending (결과 처리)
 	void OnRestartClicked();   // Ending -> Ready
 	void OnNextStageClicked();
 
 	//	Ranking System에서 유저 이름을 등록하지 않으면 Random String으로 지정함.
-	static std::string RandomNameGenerator()
-	{
-		const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		const int appendLength = 8;
+	// 
+	// EndingState
+	//static std::string RandomNameGenerator()
+	//{
+	//	const std::string charSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	//	const int appendLength = 8;
 
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
+	//	std::random_device rd;
+	//	std::mt19937 mt(rd());
+	//	std::uniform_int_distribution<int> dist(0, charSet.size() - 1);
 
-		std::string name = "User_";
+	//	std::string name = "User_";
 
-		for (int i = 0; i < appendLength; i++)
-		{
-			name += charSet[dist(mt)];
-		}
+	//	for (int i = 0; i < appendLength; i++)
+	//	{
+	//		name += charSet[dist(mt)];
+	//	}
 
-		return name;
-	}
+	//	return name;
+	//}
 
 	/* Cons, Des */
 	UManager(ID3D11Device * device , ID3D11DeviceContext * );
@@ -222,7 +227,7 @@ public:
 	~UManager()
 	{
 		m_SoundMgr.Dispose();
-		ShutDownGame();
+		//ShutDownGame();
 	}
 
 	void Update(float deltaTime);

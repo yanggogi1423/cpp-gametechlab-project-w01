@@ -38,6 +38,7 @@ struct TextInfo
 	std::string text;
 	ImVec2 position;
 	ImFont* font;
+	ImVec4 color;
 };
 
 struct SpriteButtonInfo
@@ -73,7 +74,7 @@ public:
 	~UIFrame();
 
 	void AddButton(const std::string& label, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
-	void AddText(const std::string& text, const ImVec2& position, ImFont* font);
+	void AddText(const std::string& text, const ImVec2& position, ImFont* font, const ImVec4& color = ImVec4(1.f, 1.f, 1.f, 1.f));
 	void AddImage(ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size);
 	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
