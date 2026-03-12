@@ -58,6 +58,9 @@ public:
 	ImFont* FontInfoBoldSmall;
 	ImFont* FontInfoRegular;
 	ImFont* FontInfoLight;
+	ImFont* FontDefaultSmall;
+	ImFont* FontDefaultVerySmall;
+	ImFont* FontInfoRegularSmall;
 	
 public:
 	UResourceManager() : SRVBackground(nullptr), SRVInGamePanel(nullptr), SRVLeaderBoardPanel(nullptr), SRVButtonSprite(nullptr),

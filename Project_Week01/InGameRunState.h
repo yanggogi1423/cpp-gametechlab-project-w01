@@ -22,5 +22,8 @@ public:
 	bool bGoToMain = false;
 	bool borderCheck(UManager* manager);
 	bool goalCheck(UManager* manager);
+
+	float SimulationTextCounter = 0.f;
+	const float SimulationTextDuration = 0.3f;
 };
 
