@@ -12,7 +12,7 @@
 void InGameReadyState::OnEnter(UManager* manager)
 {
 	/* Placement Manager */
-
+	cachedManager = manager;
 	PlanetPlacementManager = new UPlanetPlacementManager(manager);
 
 	// 1. 기존 객체 제거 (ClearGameObjects는 public으로 변경 필요)
@@ -163,10 +163,12 @@ void InGameReadyState::OnEnter(UManager* manager)
 			USphere* newPlanet = new USphere();
 			PlanetPlacementManager->SetSelectedPlanet(newPlanet);
 
-
-
+			USphere::checkCount();
+			selectButton->texture = cachedManager->GetResourceManager()->GetTexture(static_cast<ImageName>(USphere::count));
 		}
 	); 
+
+	selectButton = HUDFrame.GetImageButton("Planet 1");
 
 	HUDFrame.AddImageButton("Start",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
