@@ -106,11 +106,11 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 	auto planetList = manager->GetPlanetList();
 	auto player = manager->GetProbe();
-	auto stageInfoList = manager->GetStageInfoList();
+	auto stageInfoList = manager->GetStageInfoList();   
 	auto curStage = manager->GetCurStage();
 
 	// 0. 완화 상수 설정
-	const float epsilon = 0.1f;
+	const float epsilon = 0.2f;
 	const float epsilonSq = epsilon * epsilon;
 
 	for (auto p : planetList)
@@ -126,7 +126,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		if (distSq < 1e-6f) continue;
 
 		// 3. 가속도 계산 (소프닝 팩터 적용)
-		float accMag = (GravititationalConstant * p.GetMass()) / (distSq + epsilonSq);
+		float accMag = (GravitationalConstant * p.GetMass()) / (distSq + epsilonSq);
 
 		// 4. 방향 벡터 적용을 위해 실제 거리 계산 (여기서만 sqrt 사용)
 		float dist = sqrtf(distSq);

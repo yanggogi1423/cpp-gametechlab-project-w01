@@ -50,15 +50,26 @@ void InGameReadyState::OnEnter(UManager* manager)
 
 
 	// 3. 장애물(행성) 배치 로직
-	for (auto& obstacle : stageInfo.ObstacleList)
+	for (const auto& obstacle : stageInfo.ObstacleList)
 	{
-		USphere planet;
-		planet.SetLocation(obstacle.second);
-		planet.SetMass(10.0f);
-		planet.SetScale(0.1f);
+		// 1. 스택 메모리에 안전하게 생성
+		USphere obstaclePlanet;
 
-		// CreateNewPlanetWorld를 사용하여 행성 추가
-		manager->CreateNewPlanetWorld(planet);
+		// 2. 데이터 시트 설정
+		obstaclePlanet.SetLocation(obstacle.second);
+		obstaclePlanet.SetScale(0.05f);
+		obstaclePlanet.SetMass(1.0f);
+		obstaclePlanet.SetRadius(0.02f);
+
+		// 3. 시각적 식별자 설정 (생성자의 자동 배정보다 명시적 설정 권장)
+		// USphere 생성자에서 count 기반으로 이미지가 정해지지만, 
+		// 장애물은 특정 이미지(예: SATURN)로 고정하면 구분이 쉽습니다.
+		obstaclePlanet.SetImageName(ImageName::PLANET3);
+
+		// 4. 매니저의 월드 리스트에 등록 (내부에서 복사본을 생성하므로 안전함)
+		manager->CreateNewPlanetWorld(obstaclePlanet);
+
+		std::cout << "Obstacle deployed at: " << obstacle.second.x << ", " << obstacle.second.y << std::endl;
 	}
 
 	// 4. 플레이어 배치 로직

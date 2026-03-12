@@ -15,6 +15,7 @@ public:
 	virtual ~USphere() {};
 
 	virtual DirectX::XMMATRIX GetTransformMatrix();
+	void SetImageName(ImageName name) { imageName = name; }
 	ImageName getImageName();
 	static int count;
 
