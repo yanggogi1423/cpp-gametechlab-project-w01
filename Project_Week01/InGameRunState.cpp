@@ -196,17 +196,6 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
 	}
 	// (1) 플레이어(Probe) 렌더링
-	Probe* pPlayer = manager->GetProbe();
-	if (pPlayer != nullptr)
-	{
-		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
-		MeshResource* probeRes = manager->getProbeResource();
-		if (probeRes->VB != nullptr)
-		{
-			//renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
-			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
-		}
-	}
 
 	MeshResource* sphereRes = manager->getSphereResource();
 	if (sphereRes->VB != nullptr)
@@ -225,7 +214,17 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		}
 	}
 
-	
+	Probe* pPlayer = manager->GetProbe();
+	if (pPlayer != nullptr)
+	{
+		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
+		MeshResource* probeRes = manager->getProbeResource();
+		if (probeRes->VB != nullptr)
+		{
+			//renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		}
+	}
 	
 }
 
