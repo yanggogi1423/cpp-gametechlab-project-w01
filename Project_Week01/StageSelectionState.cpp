@@ -15,7 +15,7 @@ void StageSelectionState::OnEnter(UManager* manager)
 	uiManager = new UIManager();
 
 	//	Background
-	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+	UIFrame& bgFrame = uiManager->CreateFrame("SS_BG")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -37,7 +37,7 @@ void StageSelectionState::OnEnter(UManager* manager)
 		}
 	}
 
-	UIFrame& btnFrame = uiManager->CreateFrame("MainState")
+	UIFrame& btnFrame = uiManager->CreateFrame("Button_SS")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -98,6 +98,64 @@ void StageSelectionState::OnEnter(UManager* manager)
 
 	btnFrame.AddText("3",
 		ImVec2(WindowWidth / 2 + 300, WindowHeight / 2 -100),
+		manager->GetResourceManager()->FontDefault
+	);
+
+	btnFrame.AddSpriteButton9("Stage 4",
+		manager->GetResourceManager()->SRVButtonSprite,
+		ImVec2(WindowWidth / 2 - 300, WindowHeight / 2 +120),
+		ImVec2(120, 120),
+		2,
+		6.f,
+		[&]() {
+			Manager->SetCurStage(EStage::ES_Stage4);
+			bIsStageSelected = true;
+		},
+		Manager->GetCurAvailableStage() >= EStage::ES_Stage4 // Stage 2가 선택 가능할 때만 버튼 활성화
+	);
+
+	btnFrame.AddText("4",
+		ImVec2(WindowWidth / 2 - 300, WindowHeight / 2 + 120),
+		manager->GetResourceManager()->FontDefault
+	);
+
+	ImGui::BeginDisabled(manager->GetCurAvailableStage() < EStage::ES_Stage5); // Stage 2가 선택 가능하지 않으면 버튼 비활성화
+	btnFrame.AddSpriteButton9("Stage 5",
+		manager->GetResourceManager()->SRVButtonSprite,
+		ImVec2(WindowWidth / 2, WindowHeight / 2 + 120),
+		ImVec2(120, 120),
+		2,
+		6.f,
+		[&]() {
+			Manager->SetCurStage(EStage::ES_Stage5);
+			bIsStageSelected = true;
+		},
+		Manager->GetCurAvailableStage() >= EStage::ES_Stage5 // Stage 2가 선택 가능할 때만 버튼 활성화
+	);
+
+	btnFrame.AddText("5",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 + 120),
+		manager->GetResourceManager()->FontDefault
+	);
+
+	ImGui::EndDisabled();
+
+	ImGui::BeginDisabled(manager->GetCurAvailableStage() < EStage::ES_Stage6); // Stage 3이 선택 가능하지 않으면 버튼 비활성화
+	btnFrame.AddSpriteButton9("Stage 6",
+		manager->GetResourceManager()->SRVButtonSprite,
+		ImVec2(WindowWidth / 2 + 300, WindowHeight / 2 + 120),
+		ImVec2(120, 120),
+		2,
+		6.f,
+		[&]() {
+			Manager->SetCurStage(EStage::ES_Stage6);
+			bIsStageSelected = true;
+		},
+		Manager->GetCurAvailableStage() >= EStage::ES_Stage6 // Stage 3이 선택 가능할 때만 버튼 활성화
+	);
+
+	btnFrame.AddText("6",
+		ImVec2(WindowWidth / 2 + 300, WindowHeight / 2 + 120),
 		manager->GetResourceManager()->FontDefault
 	);
 

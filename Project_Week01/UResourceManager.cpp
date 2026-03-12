@@ -107,6 +107,14 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 		io.Fonts->GetGlyphRangesKorean()
 	);
 
+	FontInfoBoldVerySmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicBold.ttf",
+		28.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
+	);
+
 	FontInfoRegular = io.Fonts->AddFontFromFileTTF
 	(
 		"res\\fonts\\NEXONLv1GothicRegular.ttf",

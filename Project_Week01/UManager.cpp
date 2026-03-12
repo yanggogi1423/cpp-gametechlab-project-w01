@@ -47,15 +47,37 @@ void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 	StageInfoList.push_back(stage1);
 
 	// Stage 2 (슬라롬)
-	FStageInfo stage2 = { EStage::ES_Stage2, 45.f };
-	stage2.ObstacleList.push_back({ 0, FVector(-0.6f, 0.0f, 0.0f) });
-	stage2.ObstacleList.push_back({ 0, FVector(0.1f, 0.0f, 0.0f) });
+	FStageInfo stage2 = { EStage::ES_Stage2, 40.f };
+	stage2.ObstacleList.push_back({ 0, FVector(-0.2f, 0.0f, 0.0f) });
+	stage2.ObstacleList.push_back({ 0, FVector(0.0f, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage2);
 
 	// Stage 3 (U턴)
-	FStageInfo stage3 = { EStage::ES_Stage3, 60.f };
+	FStageInfo stage3 = { EStage::ES_Stage3, 40.f };
 	stage3.ObstacleList.push_back({ 0, FVector(-0.7f, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage3);
+
+	// Stage 4 (장애물 다수)
+	FStageInfo stage4 = { EStage::ES_Stage4, 50.f };
+	stage4.ObstacleList.push_back({ 0, FVector(-0.3f, 0.0f, 0.0f) });
+	stage4.ObstacleList.push_back({ 0, FVector(0.0f, 0.6f, 0.0f) });
+	stage4.ObstacleList.push_back({ 0, FVector(0.2f, 0.0f, 0.0f) });
+	StageInfoList.push_back(stage4);
+
+	// Stage 5 (장애물 다수 + 좁은 통로)
+	FStageInfo stage5 = { EStage::ES_Stage5, 50.f };
+	stage5.ObstacleList.push_back({ 0, FVector(-0.2f, 0.0f, 0.0f) });
+	stage5.ObstacleList.push_back({ 0, FVector(0.0f, 0.2f, 0.0f) });
+	stage5.ObstacleList.push_back({ 0, FVector(0.2f, 0.0f, 0.0f) });
+	StageInfoList.push_back(stage5);
+
+	// Stage 6 (최종 스테이지 - 장애물 다수 + 좁은 통로 + 짧은 시간)
+	FStageInfo stage6 = { EStage::ES_Stage6, 60.f };
+	stage6.ObstacleList.push_back({ 0, FVector(-0.2f, 0.0f, 0.0f) });
+	stage6.ObstacleList.push_back({ 0, FVector(0.1f, 0.7f, 0.0f) });
+	stage6.ObstacleList.push_back({ 0, FVector(0.2f, 0.0f, 0.0f) });
+	stage6.ObstacleList.push_back({ 0, FVector(-0.2f, 0.5f, 0.0f) });
+	StageInfoList.push_back(stage6);
 
 	//	3. 메인 State로 분기
 
@@ -70,14 +92,14 @@ void UManager::CreateNewPlanetWorld(USphere& in)
 void UManager::Initialize(HWND hwnd) // 사운드 초기화
 {
 	m_SoundMgr.Initialize(hwnd);
-	m_SoundMgr.LoadBGM(EBGM::EBGM_TitleScreen, "Sound/TitleScreen.wav");
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Level1, "Sound/Level1.wav");
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Level2, "Sound/Level2.wav");
-	m_SoundMgr.LoadBGM(EBGM::EBGM_Level3, "Sound/Level3.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_TitleScreen, "res/Sound/TitleScreen.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level1, "res/Sound/Level1.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level2, "res/Sound/Level2.wav");
+	m_SoundMgr.LoadBGM(EBGM::EBGM_Level3, "res/Sound/Level3.wav");
 	
-	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "Sound/MouseClick.wav", 5);
-	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "Sound/Clear.wav", 5);
-	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_MouseClick, "res/Sound/MouseClick.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Clear, "res/Sound/Clear.wav", 5);
+	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "res/Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
 }

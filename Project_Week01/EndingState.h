@@ -13,7 +13,7 @@ class UManager;
 class EndingState : public IState
 {
 private:
-	const std::string FileName = "ranking.txt";
+	const std::string FileName = "data/ranking.txt";
 	std::vector<std::tuple<unsigned int, std::string, unsigned int>> ScoreList;
 	UResourceManager* ResourceManager;
 

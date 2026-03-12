@@ -40,7 +40,7 @@ void MainState::OnEnter(UManager* manager)
 		}
 	}
 
-	bgFrame.AddText("v.1.0.0 by GameTechLab Team 3", ImVec2(133, WindowHeight - 17), manager->GetResourceManager()->FontInfoLight);
+	bgFrame.AddText("v.1.0.0 Created by GameTechLab 3rd Team PUSHFORCE", ImVec2(225, WindowHeight - 17), manager->GetResourceManager()->FontInfoLight);
 
 	std::cout << "Logo and BG done" << std::endl;
 
@@ -145,26 +145,33 @@ void MainState::OnEnter(UManager* manager)
 		}
 	);
 
-	infoFrame.AddText("Contributors",
+	infoFrame.AddText("Credits",
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 290),
 		manager->GetResourceManager()->FontInfoBold
 	);
 
-	infoFrame.AddText("KIM KiHoon (PM)",
-		ImVec2(WindowWidth / 2, WindowHeight / 2 - 190),
+	infoFrame.AddText("KIM Ki-Hoon (PM)",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 - 160),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	infoFrame.AddText("PARK SangHyeok",
-		ImVec2(WindowWidth / 2, WindowHeight / 2 - 110),
+	infoFrame.AddText("PARK Sang-Hyeok",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 - 80),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	infoFrame.AddText("YANG HyunSeok",
-		ImVec2(WindowWidth / 2, WindowHeight / 2 - 30),
+	infoFrame.AddText("YANG Hyun-Seok",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 - 0),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	infoFrame.AddText("HAN YoungSeo",
-		ImVec2(WindowWidth / 2, WindowHeight / 2 + 50),
+	infoFrame.AddText("HAN Young-Seo",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 + 80),
 		manager->GetResourceManager()->FontInfoRegular);
+
+	infoFrame.AddText("Development Period",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 + 200),
+		manager->GetResourceManager()->FontInfoBoldVerySmall);
+	infoFrame.AddText("2026.03.09 - 2026.03.12",
+		ImVec2(WindowWidth / 2, WindowHeight / 2 + 240),
+		manager->GetResourceManager()->FontInfoBoldVerySmall);
 
 	////여기서부터 init코드 작성
 	//// 테스트용 행성(원) 생성 및 규격 설정
@@ -173,7 +180,7 @@ void MainState::OnEnter(UManager* manager)
 	//testPlanet.SetScale(0.1f);
 	//manager->CreateNewPlanetWorld(testPlanet);
 
-	std::cout << "All UIs done" << std::endl;
+	//std::cout << "All UIs done" << std::endl;
 }
 
 IState* MainState::Update(float deltaTime, UManager* manager)

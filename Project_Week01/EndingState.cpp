@@ -247,6 +247,8 @@ void EndingState::OnStageResult(bool bSuccess, float remainTime, int currentStag
 	this->finalScore = finalScore;
 	this->currentStage = currentStage;
 
+	Manager->SetScore(finalScore);
+
 	if(bIsClear)
 	{		
 		switch (Manager->GetCurAvailableStage())
@@ -258,8 +260,17 @@ void EndingState::OnStageResult(bool bSuccess, float remainTime, int currentStag
 				Manager->SetCurAvailableStage(EStage::ES_Stage3);
 				break;
 			case EStage::ES_Stage3:
-				//	Do nothing
+				Manager->SetCurAvailableStage(EStage::ES_Stage4);
 				break;
+			case EStage::ES_Stage4:
+				Manager->SetCurAvailableStage(EStage::ES_Stage5);
+				break;
+			case EStage::ES_Stage5:
+				Manager->SetCurAvailableStage(EStage::ES_Stage6);
+				break;
+				//case EStage::ES_Stage6:
+
+
 		}
 	}
 	else

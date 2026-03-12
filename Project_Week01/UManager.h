@@ -55,6 +55,9 @@ enum class EStage
 	ES_Stage1,
 	ES_Stage2,
 	ES_Stage3,
+	ES_Stage4,
+	ES_Stage5,
+	ES_Stage6
 };
 
 //	스테이지에 대한 정보 저장
@@ -200,6 +203,7 @@ public:
 	std::string GetPlayerName() const { return PlayerName; }
 	void SetPlayerName(const std::string& name) { PlayerName = name; }
 	int GetScore() const { return Score; }
+	void SetScore(float score) { Score = score; }
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }

@@ -8,9 +8,12 @@ void BootState::OnEnter(UManager* manager)
 	// 스테이지 정보 생성
 	auto& stageList = const_cast<std::vector<FStageInfo>&>(manager->GetStageInfoList());
 	if (stageList.empty()) {
-		stageList.push_back({ EStage::ES_Stage1, 30.f });
-		stageList.push_back({ EStage::ES_Stage2, 30.f });
+		stageList.push_back({ EStage::ES_Stage1, 45.f });
+		stageList.push_back({ EStage::ES_Stage2, 40.f });
+		stageList.push_back({ EStage::ES_Stage3, 35.f });
 		stageList.push_back({ EStage::ES_Stage3, 30.f });
+		stageList.push_back({ EStage::ES_Stage3, 25.f });
+		stageList.push_back({ EStage::ES_Stage3, 20.f });
 	}
 
 	//	Player 이름 정보

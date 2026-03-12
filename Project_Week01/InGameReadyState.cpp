@@ -95,7 +95,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 	case 0:
 		player->SetLocation({ -0.7f, -0.7f, 0.0f });
 		player->SetVelocity({ 0.22f, 0.0f, 0.0f });
-		goal->SetLocation({ 0.3f , 0.5f , 0.0f }); 
+		goal->SetLocation({ 0.3f , 0.5f , 0.0f });
 		break;
 	case 1:
 		player->SetLocation({ -0.25f , 0.8f , 0.0f });
@@ -107,9 +107,24 @@ void InGameReadyState::OnEnter(UManager* manager)
 		player->SetVelocity({ -0.1f , 0.2f , 0.0f });
 		goal->SetLocation({ 0.3f , 0.8f , 0.0f });
 		break;
+	case 3:
+		player->SetLocation({ -0.7f, 0.7f, 0.0f });
+		player->SetVelocity(FVector(0.1f, -0.1f, 0.0f));
+		goal->SetLocation({ 0.7f , -0.7f , 0.0f });
+		break;
+	case 4:
+		player->SetLocation({ -0.7f, -0.7f, 0.0f });
+		player->SetVelocity(FVector(0.0f, -0.23f, 0.0f));
+		goal->SetLocation({ 0.7f , 0.7f , 0.0f });
+		break;
+	case 5:
+		player->SetLocation({ -0.7f, -0.7f, 0.0f });
+		player->SetVelocity(FVector(0.07f, 0.12f, 0.0f));
+		goal->SetLocation({ 0.7f , 0.7f , 0.0f });
+		break;
 	default:
 		player->SetLocation({ 0.7f, -0.7f, 0.0f });
-		player->SetVelocity(FVector(0.0f, 1.0f, 0.0f) * 0.0f);
+		player->SetVelocity(FVector(0.05f, -0.12f, 0.0f));
 		goal->SetLocation({ 0.0f , 0.7f , 0.0f });
 		break;
 	}
