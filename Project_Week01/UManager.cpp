@@ -48,8 +48,8 @@ void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 
 	// Stage 2 (슬라롬)
 	FStageInfo stage2 = { EStage::ES_Stage2, 45.f };
-	stage2.ObstacleList.push_back({ 0, FVector(-0.6f, 0.0f, 0.0f) });
-	stage2.ObstacleList.push_back({ 0, FVector(0.1f, 0.0f, 0.0f) });
+	stage2.ObstacleList.push_back({ 0, FVector(-0.2f, 0.0f, 0.0f) });
+	stage2.ObstacleList.push_back({ 0, FVector(0.0f, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage2);
 
 	// Stage 3 (U턴)

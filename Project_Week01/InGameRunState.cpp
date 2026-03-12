@@ -226,6 +226,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
 
 		manager->SetSuccess(false);
+		manager->PlaySFX(ESFX::ESFX_Fail); 
 		return endingState;
 	}
 
