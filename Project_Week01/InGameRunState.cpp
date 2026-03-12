@@ -11,7 +11,7 @@ void InGameRunState::OnEnter(UManager* manager)
 {
 	uiManager = new UIManager();
 
-	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+	UIFrame& bgFrame = uiManager->CreateFrame("RunState_MainState")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -35,7 +35,7 @@ void InGameRunState::OnEnter(UManager* manager)
 		}
 	}
 
-	UIFrame& HUDFrame = uiManager->CreateFrame("Ready Phase")
+	UIFrame& HUDFrame = uiManager->CreateFrame("RunState_Ready Phase")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(WindowWidth, WindowHeight))
 		.NoTitleBar(true)
@@ -216,14 +216,14 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 	if (bGoToMain)
 	{
-		nextState = new MainState();
-		return new EndingState();
+		return new MainState();
+		//return new EndingState();
 	}
 	else if (bGoToRetry)
 	{
 
-		std::cout << "bGoToRetry" << std::endl;
-		nextState = new LoadingState();
+		//std::cout << "bGoToRetry" << std::endl;
+		return new LoadingState();
 	}
 
 	if (goalCheck(manager))
@@ -247,17 +247,6 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		renderer->textureRenderPrimitive(goal->VB, goal->IB, goal->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::GOAL));
 	}
 	// (1) 플레이어(Probe) 렌더링
-	Probe* pPlayer = manager->GetProbe();
-	if (pPlayer != nullptr)
-	{
-		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
-		MeshResource* probeRes = manager->getProbeResource();
-		if (probeRes->VB != nullptr)
-		{
-			//renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
-			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
-		}
-	}
 
 	MeshResource* sphereRes = manager->getSphereResource();
 	if (sphereRes->VB != nullptr)
@@ -276,7 +265,17 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 		}
 	}
 
-	
+	Probe* pPlayer = manager->GetProbe();
+	if (pPlayer != nullptr)
+	{
+		renderer->UpdateConstant(pPlayer->GetTransformMatrix());
+		MeshResource* probeRes = manager->getProbeResource();
+		if (probeRes->VB != nullptr)
+		{
+			//renderer->indexRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount);
+			renderer->textureRenderPrimitive(probeRes->VB, probeRes->IB, probeRes->IndexCount, manager->GetResourceManager()->GetTexture(ImageName::ROCKET));
+		}
+	}
 	
 }
 

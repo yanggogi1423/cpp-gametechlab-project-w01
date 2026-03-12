@@ -23,7 +23,7 @@ void EndingState::OnEnter(UManager* manager)
 	
 	uiManager = new UIManager();
 
-	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+	UIFrame& bgFrame = uiManager->CreateFrame("EndingState_Background")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -50,7 +50,7 @@ void EndingState::OnEnter(UManager* manager)
 		}
 	}
 
-	UIFrame& scoreFrame = uiManager->CreateFrame("Score")
+	UIFrame& scoreFrame = uiManager->CreateFrame("EndingState_Score")
 		.Position(ImVec2(175, 100))
 		.Size(ImVec2(1050, 750))
 		.NoTitleBar(true)
@@ -122,7 +122,7 @@ void EndingState::OnEnter(UManager* manager)
 
 	auto buttonFrameWidth = 1050;
 	auto buttonFrameHeight = 1050;
-	UIFrame& buttonFrame = uiManager->CreateFrame("Button")
+	UIFrame& buttonFrame = uiManager->CreateFrame("EndingState_Button")
 		.Position(ImVec2(175, 830))
 		.Size(ImVec2(buttonFrameWidth, buttonFrameHeight))
 		.NoTitleBar(true)
@@ -346,7 +346,7 @@ void EndingState::LoadScore()
 	if(Manager->GetPlayerName()=="")
 		Manager->SetPlayerName(RandomNameGenerator());
 
-	std::cout << "Current Stage: " << currentStage << " Player Name: " << Manager->GetPlayerName() << " Score: " << finalScore << std::endl;
+	//std::cout << "Current Stage: " << currentStage << " Player Name: " << Manager->GetPlayerName() << " Score: " << finalScore << std::endl;
 
 	ScoreList.push_back({ currentStage, Manager->GetPlayerName(), finalScore});
 

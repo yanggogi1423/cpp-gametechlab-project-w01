@@ -198,7 +198,9 @@ void UIFrame::AddImageButton(const std::string& text, ID3D11ShaderResourceView* 
 	imageButtonInfo.position = position;
 	imageButtonInfo.size = size;
 	imageButtonInfo.callback = callback;
-	imageButtons.push_back(imageButtonInfo);
+
+
+	imageButtons[text] = std::make_unique<ImageButtonInfo>(imageButtonInfo);
 }
 
 
@@ -334,6 +336,11 @@ UIFrame& UIFrame::BorderLineTransparency(float transparency)
 	return *this;
 }
 
+ImageButtonInfo* UIFrame::GetImageButton(const std::string& label)
+{
+	return imageButtons[label].get();
+}
+
 TextInfo* UIFrame::GetSelectableText(const std::string& label)
 {
 	return selectableTexts[label].get();
@@ -440,8 +447,10 @@ void UIFrame::Render()
 		}
 	}
 
-	for (const auto& imageButton : imageButtons)
+	for (const auto& pair : imageButtons)
 	{
+
+		auto imageButton = *pair.second.get();
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 1, 1, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.3f));

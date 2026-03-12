@@ -4,6 +4,8 @@
 
 #include "StageSelectionState.h"
 
+#include <iostream>
+
 void MainState::OnEnter(UManager* manager)
 {
 	//	Current State Initialization
@@ -13,12 +15,12 @@ void MainState::OnEnter(UManager* manager)
 	
 	uiManager = new UIManager();
 
-	UIFrame& bgFrame = uiManager->CreateFrame("Background")
+	UIFrame& bgFrame = uiManager->CreateFrame("Main_Background")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
 		.BackgroundColor(ImVec4(0, 0, 0, 0));
-
+	bgFrame.SetLayer(-10);
 
 	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	//	Background
@@ -40,9 +42,11 @@ void MainState::OnEnter(UManager* manager)
 
 	bgFrame.AddText("v.1.0.0 by GameTechLab Team 3", ImVec2(133, WindowHeight - 17), manager->GetResourceManager()->FontInfoLight);
 
+	std::cout << "Logo and BG done" << std::endl;
+
 	//ImGui::PopStyleVar();
 	
-	UIFrame& logoFrame = uiManager->CreateFrame("Logo")
+	UIFrame& logoFrame = uiManager->CreateFrame("Main_Logo")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -58,7 +62,7 @@ void MainState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontLogo
 		);
 	
-	UIFrame& btnFrame = uiManager->CreateFrame("Button")
+	UIFrame& btnFrame = uiManager->CreateFrame("Main_Button")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -110,7 +114,7 @@ void MainState::OnEnter(UManager* manager)
 		}
 		);
 
-	UIFrame& infoFrame = uiManager->CreateFrame("Information")
+	UIFrame& infoFrame = uiManager->CreateFrame("Main_Information")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -162,12 +166,14 @@ void MainState::OnEnter(UManager* manager)
 		ImVec2(WindowWidth / 2, WindowHeight / 2 + 50),
 		manager->GetResourceManager()->FontInfoRegular);
 
-	//여기서부터 init코드 작성
-	// 테스트용 행성(원) 생성 및 규격 설정
-	USphere testPlanet;   
-	testPlanet.SetLocation({ 0.5f, 0.0f, 0.0f });
-	testPlanet.SetScale(0.1f);
-	manager->CreateNewPlanetWorld(testPlanet);
+	////여기서부터 init코드 작성
+	//// 테스트용 행성(원) 생성 및 규격 설정
+	//USphere testPlanet;   
+	//testPlanet.SetLocation({ 0.5f, 0.0f, 0.0f });
+	//testPlanet.SetScale(0.1f);
+	//manager->CreateNewPlanetWorld(testPlanet);
+
+	std::cout << "All UIs done" << std::endl;
 }
 
 IState* MainState::Update(float deltaTime, UManager* manager)

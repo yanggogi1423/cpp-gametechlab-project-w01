@@ -49,9 +49,9 @@ void UPlanetPlacementManager::Update(float deltaTime)
 
 		SelectedPlanet->SetLocation(Manager->GetInputManager()->GetMousePosition());
 
-		std::cout << "Selected Planet Location: (" << SelectedPlanet->GetLocation().x << ", "
-			<< SelectedPlanet->GetLocation().y << ", "
-			<< SelectedPlanet->GetLocation().z << ")" << std::endl;
+		//std::cout << "Selected Planet Location: (" << SelectedPlanet->GetLocation().x << ", "
+		//	<< SelectedPlanet->GetLocation().y << ", "
+		//	<< SelectedPlanet->GetLocation().z << ")" << std::endl;
 
 		if (Manager->GetInputManager()->IsMouseClicked(0))
 		{
