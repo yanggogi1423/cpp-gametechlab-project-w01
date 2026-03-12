@@ -131,7 +131,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
 	textInfo->text = "Remain Time : " + remainTimestr;
 
-	if (remainTime <= 25.f)
+	if (remainTime <= 0.f)
 	{
 		manager->SetSuccess(false);
 		manager->PlaySFX(ESFX::ESFX_Fail);
@@ -229,6 +229,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	if (goalCheck(manager))
 	{
 		manager->SetSuccess(true);
+		manager->PlaySFX(ESFX::ESFX_Clear);
 		return new EndingState();
 	}
 

@@ -13,9 +13,9 @@
 
 void EndingState::OnEnter(UManager* manager)
 {
+	Manager = manager;
 	OnStageResult(manager->GetSuccess(), manager->GetRemainTimer(), manager->GetCurStageInt());
 
-	Manager = manager;
 
 	LoadScore();
 
@@ -75,25 +75,41 @@ void EndingState::OnEnter(UManager* manager)
 
 	for (int i = 0; i < maxCount; i++)
 	{
-		if (std::get<0>(ScoreList[idx]) != manager->GetCurStageInt()) {
-			idx++;
-			i--;
-			continue; // 현재 스테이지와 다른 스코어는 건너뛰기
-		}
+		if (std::get<0>(ScoreList[idx]) != manager->GetCurStageInt())
+			continue;
 
-		auto name = std::get<1>(ScoreList[idx]);
-		auto score = std::get<2>(ScoreList[idx]);
+
+		//if (std::get<0>(ScoreList[idx]) != manager->GetCurStageInt()) {
+		//	idx++;
+		//	i--;
+		//	continue; // 현재 스테이지와 다른 스코어는 건너뛰기
+		//}
+
+		for (int j = 0; j < 3; j++) 
+		{
+			auto name = std::get<1>(ScoreList[j]);
+			auto score = std::get<2>(ScoreList[j]);
+			std::cout <<
+				"Stage: " << std::get<0>(ScoreList[i]) <<
+				" Name: " << std::get<1>(ScoreList[i]) <<
+				" Score: " << std::get<2>(ScoreList[i]) << std::endl;
+			scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+			scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+
+		}
+		//auto name = std::get<1>(ScoreList[idx]);
+		//auto score = std::get<2>(ScoreList[idx]);
 		//std::cout <<
 		//	"Stage: " << std::get<0>(ScoreList[i]) <<
 		//	 " Name: " << std::get<1>(ScoreList[i]) <<
 		//	" Score: " << std::get<2>(ScoreList[i]) << std::endl;
-		scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + i * 35.f), ResourceManager->FontInfoLight);
-		scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+		//scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+		//scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + i * 35.f), ResourceManager->FontInfoLight);
 
-		idx++;
+		//idx++;
 
-		if (idx >= ScoreList.size())
-			break;
+		//if (idx >= ScoreList.size())
+		//	break;
 	}
 
 	scoreFrame.AddText("Your Name : " + manager->GetPlayerName() +"    |    Score : " + std::to_string(manager->GetScore()),
@@ -248,16 +264,14 @@ void EndingState::OnStageResult(bool bSuccess, float remainTime, int currentStag
 	this->currentStage = currentStage;
 
 	if(bIsClear)
-	{
-		//Manager->PlaySFX(ESFX::ESFX_Clear);
-		
+	{		
 		switch (Manager->GetCurAvailableStage())
 		{
 			case EStage::ES_Stage1:
-				Manager->SetCurStage(EStage::ES_Stage2);
+				Manager->SetCurAvailableStage(EStage::ES_Stage2);
 				break;
 			case EStage::ES_Stage2:
-				Manager->SetCurStage(EStage::ES_Stage3);
+				Manager->SetCurAvailableStage(EStage::ES_Stage3);
 				break;
 			case EStage::ES_Stage3:
 				//	Do nothing
