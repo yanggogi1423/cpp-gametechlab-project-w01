@@ -11,7 +11,7 @@ void LoadingState::OnEnter(UManager* manager)
     uiManager = new UIManager();
 
     //  Loading은 Background를 가지지 않습니다.
-    UIFrame & loadingFrame = uiManager->CreateFrame("Loading")
+    UIFrame & loadingFrame = uiManager->CreateFrame("Loading_load")
         .Position(ImVec2(0, 0))
         .Size(ImVec2(1400, 1050))
         .NoTitleBar(true)
