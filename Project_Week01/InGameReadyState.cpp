@@ -144,21 +144,32 @@ void InGameReadyState::OnEnter(UManager* manager)
 		}
 	}
 
+
 	UIFrame& HUDFrame = uiManager->CreateFrame("ReadyState_HUD")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(WindowWidth, WindowHeight))
 		.NoTitleBar(true)
 		.BackgroundColor(ImVec4(0, 0, 0, 0));
 
+	HUDFrame.AddBlocker(
+		"HUD_Blocker",
+		ImVec2(WindowWidth * 3 / 4.f, 0),
+		ImVec2(WindowWidth / 4, WindowHeight)
+	);
+
 	HUDFrame.AddImage(manager->GetResourceManager()->SRVInGamePanel,
 		ImVec2(WindowWidth * 3 / 4.f, 0),
 		ImVec2(WindowWidth / 4, WindowHeight)
 	);
 
+	HUDFrame.AddText("Click!",
+		ImVec2(WindowWidth * 3 / 4.f + 175, 240),
+		manager->GetResourceManager()->FontInfoRegularSmall);
+
 	HUDFrame.AddImageButton("Planet 1",
 		manager->GetResourceManager()->GetTexture(static_cast<ImageName>(USphere::count)),
-		ImVec2(WindowWidth * 3 / 4.f + 150, 220),
-		ImVec2(100, 100),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 350),
+		ImVec2(150, 150),
 		[&]() {
 			USphere* newPlanet = new USphere();
 			PlanetPlacementManager->SetSelectedPlanet(newPlanet);
@@ -172,40 +183,40 @@ void InGameReadyState::OnEnter(UManager* manager)
 
 	HUDFrame.AddImageButton("Start",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 700),
-		ImVec2(100, 50),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 600),
+		ImVec2(200, 70),
 		[&]() {
 			bGoToStart = true;
 		}
 	);
-	HUDFrame.AddText("Start",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 700),
-		manager->GetResourceManager()->FontInfoLight);
+	HUDFrame.AddText("Launch",
+		ImVec2(WindowWidth * 3 / 4.f + 175 + 5, 600 + 5),
+		manager->GetResourceManager()->FontDefaultSmall);
 
 	HUDFrame.AddImageButton("Retry",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
-		ImVec2(100, 50),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 700),
+		ImVec2(200, 70),
 		[&]() {
 			bGoToRetry = true;
 		}
 	);
 	HUDFrame.AddText("Retry",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
-		manager->GetResourceManager()->FontInfoLight);
+		ImVec2(WindowWidth * 3 / 4.f + 175 + 5, 700 + 5),
+		manager->GetResourceManager()->FontDefaultSmall);
 
 
 	HUDFrame.AddImageButton("Home",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
-		ImVec2(100, 50),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 800),
+		ImVec2(200, 70),
 		[&]() {
 			bGoToMain = true;
 		}
 	);
 	HUDFrame.AddText("Home",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
-		manager->GetResourceManager()->FontInfoLight);
+		ImVec2(WindowWidth * 3 / 4.f + 175 + 5, 800 + 5),
+		manager->GetResourceManager()->FontDefaultSmall);
 
 }
 

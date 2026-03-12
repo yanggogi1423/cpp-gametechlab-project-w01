@@ -70,46 +70,30 @@ void EndingState::OnEnter(UManager* manager)
 	scoreFrame.AddText("Score", ImVec2(1050 * 0.7f, 200), ResourceManager->FontInfoRegular);
 
 	const int displayCount = 10;
-	int maxCount = min(displayCount, ScoreList.size());
-	int idx = 0;
+	int displayed = 0;
+	int curStage = manager->GetCurStageInt();
 
-	for (int i = 0; i < maxCount; i++)
+	for (size_t i = 0; i < ScoreList.size(); i++)
 	{
-		if (std::get<0>(ScoreList[idx]) != manager->GetCurStageInt())
+		if (std::get<0>(ScoreList[i]) != curStage)
 			continue;
 
+		auto name = std::get<1>(ScoreList[i]);
+		auto score = std::get<2>(ScoreList[i]);
 
-		//if (std::get<0>(ScoreList[idx]) != manager->GetCurStageInt()) {
-		//	idx++;
-		//	i--;
-		//	continue; // 현재 스테이지와 다른 스코어는 건너뛰기
-		//}
+		//std::cout
+		//	<< "Stage: " << std::get<0>(ScoreList[i])
+		//	<< " Name: " << name
+		//	<< " Score: " << score
+		//	<< std::endl;
 
-		for (int j = 0; j < 3; j++) 
-		{
-			auto name = std::get<1>(ScoreList[j]);
-			auto score = std::get<2>(ScoreList[j]);
-			std::cout <<
-				"Stage: " << std::get<0>(ScoreList[i]) <<
-				" Name: " << std::get<1>(ScoreList[i]) <<
-				" Score: " << std::get<2>(ScoreList[i]) << std::endl;
-			scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + i * 35.f), ResourceManager->FontInfoLight);
-			scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+		scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + displayed * 35.f), ResourceManager->FontInfoLight);
+		scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + displayed * 35.f), ResourceManager->FontInfoLight);
 
-		}
-		//auto name = std::get<1>(ScoreList[idx]);
-		//auto score = std::get<2>(ScoreList[idx]);
-		//std::cout <<
-		//	"Stage: " << std::get<0>(ScoreList[i]) <<
-		//	 " Name: " << std::get<1>(ScoreList[i]) <<
-		//	" Score: " << std::get<2>(ScoreList[i]) << std::endl;
-		//scoreFrame.AddText(name, ImVec2(1050 * 0.3f, 250 + i * 35.f), ResourceManager->FontInfoLight);
-		//scoreFrame.AddText(std::to_string(score), ImVec2(1050 * 0.7f, 250 + i * 35.f), ResourceManager->FontInfoLight);
+		displayed++;
 
-		//idx++;
-
-		//if (idx >= ScoreList.size())
-		//	break;
+		if (displayed >= displayCount)
+			break;
 	}
 
 	scoreFrame.AddText("Your Name : " + manager->GetPlayerName() +"    |    Score : " + std::to_string(manager->GetScore()),
