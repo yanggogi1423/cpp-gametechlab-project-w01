@@ -46,39 +46,40 @@ void InGameRunState::OnEnter(UManager* manager)
 		ImVec2(WindowWidth / 4, WindowHeight)
 	);
 
-	HUDFrame.AddText("Simulating...",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
-		manager->GetResourceManager()->FontInfoLight);
+	HUDFrame.AddSelectableText("Simulation",
+		"Simulating...",
+		ImVec2(WindowWidth * 3 / 4.f + 175, 400),
+		manager->GetResourceManager()->FontDefaultVerySmall);
 
 	HUDFrame.AddSelectableText("Timer", "Remain Time : " + std::to_string(manager->GetRemainTimer()),
-		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
-		manager->GetResourceManager()->FontInfoLight);
+		ImVec2(WindowWidth * 3 / 4.f + 175, 500),
+		manager->GetResourceManager()->FontInfoRegularSmall);
 
 
 	HUDFrame.AddImageButton("Retry",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
-		ImVec2(100, 50),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 700),
+		ImVec2(200, 70),
 		[&]() {
 			bGoToRetry = true;
 		}
 	);
 	HUDFrame.AddText("Retry",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 800),
-		manager->GetResourceManager()->FontInfoLight);
+		ImVec2(WindowWidth * 3 / 4.f + 175 + 5, 700 + 5),
+		manager->GetResourceManager()->FontDefaultSmall);
 
 
 	HUDFrame.AddImageButton("Home",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
-		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
-		ImVec2(100, 50),
+		ImVec2(WindowWidth * 3 / 4.f + 175, 800),
+		ImVec2(200, 70),
 		[&]() {
 			bGoToMain = true;
 		}
 	);
 	HUDFrame.AddText("Home",
-		ImVec2(WindowWidth * 3 / 4.f + 150, 900),
-		manager->GetResourceManager()->FontInfoLight);
+		ImVec2(WindowWidth * 3 / 4.f + 175 + 5, 800 + 5),
+		manager->GetResourceManager()->FontDefaultSmall);
 
 	hudFrame = &HUDFrame;
 
@@ -141,6 +142,21 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		EndingState* endingState = new EndingState();
 		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
 		return endingState;
+	}
+
+	auto simulationTextInfo = hudFrame->GetSelectableText("Simulation");
+	SimulationTextCounter += deltaTime;
+	if (SimulationTextCounter >= SimulationTextDuration)
+	{
+		if(simulationTextInfo->text == "Simulating...")
+			simulationTextInfo->text = "Simulating";
+		else if (simulationTextInfo->text == "Simulating")
+			simulationTextInfo->text = "Simulating.";
+		else if (simulationTextInfo->text == "Simulating.")
+			simulationTextInfo->text = "Simulating..";
+		else
+			simulationTextInfo->text = "Simulating...";
+		SimulationTextCounter = 0.f;
 	}
 
 	auto planetList = manager->GetPlanetList();

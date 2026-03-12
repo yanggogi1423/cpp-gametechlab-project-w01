@@ -75,6 +75,22 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 		io.Fonts->GetGlyphRangesDefault()
 	);
 
+	FontDefaultSmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\GravityRegular5.ttf",
+		26.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesDefault()
+	);
+
+	FontDefaultVerySmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\GravityRegular5.ttf",
+		16.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesDefault()
+	);
+
 	FontInfoBold = io.Fonts->AddFontFromFileTTF
 	(
 		"res\\fonts\\NEXONLv1GothicBold.ttf",
@@ -99,6 +115,14 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 		io.Fonts->GetGlyphRangesKorean()
 	);
 
+	FontInfoRegularSmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicRegular.ttf",
+		22.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
+	);
+
 	FontInfoLight = io.Fonts->AddFontFromFileTTF
 	(
 		"res\\fonts\\NEXONLv1GothicLight.ttf",
@@ -114,6 +138,8 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	tipList.push_back("The food at Jungle is amazing.");
 	tipList.push_back("Arrive 25 minutes after meal time starts and you won\'t have to wait in line.");
 	tipList.push_back("Thursday team dinner is going to be fun.");
+	tipList.push_back("Buy a dollar.");
+	tipList.push_back("Fatal Error : Merge Conflict");
 
 	/* Loading List Setting */
 	loadingList.push_back("Loading");
