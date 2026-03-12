@@ -86,7 +86,8 @@ public:
     void CreateBlendState();
 
     // 렌더링 상태 데이터
-    FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
+    //FLOAT ClearColor[4] = { 0.05f, 0.02f, 0.1f, 1.0f };
+    FLOAT ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
     D3D11_VIEWPORT ViewportInfo{};
     
     unsigned int textureStride = static_cast<unsigned int>(sizeof(FTextureVertex));

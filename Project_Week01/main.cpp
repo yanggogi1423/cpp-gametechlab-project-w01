@@ -134,8 +134,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	createBuffer(manager, renderer);
 
 	StateMachine stateMachine;
+	//stateMachine.Initialize(new BootState(), manager);
 	stateMachine.Initialize(new BootState(), manager);
-	//stateMachine.Initialize(new EndingState(), manager);
 
 	// 타이머 설정
 	LARGE_INTEGER freq, prevTime, currTime;

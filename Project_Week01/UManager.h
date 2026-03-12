@@ -174,7 +174,8 @@ public:
 
 	// StageInfo 관련
 	EStage GetCurStage() const { return CurStage; }
-	int GetCurStageInt() const { return (int)CurStage + 1; }
+	void SetCurStage(EStage stage) { CurStage = stage; }
+	int GetCurStageInt() const { return (int)CurStage - 1; }
 	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
 	
 	// Remain Timer 관련
@@ -194,6 +195,9 @@ public:
 	MeshResource* getGoalResource();
 	void setGoalResource(MeshResource& mr);
 
+	std::string GetPlayerName() const { return PlayerName; }
+	void SetPlayerName(const std::string& name) { PlayerName = name; }
+	int GetScore() const { return Score; }
 
 	UResourceManager* GetResourceManager() { return ResourceManager; }
 	PlayerInput* GetInputManager() { return InputManager; }

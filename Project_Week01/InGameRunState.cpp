@@ -3,6 +3,7 @@
 
 #include "MainState.h"
 #include "InGameReadyState.h"
+#include "LoadingState.h"
 
 #include<iostream>
 
@@ -98,10 +99,16 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
 	textInfo->text = "Remain Time : " + remainTimestr;
 
-	if (remainTime <= 0.f)
+	if (remainTime <= 25.f)
 	{
 		manager->SetSuccess(false);
-		return new EndingState();
+		manager->PlaySFX(ESFX::ESFX_Fail);
+
+		//std::cout << "Time out" << std::endl;
+
+		EndingState* endingState = new EndingState();
+		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
+		return endingState;
 	}
 
 	auto planetList = manager->GetPlanetList();
@@ -131,9 +138,10 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		// 4. 방향 벡터 적용을 위해 실제 거리 계산 (여기서만 sqrt 사용)
 		float dist = sqrtf(distSq);
 		FVector unitDir = direction / dist;
+		FVector accVec = unitDir * accMag;
 
-		// 5. 속도 업데이트
-		player->SetVelocity(player->GetVelocity() + (unitDir * accMag) * deltaTime);
+		// 3. 속도 업데이트
+		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
 	}
 
 	auto pos = player->GetLocation();
@@ -155,6 +163,8 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 			player->SetColliding(true);
 			manager->SetSuccess(false);
 
+			EndingState* endingState = new EndingState();
+			//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
 
 			manager->PlaySFX(ESFX::ESFX_Fail);
 			return new EndingState();
@@ -168,7 +178,9 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	}
 	else if (bGoToRetry)
 	{
-		nextState = new InGameReadyState();
+
+		std::cout << "bGoToRetry" << std::endl;
+		nextState = new LoadingState();
 	}
 
 	return nextState;

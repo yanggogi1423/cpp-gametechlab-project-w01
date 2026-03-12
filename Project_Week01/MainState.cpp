@@ -2,10 +2,13 @@
 #include "ExampleState.h"
 #include "UManager.h"
 
-#include "LoadingState.h"
+#include "StageSelectionState.h"
 
 void MainState::OnEnter(UManager* manager)
 {
+	//	Current State Initialization
+	manager->SetCurStage(EStage::ES_None);	//	초기 스테이지 설정 (필요에 따라 변경 가능)
+
 	manager->PlayBGM(EBGM::EBGM_TitleScreen);
 	
 	uiManager = new UIManager();
@@ -98,8 +101,8 @@ void MainState::OnEnter(UManager* manager)
 
 	btnFrame.AddSpriteButton("Info",
 		manager->GetResourceManager()->SRVButtonSprite,
-		ImVec2(WindowWidth - 100, WindowHeight - 100),
-		ImVec2(80,80),
+		ImVec2(WindowWidth - 50, WindowHeight - 50),
+		ImVec2(60,60),
 		27,
 		//	Toggle
 		[&]() {
@@ -160,7 +163,7 @@ IState* MainState::Update(float deltaTime, UManager* manager)
 
 	if (bIsGameStart) 
 	{
-		nextState = new LoadingState();
+		nextState = new StageSelectionState();
 	}
 
 	return nextState;
