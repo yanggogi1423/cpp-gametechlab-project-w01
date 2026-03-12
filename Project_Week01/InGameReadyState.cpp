@@ -162,9 +162,11 @@ void InGameReadyState::OnEnter(UManager* manager)
 		[&]() {
 			USphere* newPlanet = new USphere();
 			PlanetPlacementManager->SetSelectedPlanet(newPlanet);
+
+
+
 		}
 	); 
-
 
 	HUDFrame.AddImageButton("Start",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
