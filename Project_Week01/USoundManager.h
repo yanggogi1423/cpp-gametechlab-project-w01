@@ -73,4 +73,6 @@ private:
     // 내부 헬퍼 함수
     bool CreatePrimaryBuffer();
     void CreateSoundClip(const std::string& filePath, int poolSize, SoundClip& clip);
+
+    EBGM m_currentBGM = (EBGM)-1;
 };

@@ -41,9 +41,22 @@ void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 	InputManager = new PlayerInput();
 
 	//	2. 스테이지 정보 생성
-	StageInfoList.push_back({ EStage::ES_Stage1,30.f });
-	StageInfoList.push_back({ EStage::ES_Stage2,30.f });
-	StageInfoList.push_back({ EStage::ES_Stage3,30.f });
+	// [스테이지 1]
+	FStageInfo stage1 = { EStage::ES_Stage1, 30.f };
+	stage1.ObstacleList.push_back({ 0, FVector(-0.5f, 0.0f, 0.0f) });  // 왼쪽 장애물
+	StageInfoList.push_back(stage1);
+
+	// [스테이지 2] 화면 중앙 부근에 커다란 장애물 하나 배치
+	FStageInfo stage2 = { EStage::ES_Stage2, 40.f };
+	// {행성타입, 위치(x, y, z)} - x는 -1 ~ 0.5 범위 내로 설정
+	stage2.ObstacleList.push_back({ 0, FVector(-0.25f, 0.0f, 0.0f) });
+	StageInfoList.push_back(stage2);
+
+	// [스테이지 3] 좁은 길목을 만드는 이중 장애물 배치
+	FStageInfo stage3 = { EStage::ES_Stage3, 50.f };
+	stage3.ObstacleList.push_back({ 0, FVector(-0.5f, 0.3f, 0.0f) });
+	stage3.ObstacleList.push_back({ 0, FVector(0.0f, -0.3f, 0.0f) });
+	StageInfoList.push_back(stage3);
 
 	//	3. 메인 State로 분기
 
@@ -68,7 +81,6 @@ void UManager::Initialize(HWND hwnd) // 사운드 초기화
 	m_SoundMgr.LoadSFX(ESFX::ESFX_Fail, "Sound/Fail.wav", 5);
 
 	m_SoundMgr.SetBGMVolume(0.9f); // 볼륨 조절(0.0f ~ 1.0f)
-	m_SoundMgr.PlayBGM(EBGM::EBGM_TitleScreen);
 }
 
 void UManager::OnMouseClick()

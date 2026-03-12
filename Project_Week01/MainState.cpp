@@ -2,13 +2,15 @@
 #include "ExampleState.h"
 #include "UManager.h"
 
-#include "LoadingState.h"
+#include "StageSelectionState.h"
 
 void MainState::OnEnter(UManager* manager)
 {
 	//	Current State Initialization
 	manager->SetCurStage(EStage::ES_None);	//	초기 스테이지 설정 (필요에 따라 변경 가능)
 
+	manager->PlayBGM(EBGM::EBGM_TitleScreen);
+	
 	uiManager = new UIManager();
 
 	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
@@ -161,7 +163,7 @@ IState* MainState::Update(float deltaTime, UManager* manager)
 
 	if (bIsGameStart) 
 	{
-		nextState = new LoadingState();
+		nextState = new StageSelectionState();
 	}
 
 	return nextState;
