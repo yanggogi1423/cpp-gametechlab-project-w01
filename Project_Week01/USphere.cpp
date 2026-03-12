@@ -37,7 +37,7 @@ DirectX::XMMATRIX USphere::GetTransformMatrix()
 
     // 3. DirectXMath를 이용한 2D 행렬 조립
     // Z축을 중심으로 회전시키면 XY 평면상에서 회전합니다.
-    DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.1f, 0.1f, 0.1f);
+    DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(Scale, Scale, Scale);
     //DirectX::XMMATRIX rotationMat = DirectX::XMMatrixRotationZ(angle);
     DirectX::XMMATRIX translationMat = DirectX::XMMatrixTranslation(Location.x, Location.y, 0.0f);
 
