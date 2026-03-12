@@ -85,6 +85,21 @@ void InGameRunState::OnEnter(UManager* manager)
 	manager->GetProbe()->ResetTrail();
 }
 
+
+bool InGameRunState::borderCheck(UManager* manager)
+{
+	Probe* player = manager->GetProbe();
+	FVector location = player->GetLocation();
+	float radius = player->GetRadius();
+
+	if (-1.7f + radius > location.x or 1.2f - radius < location.x or -1.7f + radius > location.y or 1.7 - radius < location.y)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
@@ -157,6 +172,16 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		}
 	}
 
+	//collision border with rocket
+	if (borderCheck(manager))
+	{
+		EndingState* endingState = new EndingState();
+		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
+
+		return endingState;
+	}
+
+
 	if (bGoToMain)
 	{
 		nextState = new MainState();
@@ -168,6 +193,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		nextState = new LoadingState();
 	}
 
+	
 
 	return nextState;
 }
