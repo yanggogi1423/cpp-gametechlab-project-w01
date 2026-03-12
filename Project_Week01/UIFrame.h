@@ -99,6 +99,8 @@ private:
 	std::vector<SpriteButton9Info> spriteButtons9;
 	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
 
+	int Layer = 0; // 렌더링 레이어, 필요에 따라 사용
+	bool bNoBringToFrontOnFocus = false; // 포커스 시 앞으로 가져오지 않도록 설정하는 플래그
 
 public:
 	UIFrame(const std::string& title);
@@ -116,6 +118,16 @@ public:
 	ImVec2 GetPosition() const;
 	void SetPosition(const ImVec2& newPosition);
 	void Render();
+
+	int GetLayer() const { return Layer; }
+	void SetLayer(int layer) { this->Layer = layer; }
+
+	std::string GetTitle() const { return title; }
+	UIFrame& NoBringToFrontOnFocus(bool value)
+	{
+		bNoBringToFrontOnFocus = value;
+		return *this;
+	}
 
 	UIFrame& Position(ImVec2 newPosition);
 	UIFrame& Size(ImVec2 newSize);

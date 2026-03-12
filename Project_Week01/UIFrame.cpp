@@ -312,7 +312,14 @@ void UIFrame::Render()
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoMove |
 		ImGuiWindowFlags_NoScrollbar |
-		ImGuiWindowFlags_NoScrollWithMouse;
+		ImGuiWindowFlags_NoScrollWithMouse |
+		//ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoNavFocus;
+
+	if (bNoBringToFrontOnFocus)
+	{
+		defaultFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+	}
 
 	auto flags = noTitleBar ? (defaultFlags | ImGuiWindowFlags_NoTitleBar) : defaultFlags;
 

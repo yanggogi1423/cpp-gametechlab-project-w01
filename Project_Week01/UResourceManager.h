@@ -52,6 +52,7 @@ public:
 
 	//	Fonts Resources
 	ImFont* FontLogo;
+	ImFont* FontLogoSmall;
 	ImFont* FontDefault;
 	ImFont* FontInfoBold;
 	ImFont* FontInfoBoldSmall;

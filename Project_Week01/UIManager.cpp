@@ -1,4 +1,5 @@
 #include "UIManager.h"
+#include <iostream>
 
 UIManager::UIManager()
 {
@@ -6,6 +7,7 @@ UIManager::UIManager()
 
 UIManager::~UIManager()
 {
+	UIFrameList.clear();
 }
 
 UIFrame& UIManager::CreateFrame(const std::string& title)
@@ -36,8 +38,15 @@ void UIManager::Render()
 
 	ImGui::NewFrame();
 
+	std::sort(UIFrameList.begin(), UIFrameList.end(),
+		[](const std::unique_ptr<UIFrame>& a, const std::unique_ptr<UIFrame>& b)
+		{
+			return a->GetLayer() < b->GetLayer();
+		});
+
 	for (auto& frame : UIFrameList)
 	{
+		//std::cout << frame->GetTitle() << " Layer: " << frame->GetLayer() << std::endl;
 		frame->Render();
 	}
 	 

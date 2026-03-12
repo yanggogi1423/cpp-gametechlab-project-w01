@@ -49,6 +49,14 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 		io.Fonts->GetGlyphRangesDefault()
 	);
 
+	FontLogoSmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\GravityBold8.ttf",
+		60.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesDefault()
+	);
+
 	//	Default Fonts
 	FontDefault = io.Fonts->AddFontFromFileTTF
 	(

@@ -5,7 +5,7 @@ class LoadingState : public IState
 {
 private:
     float m_currentTimer = 0.0f;
-    const float TOTAL_LOADING_TIME = 5.0f;
+    const float TOTAL_LOADING_TIME = 3.0f;
 
 	float m_displayTimer = 0.0f;
 
