@@ -3,6 +3,7 @@
 
 #include "MainState.h"
 #include "InGameReadyState.h"
+#include "LoadingState.h"
 
 #include<iostream>
 
@@ -98,10 +99,18 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
 	textInfo->text = "Remain Time : " + remainTimestr;
 
-	if (remainTime <= 0.f)
+	if (remainTime <= 25.f)
 	{
 		manager->SetSuccess(false);
+<<<<<<< HEAD
+		//std::cout << "Time out" << std::endl;
+
+		EndingState* endingState = new EndingState();
+		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
+		return endingState;
+=======
 		return new EndingState();
+>>>>>>> main
 	}
 
 	auto planetList = manager->GetPlanetList();
@@ -121,6 +130,11 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
+<<<<<<< HEAD
+		//std::cout << "x: " << unitDir.x << " y: " << unitDir.y <<std::endl;
+
+=======
+>>>>>>> main
 
 		// 3. 속도 업데이트
 		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
@@ -129,6 +143,12 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto pos = player->GetLocation();
 	auto vel = player->GetVelocity();
 
+<<<<<<< HEAD
+	//std::cout << "Location: ( " << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+	//std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
+
+=======
+>>>>>>> main
 	auto curLocation = player->GetLocation();
 	player->SetLocation(curLocation+ player->GetVelocity() * deltaTime);
 	//manager->GetProbe()->TryAddTrail(vel.Size() * vel.Size() * 2);
@@ -144,9 +164,22 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		{
 			player->SetColliding(true);
 			manager->SetSuccess(false);
+<<<<<<< HEAD
+			//std::cout << "Planet Collide" << std::endl;
+
+			//std::cout << "Planet radius: " << p.GetRadius() <<std::endl;
+			//std::cout << "Player radius: " << player->GetRadius() << std::endl;
 
 
-			return new EndingState();
+			std::cout << dist << std::endl;
+=======
+
+>>>>>>> main
+
+			EndingState* endingState = new EndingState();
+			//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
+
+			return endingState;
 		}
 	}
 
@@ -156,7 +189,12 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	}
 	else if (bGoToRetry)
 	{
+<<<<<<< HEAD
+		std::cout << "bGoToRetry" << std::endl;
+		nextState = new LoadingState();
+=======
 		nextState = new InGameReadyState();
+>>>>>>> main
 	}
 
 

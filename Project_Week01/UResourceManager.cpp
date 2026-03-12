@@ -1,5 +1,13 @@
 #include "UResourceManager.h"
 
+static const ImWchar full_korean_ranges[] =
+{
+	0x0020, 0x00FF,   // Basic Latin + Latin Supplement
+	0x3131, 0x3163,   // Hangul Jamo
+	0xAC00, 0xD7A3,   // Hangul Syllables
+	0,
+};
+
 //	Manager의 Boot에서 Call
 void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * deviceContext)
 {
@@ -50,6 +58,14 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 		io.Fonts->GetGlyphRangesDefault()
 	);
 
+	FontLogoSmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\GravityBold8.ttf",
+		60.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesDefault()
+	);
+
 	//	Default Fonts
 	FontDefault = io.Fonts->AddFontFromFileTTF
 	(
@@ -63,6 +79,14 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	(
 		"res\\fonts\\NEXONLv1GothicBold.ttf",
 		60.f,
+		nullptr,
+		io.Fonts->GetGlyphRangesKorean()
+	);
+
+	FontInfoBoldSmall = io.Fonts->AddFontFromFileTTF
+	(
+		"res\\fonts\\NEXONLv1GothicBold.ttf",
+		42.f,
 		nullptr,
 		io.Fonts->GetGlyphRangesKorean()
 	);
@@ -84,13 +108,12 @@ void UResourceManager::Initialize(ID3D11Device* device , ID3D11DeviceContext * d
 	);
 
 	/* Tip List Setting */
-
-	tipList.push_back("4일 만에 만들기에는 볼륨이 컸습니다.");
-	tipList.push_back("랭킹을 올리려면 빠른 길을 선택해야 합니다.");
-	tipList.push_back("잘 만들었죠?");
-	tipList.push_back("정글은 밥이 맛있습니다.");
-	tipList.push_back("식사 시간보다 25분 늦게 가면 안 기다려도 됩니다.");
-	tipList.push_back("목요일 회식이 기대됩니다.");
+	tipList.push_back("Building this in four days was quite a challenge.");
+	tipList.push_back("To climb the rankings, you need to find the fastest path.");
+	tipList.push_back("Not bad, right?");
+	tipList.push_back("The food at Jungle is amazing.");
+	tipList.push_back("Arrive 25 minutes after meal time starts and you won\'t have to wait in line.");
+	tipList.push_back("Thursday team dinner is going to be fun.");
 
 	/* Loading List Setting */
 	loadingList.push_back("Loading");
