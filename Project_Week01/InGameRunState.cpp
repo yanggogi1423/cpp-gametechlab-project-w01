@@ -100,6 +100,23 @@ bool InGameRunState::borderCheck(UManager* manager)
 	return false;
 }
 
+bool InGameRunState::goalCheck(UManager* manager)
+{
+
+	Probe* player = manager->GetProbe();
+	Goal* goal = manager->getGoal();
+
+	FVector playerLoc = player->GetLocation();
+	FVector goalLoc = goal->GetLocation();
+	float stand = (playerLoc - goalLoc).Size();
+	if (stand - 0.1f <= player->GetRadius() + goal->GetRadius())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
@@ -193,9 +210,13 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		nextState = new LoadingState();
 	}
 
-	
+	if (goalCheck(manager))
+	{
+		return new EndingState();
+	}
 
 	return nextState;
+
 }
 
 void InGameRunState::Render(URenderer* renderer, UManager* manager)

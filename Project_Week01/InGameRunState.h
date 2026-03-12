@@ -21,6 +21,6 @@ public:
 	bool bGoToRetry = false;
 	bool bGoToMain = false;
 	bool borderCheck(UManager* manager);
-
+	bool goalCheck(UManager* manager);
 };
 
