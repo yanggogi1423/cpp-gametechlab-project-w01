@@ -72,6 +72,7 @@ struct SpriteButtonInfo
 	ImVec2 uv0;
 	ImVec2 uv1;
 	std::function<void()> callback;
+	
 };
 
 struct SpriteButton9Info
@@ -87,6 +88,14 @@ struct SpriteButton9Info
 	float borderTop;
 	float borderBottom;
 	std::function<void()> callback;
+	bool enabled;
+};
+
+struct BlockerInfo
+{
+	std::string label;
+	ImVec2 position;
+	ImVec2 size;
 };
 
 class UIFrame
@@ -103,12 +112,12 @@ private:
 	std::vector<TextInfo> texts;
 	std::vector<ImageInfo> images;
 	std::vector<Image9Info> images9;
-	std::vector<ImageButtonInfo> imageButtons;
+	std::unordered_map<std::string, std::unique_ptr<ImageButtonInfo>> imageButtons;
 	std::vector<SpriteButtonInfo> spriteButtons;
 	std::vector<SpriteButton9Info> spriteButtons9;
 	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
 	std::unordered_map<std::string, std::unique_ptr<SpriteInfo>> selectableSprite;
-
+	std::vector<BlockerInfo> blockers;
 
 	int Layer = 0; // 렌더링 레이어, 필요에 따라 사용
 	bool bNoBringToFrontOnFocus = false; // 포커스 시 앞으로 가져오지 않도록 설정하는 플래그
@@ -125,7 +134,16 @@ public:
 	void AddImageButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, std::function<void()> callback);
 	void AddSpriteButton(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, std::function<void()> callback);
 	void AddSpriteManual(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& textureSize, const int spriteSize, const ImVec2& position, const ImVec2& size, int index);
-	void AddSpriteButton9(const std::string& text, ID3D11ShaderResourceView* texture, const ImVec2& position, const ImVec2& size, int index, float border, std::function<void()> callback);
+	void AddSpriteButton9(
+		const std::string& text,
+		ID3D11ShaderResourceView* texture,
+		const ImVec2& position,
+		const ImVec2& size,
+		int index,
+		float border,
+		std::function<void()> callback,
+		bool enabled = true);
+	void AddBlocker(const std::string& label, const ImVec2& position, const ImVec2& size);
 
 	ImVec2 GetPosition() const;
 	void SetPosition(const ImVec2& newPosition);
@@ -147,6 +165,7 @@ public:
 	UIFrame& NoTitleBar(bool noTitle);
 	UIFrame& BorderLineTransparency(float transparency);
 
+	ImageButtonInfo* GetImageButton(const std::string& label);
 	TextInfo* GetSelectableText(const std::string& label);
 	SpriteInfo* GetSelectableSprite(const std::string& label);
 

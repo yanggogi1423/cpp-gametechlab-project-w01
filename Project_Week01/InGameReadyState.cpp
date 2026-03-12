@@ -225,7 +225,6 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 		nextState = new InGameRunState();
 	}
 
-	PlanetPlacementManager->Update(deltaTime);
 
 	return nextState;
 }
@@ -234,6 +233,7 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 // texture 렌더링
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
+	PlanetPlacementManager->Update(0.f);
 
 
 	

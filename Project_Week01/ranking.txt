@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 0,Ruby,100
 0,C,30
 0,Java,25
@@ -29,3 +30,5 @@
 1,User_xWklE,0
 2,User_xWklE,0
 0,User_JCdSW,0
+=======
+>>>>>>> 2bb0d9890aa72989c05df112eace9b26d4bcc7af

@@ -198,7 +198,9 @@ void UIFrame::AddImageButton(const std::string& text, ID3D11ShaderResourceView* 
 	imageButtonInfo.position = position;
 	imageButtonInfo.size = size;
 	imageButtonInfo.callback = callback;
-	imageButtons.push_back(imageButtonInfo);
+
+
+	imageButtons[text] = std::make_unique<ImageButtonInfo>(imageButtonInfo);
 }
 
 
@@ -274,17 +276,17 @@ void UIFrame::AddSpriteButton9(
 	const ImVec2& size,
 	int index,
 	float border,
-	std::function<void()> callback)
+	std::function<void()> callback,
+	bool enabled)  // 추가
 {
-	if (texture == nullptr)
-		return;
-
 	SpriteButton9Info spriteInfo;
 	spriteInfo.label = text;
 	spriteInfo.texture = texture;
 	spriteInfo.position = position;
 	spriteInfo.size = size;
 	spriteInfo.callback = callback;
+	spriteInfo.enabled = enabled;
+
 	spriteInfo.borderLeft = border;
 	spriteInfo.borderRight = border;
 	spriteInfo.borderTop = border;
@@ -295,6 +297,14 @@ void UIFrame::AddSpriteButton9(
 	spriteButtons9.push_back(spriteInfo);
 }
 
+void UIFrame::AddBlocker(const std::string& label, const ImVec2& position, const ImVec2& size)
+{
+	BlockerInfo blocker;
+	blocker.label = label;
+	blocker.position = position;
+	blocker.size = size;
+	blockers.push_back(blocker);
+}
 
 UIFrame& UIFrame::Position(ImVec2 newPosition)
 {
@@ -324,6 +334,11 @@ UIFrame& UIFrame::BorderLineTransparency(float transparency)
 {
 	borderLineTransparency = transparency;
 	return *this;
+}
+
+ImageButtonInfo* UIFrame::GetImageButton(const std::string& label)
+{
+	return imageButtons[label].get();
 }
 
 TextInfo* UIFrame::GetSelectableText(const std::string& label)
@@ -376,11 +391,12 @@ void UIFrame::Render()
 	//ImGui::InvisibleButton((title + "_Blocker").c_str(), size);
 
 
-	for (const auto& image : images) 
+	for (const auto& image : images)
 	{
 		ImGui::SetCursorPos(image.position);
 		ImGui::Image((ImTextureID)image.texture, image.size);
 	}
+
 
 	for (const auto& pair : selectableSprite)
 	{
@@ -431,8 +447,10 @@ void UIFrame::Render()
 		}
 	}
 
-	for (const auto& imageButton : imageButtons)
+	for (const auto& pair : imageButtons)
 	{
+
+		auto imageButton = *pair.second.get();
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1, 1, 1, 0.0f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.2f));
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.3f));
@@ -460,6 +478,8 @@ void UIFrame::Render()
 
 		ImGui::SetCursorPos(GetCenteredPos(spriteButton.position, spriteButton.size));
 
+		
+
 		if (ImGui::ImageButton(
 			spriteButton.label.c_str(),
 			(ImTextureID)(spriteButton.texture),
@@ -470,6 +490,8 @@ void UIFrame::Render()
 			spriteButton.callback();
 		}
 
+		
+
 		ImGui::PopStyleColor(3);
 	}
 
@@ -479,10 +501,14 @@ void UIFrame::Render()
 
 		ImGui::SetCursorPos(pos);
 
+		ImGui::BeginDisabled(!spriteButton.enabled);
+
 		if (ImGui::InvisibleButton(spriteButton.label.c_str(), spriteButton.size))
 		{
 			spriteButton.callback();
 		}
+
+		ImGui::EndDisabled();
 
 		bool hovered = ImGui::IsItemHovered();
 		bool active = ImGui::IsItemActive();
@@ -549,6 +575,18 @@ void UIFrame::Render()
 		ImGui::PopStyleColor();
 
 		ImGui::PopFont();
+	}
+
+	for (int i = 0; i < (int)blockers.size(); i++)
+	{
+		const auto& blocker = blockers[i];
+
+		ImGui::PushID(i);
+
+		ImGui::SetCursorPos(blocker.position);
+		ImGui::InvisibleButton(blocker.label.c_str(), blocker.size);
+
+		ImGui::PopID();
 	}
 
 	ImGui::End();
