@@ -112,7 +112,7 @@ private:
 	std::vector<TextInfo> texts;
 	std::vector<ImageInfo> images;
 	std::vector<Image9Info> images9;
-	std::vector<ImageButtonInfo> imageButtons;
+	std::unordered_map<std::string, std::unique_ptr<ImageButtonInfo>> imageButtons;
 	std::vector<SpriteButtonInfo> spriteButtons;
 	std::vector<SpriteButton9Info> spriteButtons9;
 	std::unordered_map<std::string, std::unique_ptr<TextInfo>> selectableTexts;
@@ -165,6 +165,7 @@ public:
 	UIFrame& NoTitleBar(bool noTitle);
 	UIFrame& BorderLineTransparency(float transparency);
 
+	ImageButtonInfo* GetImageButton(const std::string& label);
 	TextInfo* GetSelectableText(const std::string& label);
 	SpriteInfo* GetSelectableSprite(const std::string& label);
 

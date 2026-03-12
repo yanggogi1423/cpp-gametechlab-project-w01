@@ -12,7 +12,7 @@
 void InGameReadyState::OnEnter(UManager* manager)
 {
 	/* Placement Manager */
-
+	cachedManager = manager;
 	PlanetPlacementManager = new UPlanetPlacementManager(manager);
 
 	// 1. 기존 객체 제거 (ClearGameObjects는 public으로 변경 필요)
@@ -70,7 +70,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 		// 4. 매니저의 월드 리스트에 등록 (내부에서 복사본을 생성하므로 안전함)
 		manager->CreateNewPlanetWorld(obstaclePlanet);
 
-		std::cout << "Obstacle deployed at: " << obstacle.second.x << ", " << obstacle.second.y << std::endl;
+		//std::cout << "Obstacle deployed at: " << obstacle.second.x << ", " << obstacle.second.y << std::endl;
 	}
 
 	// 4. 플레이어 배치 로직
@@ -119,7 +119,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 	// 5. UI 초기화 (기존 로직 유지)
 	uiManager = new UIManager();
 
-	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+	UIFrame& bgFrame = uiManager->CreateFrame("ReadyState_Background")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -144,7 +144,7 @@ void InGameReadyState::OnEnter(UManager* manager)
 		}
 	}
 
-	UIFrame& HUDFrame = uiManager->CreateFrame("Ready Phase")
+	UIFrame& HUDFrame = uiManager->CreateFrame("ReadyState_HUD")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(WindowWidth, WindowHeight))
 		.NoTitleBar(true)
@@ -162,9 +162,13 @@ void InGameReadyState::OnEnter(UManager* manager)
 		[&]() {
 			USphere* newPlanet = new USphere();
 			PlanetPlacementManager->SetSelectedPlanet(newPlanet);
+
+			USphere::checkCount();
+			selectButton->texture = cachedManager->GetResourceManager()->GetTexture(static_cast<ImageName>(USphere::count));
 		}
 	); 
 
+	selectButton = HUDFrame.GetImageButton("Planet 1");
 
 	HUDFrame.AddImageButton("Start",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
@@ -223,7 +227,6 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 		nextState = new InGameRunState();
 	}
 
-	PlanetPlacementManager->Update(deltaTime);
 
 	return nextState;
 }
@@ -232,6 +235,7 @@ IState* InGameReadyState::Update(float deltaTime, UManager* manager)
 // texture 렌더링
 void InGameReadyState::Render(URenderer* renderer, UManager* manager)
 {
+	PlanetPlacementManager->Update(0.f);
 
 
 	

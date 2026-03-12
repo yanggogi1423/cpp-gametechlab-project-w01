@@ -15,6 +15,8 @@ public:
 	void OnExit(class UManager* manager) override;
 
 	UPlanetPlacementManager* PlanetPlacementManager;
+	ImageButtonInfo* selectButton;
+	UManager* cachedManager;
 
 	bool bGoToStart = false;
 	bool bGoToRetry = false;

@@ -52,3 +52,11 @@ ImageName USphere::getImageName()
 	return imageName;
 }
 
+void USphere::checkCount()
+{
+    count++;
+    if (count >= ImageName::GOAL) {
+        count = ImageName::PLANET1;
+    }
+}
+
