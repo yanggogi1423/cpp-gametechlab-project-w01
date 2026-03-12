@@ -181,7 +181,10 @@ HRESULT UResourceManager::ImageLoadTexture(ImageName type, std::wstring filePath
 	return hr;
 }
 
+
+
 ID3D11ShaderResourceView* UResourceManager::GetTexture(ImageName type)
 {
 	return TextureResources[type];
 }
+

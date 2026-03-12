@@ -85,7 +85,7 @@ UManager::UManager(ID3D11Device* device, ID3D11DeviceContext * deviceContext)
 {
 	BootGame(device , deviceContext);
 
-	ProbeResource.GenerateTriangle();
+	ProbeResource.GenerateSphere(0.2f);
 	SphereResource.GenerateSphere(1.0f);
 	GoalResource.GenerateSphere(0.1f);
 
