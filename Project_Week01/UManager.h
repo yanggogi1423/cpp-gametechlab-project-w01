@@ -173,8 +173,10 @@ public:
 	void SetSuccess(int _success) { success = _success; }
 
 	// StageInfo 관련
+	EStage GetCurAvailableStage() const { return CurAvailableStage; }
 	EStage GetCurStage() const { return CurStage; }
 	void SetCurStage(EStage stage) { CurStage = stage; }
+	void SetCurAvailableStage(EStage stage) { CurAvailableStage = stage; }
 	int GetCurStageInt() const { return (int)CurStage - 1; }
 	const std::vector<FStageInfo>& GetStageInfoList() const { return StageInfoList; }
 	

@@ -246,6 +246,28 @@ void EndingState::OnStageResult(bool bSuccess, float remainTime, int currentStag
 	bIsClear = bSuccess;
 	this->finalScore = finalScore;
 	this->currentStage = currentStage;
+
+	if(bIsClear)
+	{
+		//Manager->PlaySFX(ESFX::ESFX_Clear);
+		
+		switch (Manager->GetCurAvailableStage())
+		{
+			case EStage::ES_Stage1:
+				Manager->SetCurStage(EStage::ES_Stage2);
+				break;
+			case EStage::ES_Stage2:
+				Manager->SetCurStage(EStage::ES_Stage3);
+				break;
+			case EStage::ES_Stage3:
+				//	Do nothing
+				break;
+		}
+	}
+	else
+	{
+		//Manager->PlaySFX(ESFX::ESFX_Fail);
+	}
 }
 
 //void EndingState::EndingInit(bool bIsClear, unsigned int score, int currentStage)

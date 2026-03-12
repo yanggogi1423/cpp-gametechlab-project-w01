@@ -61,6 +61,7 @@ void StageSelectionState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontDefault
 	);
 
+	ImGui::BeginDisabled(manager->GetCurAvailableStage() < EStage::ES_Stage2); // Stage 2가 선택 가능하지 않으면 버튼 비활성화
 	btnFrame.AddSpriteButton9("Stage 2",
 		manager->GetResourceManager()->SRVButtonSprite,
 		ImVec2(WindowWidth / 2, WindowHeight / 2 - 100),
@@ -70,7 +71,8 @@ void StageSelectionState::OnEnter(UManager* manager)
 		[&]() {
 			Manager->SetCurStage(EStage::ES_Stage2);
 			bIsStageSelected = true;
-		}
+		},
+		Manager->GetCurAvailableStage() >= EStage::ES_Stage2 // Stage 2가 선택 가능할 때만 버튼 활성화
 	);
 
 	btnFrame.AddText("2",
@@ -78,6 +80,9 @@ void StageSelectionState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontDefault
 	);
 
+	ImGui::EndDisabled();
+
+	ImGui::BeginDisabled(manager->GetCurAvailableStage() < EStage::ES_Stage3); // Stage 3이 선택 가능하지 않으면 버튼 비활성화
 	btnFrame.AddSpriteButton9("Stage 3",
 		manager->GetResourceManager()->SRVButtonSprite,
 		ImVec2(WindowWidth / 2 + 300, WindowHeight / 2 - 100),
@@ -87,13 +92,16 @@ void StageSelectionState::OnEnter(UManager* manager)
 		[&]() {
 			Manager->SetCurStage(EStage::ES_Stage3);
 			bIsStageSelected = true;
-		}
+		},
+		Manager->GetCurAvailableStage() >= EStage::ES_Stage3 // Stage 3이 선택 가능할 때만 버튼 활성화
 	);
 
 	btnFrame.AddText("3",
 		ImVec2(WindowWidth / 2 + 300, WindowHeight / 2 -100),
 		manager->GetResourceManager()->FontDefault
 	);
+
+	ImGui::EndDisabled();
 
 	btnFrame.AddSpriteButton("Go to main",
 		manager->GetResourceManager()->SRVButtonSprite,
@@ -127,6 +135,7 @@ IState* StageSelectionState::Update(float deltaTime, UManager* manager)
 
 	return nextState;
 }
+
 
 void StageSelectionState::Render(URenderer* renderer, UManager* manager)
 {
