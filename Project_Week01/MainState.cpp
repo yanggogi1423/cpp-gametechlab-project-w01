@@ -11,7 +11,7 @@ void MainState::OnEnter(UManager* manager)
 
 	uiManager = new UIManager();
 
-	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
+	UIFrame& bgFrame = uiManager->CreateFrame("Background")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -40,12 +40,12 @@ void MainState::OnEnter(UManager* manager)
 
 	//ImGui::PopStyleVar();
 	
-	UIFrame & logoFrame = uiManager->CreateFrame("MainState")
+	UIFrame& logoFrame = uiManager->CreateFrame("Logo")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
-		.BackgroundColor(ImVec4(0, 0, 0, 0)
-		);
+		.BackgroundColor(ImVec4(0, 0, 0, 0))
+		.BorderLineTransparency(0.f);
 
 	//	For Animation
 	LogoFrame = &logoFrame;
@@ -56,7 +56,7 @@ void MainState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontLogo
 		);
 	
-	UIFrame& btnFrame = uiManager->CreateFrame("MainState")
+	UIFrame& btnFrame = uiManager->CreateFrame("Button")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -108,7 +108,7 @@ void MainState::OnEnter(UManager* manager)
 		}
 		);
 
-	UIFrame& infoFrame = uiManager->CreateFrame("MainState")
+	UIFrame& infoFrame = uiManager->CreateFrame("Information")
 		.Position(ImVec2(0, 0))
 		.Size(ImVec2(1400, 1050))
 		.NoTitleBar(true)
@@ -121,6 +121,22 @@ void MainState::OnEnter(UManager* manager)
 	infoFrame.AddImage(manager->GetResourceManager()->SRVLeaderBoardPanel,
 		ImVec2(WindowWidth / 2 - 470, WindowHeight / 2 - 375),
 		ImVec2(940, 750)
+	);
+
+	infoFrame.AddBlocker("InfoBlocker",
+		ImVec2(WindowWidth / 2 - 470, WindowHeight / 2 - 375),
+		ImVec2(500, 500)
+	);
+
+	infoFrame.AddSpriteButton("Info",
+		manager->GetResourceManager()->SRVButtonSprite,
+		ImVec2(WindowWidth - 50, WindowHeight - 50),
+		ImVec2(60, 60),
+		27,
+		//	Toggle
+		[&]() {
+			InfoFrame->bVisibility = !InfoFrame->bVisibility;
+		}
 	);
 
 	infoFrame.AddText("Contributors",
