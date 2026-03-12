@@ -85,6 +85,38 @@ void InGameRunState::OnEnter(UManager* manager)
 	manager->GetProbe()->ResetTrail();
 }
 
+
+bool InGameRunState::borderCheck(UManager* manager)
+{
+	Probe* player = manager->GetProbe();
+	FVector location = player->GetLocation();
+	float radius = player->GetRadius();
+
+	if (-1.7f + radius > location.x or 1.2f - radius < location.x or -1.7f + radius > location.y or 1.7 - radius < location.y)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+bool InGameRunState::goalCheck(UManager* manager)
+{
+
+	Probe* player = manager->GetProbe();
+	Goal* goal = manager->getGoal();
+
+	FVector playerLoc = player->GetLocation();
+	FVector goalLoc = goal->GetLocation();
+	float stand = (playerLoc - goalLoc).Size();
+	if (stand - 0.1f <= player->GetRadius() + goal->GetRadius())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
 {
 	nextState = this;
@@ -102,6 +134,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	if (remainTime <= 25.f)
 	{
 		manager->SetSuccess(false);
+		manager->PlaySFX(ESFX::ESFX_Fail);
 
 		//std::cout << "Time out" << std::endl;
 
@@ -112,19 +145,31 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 	auto planetList = manager->GetPlanetList();
 	auto player = manager->GetProbe();
-	auto stageInfoList = manager->GetStageInfoList();
+	auto stageInfoList = manager->GetStageInfoList();   
 	auto curStage = manager->GetCurStage();
+
+	// 0. 완화 상수 설정
+	const float epsilon = 0.2f;
+	const float epsilonSq = epsilon * epsilon;
 
 	for (auto p : planetList)
 	{
-		// 1. 방향 벡터 및 거리 계산
+		// 1. 방향 벡터 계산
 		FVector direction = p.GetLocation() - player->GetLocation();
-		float dist = direction.Size();
-		if (dist < 1e-4f) continue; // 0으로 나누기 방지
 
-		// 2. 가속도 크기 및 방향 벡터(단위 벡터) 계산
+		// 2. SizeSquared 직접 계산 (x*x + y*y + z*z)
+		// sqrt 연산을 거치지 않으므로 훨씬 빠르고 정밀합니다.
+		float distSq = (direction.x * direction.x) + (direction.y * direction.y) + (direction.z * direction.z);
+
+		// 0으로 나누기 방지 가드
+		if (distSq < 1e-6f) continue;
+
+		// 3. 가속도 계산 (소프닝 팩터 적용)
+		float accMag = (GravitationalConstant * p.GetMass()) / (distSq + epsilonSq);
+
+		// 4. 방향 벡터 적용을 위해 실제 거리 계산 (여기서만 sqrt 사용)
+		float dist = sqrtf(distSq);
 		FVector unitDir = direction / dist;
-		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
 		// 3. 속도 업데이트
@@ -153,13 +198,26 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 			EndingState* endingState = new EndingState();
 			//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
 
-			return endingState;
+			manager->PlaySFX(ESFX::ESFX_Fail);
+			return new EndingState();
 		}
 	}
+
+	//collision border with rocket
+	if (borderCheck(manager))
+	{
+		EndingState* endingState = new EndingState();
+		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
+
+		manager->SetSuccess(false);
+		return endingState;
+	}
+
 
 	if (bGoToMain)
 	{
 		nextState = new MainState();
+		return new EndingState();
 	}
 	else if (bGoToRetry)
 	{
@@ -168,8 +226,14 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		nextState = new LoadingState();
 	}
 
+	if (goalCheck(manager))
+	{
+		manager->SetSuccess(true);
+		return new EndingState();
+	}
 
 	return nextState;
+
 }
 
 void InGameRunState::Render(URenderer* renderer, UManager* manager)

@@ -128,12 +128,16 @@ bool USoundManager::CreatePrimaryBuffer()
 
 void USoundManager::PlayBGM(EBGM bgm)
 {
+    if (m_currentBGM == bgm) return;
+    
     StopBGM();
     auto it = BgmClips.find(bgm);
     if (it == BgmClips.end() || it->second.Buffers.empty()) return;
 
     it->second.Buffers[0]->SetCurrentPosition(0);
     it->second.Buffers[0]->Play(0, 0, DSBPLAY_LOOPING);
+
+    m_currentBGM = bgm;
 }
 
 void USoundManager::StopBGM()

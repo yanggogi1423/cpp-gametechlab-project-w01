@@ -145,7 +145,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 
 	// frame 제한
-	const int targetFPS = 10;
+	const int targetFPS = 60;
 	const double targetFrameTime = 1000.0 / targetFPS;
 
 	LARGE_INTEGER frequency;
