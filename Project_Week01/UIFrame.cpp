@@ -112,6 +112,9 @@ namespace
 	}
 }
 
+
+
+
 UIFrame::UIFrame(const std::string& title) : title(title)
 {
 	position = ImVec2(0.0f, 0.0f);
@@ -222,6 +225,48 @@ void UIFrame::AddSpriteButton(
 	spriteButtons.push_back(spriteInfo);
 }
 
+void UIFrame::AddSpriteManual(
+	const std::string& text,
+	ID3D11ShaderResourceView* texture,
+	const ImVec2& textureSize,
+	const int spriteSize,
+	const ImVec2& position,
+	const ImVec2& size,
+	int index)
+{
+	if (texture == nullptr)
+		return;
+
+	SpriteInfo spriteInfo;
+	spriteInfo.texture = texture;
+	spriteInfo.position = position;
+	spriteInfo.size = size;
+
+	const int columns = static_cast<int>(textureSize.x / spriteSize);
+	const int rows = static_cast<int>(textureSize.y / spriteSize);
+	const int maxCount = columns * rows;
+
+	//if (index < 0 || index >= maxCount)
+	//{
+	//	outUV0 = ImVec2(0.0f, 0.0f);
+	//	outUV1 = ImVec2(1.0f, 1.0f);
+	//	return;
+	//}
+
+	const int x = index % columns;
+	const int y = index / columns;
+
+	const float u0 = (x * spriteSize) / textureSize.x;
+	const float v0 = (y * spriteSize) / textureSize.y;
+	const float u1 = ((x + 1) * spriteSize) / textureSize.x;
+	const float v1 = ((y + 1) * spriteSize) / textureSize.y;
+
+	spriteInfo.uv0 = ImVec2(u0, v0);
+	spriteInfo.uv1 = ImVec2(u1, v1);
+
+	selectableSprite[text] = std::make_unique<SpriteInfo>(spriteInfo);;
+}
+
 void UIFrame::AddSpriteButton9(
 	const std::string& text,
 	ID3D11ShaderResourceView* texture,
@@ -286,6 +331,10 @@ TextInfo* UIFrame::GetSelectableText(const std::string& label)
 	return selectableTexts[label].get();
 }
 
+SpriteInfo* UIFrame::GetSelectableSprite(const std::string& label)
+{
+	return selectableSprite[label].get();
+}
 
 void UIFrame::SetPosition(const ImVec2& newPosition)
 {
@@ -331,6 +380,14 @@ void UIFrame::Render()
 	{
 		ImGui::SetCursorPos(image.position);
 		ImGui::Image((ImTextureID)image.texture, image.size);
+	}
+
+	for (const auto& pair : selectableSprite)
+	{
+		auto image = *pair.second.get();
+
+		ImGui::SetCursorPos(image.position);
+		ImGui::Image((ImTextureID)image.texture, image.size, image.uv0, image.uv1);
 	}
 
 	for (const auto& image9 : images9)

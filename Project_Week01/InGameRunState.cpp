@@ -9,10 +9,6 @@
 
 void InGameRunState::OnEnter(UManager* manager)
 {
-	// 1. [이사 완료] UManager::InGameRunInit 로직
-	// 이제 이 상태에 진입한 것 자체가 'InGameRun'이 시작되었음을 의미합니다.
-
-	// 5. UI 초기화 (기존 로직 유지)
 	uiManager = new UIManager();
 
 	UIFrame& bgFrame = uiManager->CreateFrame("MainState")
@@ -22,7 +18,6 @@ void InGameRunState::OnEnter(UManager* manager)
 		.BackgroundColor(ImVec4(0, 0, 0, 0));
 
 
-	//ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 	//	Background
 	const int tileSize = 350;
 	const int segX = WindowWidth / tileSize;   // 20
@@ -55,38 +50,10 @@ void InGameRunState::OnEnter(UManager* manager)
 		ImVec2(WindowWidth * 3 / 4.f + 150, 300),
 		manager->GetResourceManager()->FontInfoLight);
 
-	//std::string timerText = "Remain Time : " + std::to_string(manager->GetRemainTimer());
-
-	//HUDFrame.AddText("Remain Time : " + timerText,
-	//	ImVec2(WindowWidth * 3 / 4.f + 150, 500),
-	//	manager->GetResourceManager()->FontInfoLight);
-
 	HUDFrame.AddSelectableText("Timer", "Remain Time : " + std::to_string(manager->GetRemainTimer()),
 		ImVec2(WindowWidth * 3 / 4.f + 150, 500),
 		manager->GetResourceManager()->FontInfoLight);
 
-	//HUDFrame.AddImageButton("Planet 1",
-	//	manager->GetResourceManager()->GetTexture(ImageName::SATURN),
-	//	ImVec2(WindowWidth * 3 / 4.f + 150, 220),
-	//	ImVec2(100, 100),
-	//	[&]() {
-	//		USphere* newPlanet = new USphere();
-	//		PlanetPlacementManager->SetSelectedPlanet(newPlanet);
-	//	}
-	//);
-
-
-	//HUDFrame.AddImageButton("Start",
-	//	manager->GetResourceManager()->SRVLeaderBoardPanel,
-	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
-	//	ImVec2(100, 50),
-	//	[&]() {
-	//		bGoToStart = true;
-	//	}
-	//);
-	//HUDFrame.AddText("Start",
-	//	ImVec2(WindowWidth * 3 / 4.f + 150, 700),
-	//	manager->GetResourceManager()->FontInfoLight);
 
 	HUDFrame.AddImageButton("Retry",
 		manager->GetResourceManager()->SRVLeaderBoardPanel,
@@ -114,6 +81,8 @@ void InGameRunState::OnEnter(UManager* manager)
 		manager->GetResourceManager()->FontInfoLight);
 
 	hudFrame = &HUDFrame;
+
+	manager->GetProbe()->ResetTrail();
 }
 
 IState* InGameRunState::Update(float deltaTime, UManager* manager)
@@ -129,16 +98,19 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto textInfo = hudFrame->GetSelectableText("Timer");
 	auto remainTimestr = std::to_string(manager->GetRemainTimer()).substr(0, 4); //문자열에서 2자리수.소수점 1자리 => 4자리
 	textInfo->text = "Remain Time : " + remainTimestr;
-	std::cout << textInfo->text << std::endl;
 
 	if (remainTime <= 25.f)
 	{
 		manager->SetSuccess(false);
+<<<<<<< HEAD
 		//std::cout << "Time out" << std::endl;
 
 		EndingState* endingState = new EndingState();
 		//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
 		return endingState;
+=======
+		return new EndingState();
+>>>>>>> main
 	}
 
 	auto planetList = manager->GetPlanetList();
@@ -158,8 +130,11 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		float accMag = (GravititationalConstant * p.GetMass()) / (float)pow(dist, 2);
 		FVector accVec = unitDir * accMag;
 
+<<<<<<< HEAD
 		//std::cout << "x: " << unitDir.x << " y: " << unitDir.y <<std::endl;
 
+=======
+>>>>>>> main
 
 		// 3. 속도 업데이트
 		player->SetVelocity(player->GetVelocity() + accVec * deltaTime);
@@ -168,14 +143,16 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 	auto pos = player->GetLocation();
 	auto vel = player->GetVelocity();
 
+<<<<<<< HEAD
 	//std::cout << "Location: ( " << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	//std::cout << "Velocity: ( " << vel.x << ", " << vel.y << ", " << vel.z << ")" << std::endl;
 
+=======
+>>>>>>> main
 	auto curLocation = player->GetLocation();
 	player->SetLocation(curLocation+ player->GetVelocity() * deltaTime);
-
-
-
+	//manager->GetProbe()->TryAddTrail(vel.Size() * vel.Size() * 2);
+	manager->GetProbe()->TryAddTrail();
 
 	FVector pLoc = player->GetLocation();
 
@@ -187,6 +164,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		{
 			player->SetColliding(true);
 			manager->SetSuccess(false);
+<<<<<<< HEAD
 			//std::cout << "Planet Collide" << std::endl;
 
 			//std::cout << "Planet radius: " << p.GetRadius() <<std::endl;
@@ -194,6 +172,9 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 
 			std::cout << dist << std::endl;
+=======
+
+>>>>>>> main
 
 			EndingState* endingState = new EndingState();
 			//endingState->OnStageResult(false, manager->GetRemainTimer(), manager->GetCurStageInt());
@@ -202,25 +183,18 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 		}
 	}
 
-	// Collision between Probe and Exit Location
-	//float goalDist = (stageInfoList[(int)curStage - 1].goal.GetLocation() - pLoc).Size();
-	//if (goalDist < 0.15f)
-	//{
-	//	manager->SetSuccess(true);
-	//	std::cout << "Gaol Collide" << std::endl;
-	//	return new EndingState();
-	//}
-
-
 	if (bGoToMain)
 	{
-		std::cout << "bGoToMain" << std::endl;
 		nextState = new MainState();
 	}
 	else if (bGoToRetry)
 	{
+<<<<<<< HEAD
 		std::cout << "bGoToRetry" << std::endl;
 		nextState = new LoadingState();
+=======
+		nextState = new InGameReadyState();
+>>>>>>> main
 	}
 
 
@@ -229,11 +203,7 @@ IState* InGameRunState::Update(float deltaTime, UManager* manager)
 
 void InGameRunState::Render(URenderer* renderer, UManager* manager)
 {
-	// 4. [이사 완료] main.cpp에 있던 3D 객체 렌더링 루프
-
-	// (3) UI 렌더링 (필요 시)
 	if (uiManager) uiManager->Render();
-
 
 	renderer->UpdateConstant(manager->getGoal()->GetTransformMatrix());
 	MeshResource* goal = manager->getGoalResource();
@@ -261,6 +231,12 @@ void InGameRunState::Render(URenderer* renderer, UManager* manager)
 			renderer->UpdateConstant(planet.GetTransformMatrix());
 			//renderer->indexRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount);
 			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture(planet.getImageName()));
+		}
+
+		for (auto& trail : manager->GetProbe()->GetTrails()) 
+		{
+			renderer->UpdateConstant(trail.GetTransformMatrix());
+			renderer->textureRenderPrimitive(sphereRes->VB, sphereRes->IB, sphereRes->IndexCount, manager->GetResourceManager()->GetTexture("JustWhite"));
 		}
 	}
 
