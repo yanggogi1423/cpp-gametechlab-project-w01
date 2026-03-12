@@ -28,7 +28,7 @@ void StateMachine::Update(float deltaTime, UManager* manager)
 	if (currentState)
 	{
 		IState* next = currentState->Update(deltaTime, manager);
-
+		ImGui::GetStyle().Alpha = 1.0f;
 		if (next != currentState)
 		{
 			//std::cout << "State Transition: " << typeid(*currentState).name() << " -> " << typeid(*next).name() << std::endl;
