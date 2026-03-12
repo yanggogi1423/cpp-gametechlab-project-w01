@@ -31,7 +31,7 @@ void StateMachine::Update(float deltaTime, UManager* manager)
 
 		if (next != currentState)
 		{
-			std::cout << "State Transition: " << typeid(*currentState).name() << " -> " << typeid(*next).name() << std::endl;
+			//std::cout << "State Transition: " << typeid(*currentState).name() << " -> " << typeid(*next).name() << std::endl;
 
 			currentState->OnExit(manager);
 			delete currentState;
