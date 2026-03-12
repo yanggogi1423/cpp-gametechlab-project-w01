@@ -41,21 +41,20 @@ void UManager::BootGame(ID3D11Device * device, ID3D11DeviceContext * deviceConte
 	InputManager = new PlayerInput();
 
 	//	2. 스테이지 정보 생성
-	// [스테이지 1]
+	// Stage 1 (기본)
 	FStageInfo stage1 = { EStage::ES_Stage1, 30.f };
-	stage1.ObstacleList.push_back({ 0, FVector(-0.5f, 0.0f, 0.0f) });  // 왼쪽 장애물
+	stage1.ObstacleList.push_back({ 0, FVector(-0.2, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage1);
 
-	// [스테이지 2] 화면 중앙 부근에 커다란 장애물 하나 배치
-	FStageInfo stage2 = { EStage::ES_Stage2, 40.f };
-	// {행성타입, 위치(x, y, z)} - x는 -1 ~ 0.5 범위 내로 설정
-	stage2.ObstacleList.push_back({ 0, FVector(-0.25f, 0.0f, 0.0f) });
+	// Stage 2 (슬라롬)
+	FStageInfo stage2 = { EStage::ES_Stage2, 45.f };
+	stage2.ObstacleList.push_back({ 0, FVector(-0.6f, 0.0f, 0.0f) });
+	stage2.ObstacleList.push_back({ 0, FVector(0.1f, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage2);
 
-	// [스테이지 3] 좁은 길목을 만드는 이중 장애물 배치
-	FStageInfo stage3 = { EStage::ES_Stage3, 50.f };
-	stage3.ObstacleList.push_back({ 0, FVector(-0.5f, 0.3f, 0.0f) });
-	stage3.ObstacleList.push_back({ 0, FVector(0.0f, -0.3f, 0.0f) });
+	// Stage 3 (U턴)
+	FStageInfo stage3 = { EStage::ES_Stage3, 60.f };
+	stage3.ObstacleList.push_back({ 0, FVector(-0.7f, 0.0f, 0.0f) });
 	StageInfoList.push_back(stage3);
 
 	//	3. 메인 State로 분기

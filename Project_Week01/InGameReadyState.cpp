@@ -93,19 +93,19 @@ void InGameReadyState::OnEnter(UManager* manager)
 	switch (StageIdx)
 	{
 	case 0:
-		player->SetLocation({ -0.8f, -0.8f, 0.0f });
-		player->SetVelocity({ 0.35f, 0.35f, 0.0f });
-		goal->SetLocation({ 0.7f , 0.7f , 0.0f }); 
+		player->SetLocation({ -0.7f, -0.7f, 0.0f });
+		player->SetVelocity({ 0.22f, 0.0f, 0.0f });
+		goal->SetLocation({ 0.3f , 0.5f , 0.0f }); 
 		break;
 	case 1:
-		player->SetLocation({ 0.5f , 1.0f , 0.0f });
-		player->SetVelocity({ 0.13f , -0.13f , 0.0f });
-		goal->SetLocation({ -0.7f ,-0.7f , 0.0f });
+		player->SetLocation({ -0.25f , 0.8f , 0.0f });
+		player->SetVelocity({ 0.0f , -0.15f , 0.0f });
+		goal->SetLocation({ -0.25f ,-0.8f , 0.0f });
 		break;
 	case 2:
-		player->SetLocation({ -0.8f , 0.0f , 0.0f });
-		player->SetVelocity({ 0.0f , 0.0f , 0.0f });
-		goal->SetLocation({ 0.4f , 0.8f , 0.0f });
+		player->SetLocation({ 0.3f , -0.8f , 0.0f });
+		player->SetVelocity({ -0.1f , 0.2f , 0.0f });
+		goal->SetLocation({ 0.3f , 0.8f , 0.0f });
 		break;
 	default:
 		player->SetLocation({ 0.7f, -0.7f, 0.0f });
